@@ -1,9 +1,8 @@
-
 'use client'
 
 import { useState } from 'react'
 import { Calendar, Clock, Users, FileText, Search, Filter, Eye, MessageSquare, Brain, Menu, X, Download, Play } from 'lucide-react'
-import Link from 'next/link'
+import { Link } from 'react-router-dom'
 
 export default function MeetingsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -120,7 +119,7 @@ export default function MeetingsPage() {
           {navigation.map((item) => (
             <Link
               key={item.name}
-              href={item.href}
+              to={item.href}
               className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
                 item.current 
                   ? 'bg-gradient-to-r from-purple-600/20 to-blue-600/20 text-purple-300 border border-purple-500/30' 
@@ -136,7 +135,6 @@ export default function MeetingsPage() {
 
       {/* Main Content */}
       <div className="lg:ml-64">
-        {/* Header */}
         <header className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700/50 px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
