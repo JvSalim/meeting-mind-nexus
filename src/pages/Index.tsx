@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,13 +7,32 @@ import { Link } from "react-router-dom";
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+
+  const dynamicWords = [
+    "Transcrições",
+    "Reuniões",
+    "Automação",
+    "Inteligência",
+    "Produtividade",
+    "Análises"
+  ];
 
   useEffect(() => {
     setIsVisible(true);
     
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    
+    // Rotação das palavras dinâmicas
+    const wordInterval = setInterval(() => {
+      setCurrentWordIndex((prev) => (prev + 1) % dynamicWords.length);
+    }, 2500);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearInterval(wordInterval);
+    };
   }, []);
 
   const features = [
@@ -94,12 +112,12 @@ const Index = () => {
             </div>
             <div className="flex items-center space-x-4">
               <Link to="/login">
-                <Button variant="ghost" className="text-white hover:text-purple-300 hover:bg-white/10 transition-all duration-300">
+                <Button variant="ghost" className="text-white hover:text-purple-300 hover:bg-white/10 transition-all duration-300 border border-transparent hover:border-purple-400/50">
                   Entrar
                 </Button>
               </Link>
               <Link to="/register">
-                <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 transform hover:scale-105">
+                <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 transform hover:scale-105 text-white font-semibold border-0">
                   Começar Grátis
                 </Button>
               </Link>
@@ -121,12 +139,12 @@ const Index = () => {
             </div>
             
             <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight">
-              <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent animate-pulse">
-                Transcrição
+              <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                {dynamicWords[currentWordIndex]}
               </span>
               <br />
               <span className="bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent">
-                Inteligente
+                Inteligentes
               </span>
             </h1>
             
@@ -138,12 +156,12 @@ const Index = () => {
             
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
               <Link to="/register">
-                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-lg px-10 py-6 shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50 transform hover:scale-105 transition-all duration-300">
+                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-lg px-10 py-6 shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50 transform hover:scale-105 transition-all duration-300 text-white font-semibold border-0">
                   Começar Agora
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
-              <Button variant="outline" size="lg" className="text-lg px-10 py-6 border-purple-500/50 text-purple-300 hover:bg-purple-500/10 hover:border-purple-400 transition-all duration-300">
+              <Button variant="outline" size="lg" className="text-lg px-10 py-6 border-2 border-purple-400/60 text-purple-200 hover:bg-purple-500/20 hover:border-purple-300 hover:text-white transition-all duration-300 bg-transparent">
                 Ver Demonstração
                 <PlayCircle className="ml-2 w-5 h-5" />
               </Button>
@@ -302,7 +320,7 @@ const Index = () => {
               Junte-se a centenas de empresas que já economizam horas com nossa automação inteligente
             </p>
             <Link to="/register">
-              <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-xl px-12 py-8 shadow-2xl shadow-purple-500/40 hover:shadow-purple-500/60 transform hover:scale-110 transition-all duration-300">
+              <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-xl px-12 py-8 shadow-2xl shadow-purple-500/40 hover:shadow-purple-500/60 transform hover:scale-110 transition-all duration-300 text-white font-semibold border-0">
                 Começar Gratuitamente
                 <ArrowRight className="ml-3 w-6 h-6" />
               </Button>
