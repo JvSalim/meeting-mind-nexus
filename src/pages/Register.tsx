@@ -4,47 +4,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mic, Eye, EyeOff, ArrowLeft, Building2, User } from "lucide-react";
+import { Mic, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 const Register = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    company: "",
-    email: "",
-    password: "",
-    confirmPassword: ""
-  });
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (formData.password !== formData.confirmPassword) {
+    if (password !== confirmPassword) {
       toast({
-        title: "Erro no cadastro",
+        title: "Erro",
         description: "As senhas não coincidem.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      toast({
-        title: "Erro no cadastro",
-        description: "A senha deve ter pelo menos 6 caracteres.",
         variant: "destructive",
       });
       return;
@@ -54,16 +35,24 @@ const Register = () => {
 
     // Simular registro
     setTimeout(() => {
-      localStorage.setItem("user", JSON.stringify({ 
-        email: formData.email, 
-        name: formData.name,
-        company: formData.company
-      }));
-      toast({
-        title: "Conta criada com sucesso!",
-        description: "Bem-vindo ao MeetingAI. Redirecionando...",
-      });
-      navigate("/dashboard");
+      if (name && email && password) {
+        localStorage.setItem("user", JSON.stringify({ 
+          email, 
+          name,
+          company: "Nova Empresa"
+        }));
+        toast({
+          title: "Conta criada com sucesso!",
+          description: "Redirecionando para o dashboard...",
+        });
+        navigate("/dashboard");
+      } else {
+        toast({
+          title: "Erro no registro",
+          description: "Verifique os dados informados.",
+          variant: "destructive",
+        });
+      }
       setIsLoading(false);
     }, 1500);
   };
@@ -95,57 +84,33 @@ const Register = () => {
 
         <Card className="border-white/10 shadow-2xl bg-black/40 backdrop-blur-xl">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-white">Criar Conta Gratuita</CardTitle>
+            <CardTitle className="text-2xl font-bold text-white">Criar Conta</CardTitle>
             <CardDescription className="text-slate-300">
-              Comece a usar nossa plataforma em segundos
+              Cadastre-se para começar a usar o MeetingAI
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleRegister} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name" className="text-slate-200">Nome</Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-                    <Input
-                      id="name"
-                      name="name"
-                      type="text"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      placeholder="João Silva"
-                      required
-                      className="h-12 pl-10 bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-400 focus:ring-purple-400/20"
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="company" className="text-slate-200">Empresa</Label>
-                  <div className="relative">
-                    <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-                    <Input
-                      id="company"
-                      name="company"
-                      type="text"
-                      value={formData.company}
-                      onChange={handleInputChange}
-                      placeholder="TechCorp"
-                      required
-                      className="h-12 pl-10 bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-400 focus:ring-purple-400/20"
-                    />
-                  </div>
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-slate-200">Nome Completo</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Seu nome completo"
+                  required
+                  className="h-12 bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-400 focus:ring-purple-400/20"
+                />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-slate-200">E-mail</Label>
                 <Input
                   id="email"
-                  name="email"
                   type="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="seu@email.com"
                   required
                   className="h-12 bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-400 focus:ring-purple-400/20"
@@ -157,11 +122,10 @@ const Register = () => {
                 <div className="relative">
                   <Input
                     id="password"
-                    name="password"
                     type={showPassword ? "text" : "password"}
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    placeholder="Mínimo 6 caracteres"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Sua senha"
                     required
                     className="h-12 pr-10 bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-400 focus:ring-purple-400/20"
                   />
@@ -180,10 +144,9 @@ const Register = () => {
                 <div className="relative">
                   <Input
                     id="confirmPassword"
-                    name="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Confirme sua senha"
                     required
                     className="h-12 pr-10 bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-400 focus:ring-purple-400/20"
@@ -203,7 +166,7 @@ const Register = () => {
                 className="w-full h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-semibold border-0 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300"
                 disabled={isLoading}
               >
-                {isLoading ? "Criando conta..." : "Criar Conta Gratuita"}
+                {isLoading ? "Criando conta..." : "Criar Conta"}
               </Button>
             </form>
 
