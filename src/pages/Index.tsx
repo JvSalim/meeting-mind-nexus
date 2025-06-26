@@ -1,14 +1,18 @@
 
-'use client'
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Brain, Mic, MessageSquare, FileText, Zap, Shield, Users, Clock } from 'lucide-react'
+import { Brain, Mic, MessageSquare, FileText, Zap, Shield, Users, Clock, Upload, Bot, BarChart3 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 export default function Index() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 text-white">
+      {/* Animated background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" />
+      </div>
+
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="container mx-auto px-4 py-20">
@@ -31,19 +35,19 @@ export default function Index() {
             
             <p className="text-xl md:text-2xl text-slate-300 mb-8 leading-relaxed">
               Automatize a transcrição e análise de suas reuniões com IA avançada. 
-              Faça perguntas sobre qualquer reunião e obtenha respostas instantâneas.
+              Faça upload de áudios e obtenha respostas instantâneas sobre o conteúdo.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link to="/register">
-                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300">
+                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 border-2 border-purple-400/50">
                   Começar Agora
                   <Zap className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
               
               <Link to="/login">
-                <Button variant="outline" size="lg" className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg font-semibold backdrop-blur-sm">
+                <Button variant="outline" size="lg" className="border-2 border-white/50 text-white hover:bg-white/20 hover:border-white/70 px-8 py-4 text-lg font-semibold backdrop-blur-sm bg-white/10">
                   Entrar
                 </Button>
               </Link>
@@ -65,24 +69,24 @@ export default function Index() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                icon: <Mic className="w-8 h-8" />,
-                title: "Transcrição Automática",
-                description: "Converta áudio em texto com precisão excepcional usando IA avançada"
+                icon: <Upload className="w-8 h-8" />,
+                title: "Upload de Áudio",
+                description: "Faça upload de gravações de reuniões em diversos formatos e obtenha transcrições precisas"
               },
               {
                 icon: <MessageSquare className="w-8 h-8" />,
                 title: "Chat Inteligente",
-                description: "Faça perguntas sobre suas reuniões e obtenha respostas instantâneas"
+                description: "Faça perguntas sobre suas reuniões e obtenha respostas instantâneas baseadas no conteúdo"
               },
               {
                 icon: <FileText className="w-8 h-8" />,
                 title: "Resumos Automáticos",
-                description: "Gere resumos detalhados e pontos-chave de cada reunião"
+                description: "Gere resumos detalhados e pontos-chave de cada reunião automaticamente"
               },
               {
-                icon: <Users className="w-8 h-8" />,
-                title: "Colaboração em Equipe",
-                description: "Compartilhe transcrições e insights com sua equipe facilmente"
+                icon: <Bot className="w-8 h-8" />,
+                title: "IA Conversacional",
+                description: "Interaja naturalmente com o conteúdo das suas reuniões através de perguntas"
               },
               {
                 icon: <Shield className="w-8 h-8" />,
@@ -90,9 +94,9 @@ export default function Index() {
                 description: "Seus dados são protegidos com criptografia de ponta a ponta"
               },
               {
-                icon: <Clock className="w-8 h-8" />,
-                title: "Economia de Tempo",
-                description: "Economize horas na documentação e revisão de reuniões"
+                icon: <BarChart3 className="w-8 h-8" />,
+                title: "Analytics Avançado",
+                description: "Obtenha insights sobre padrões e tendências das suas reuniões"
               }
             ].map((feature, index) => (
               <Card key={index} className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all duration-300">
@@ -129,6 +133,58 @@ export default function Index() {
           </Link>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="py-16 px-4 sm:px-6 lg:px-8 border-t border-slate-800/50">
+        <div className="container mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div className="col-span-2">
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+                  <Brain className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                  MeetingAI
+                </span>
+              </div>
+              <p className="text-slate-400 mb-4 max-w-md">
+                Transformando reuniões em insights valiosos através da inteligência artificial avançada.
+              </p>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold text-white mb-4">Produto</h3>
+              <ul className="space-y-2 text-slate-400">
+                <li><a href="#" className="hover:text-white transition-colors">Funcionalidades</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Preços</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">API</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Integrações</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold text-white mb-4">Suporte</h3>
+              <ul className="space-y-2 text-slate-400">
+                <li><a href="#" className="hover:text-white transition-colors">Documentação</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Tutoriais</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contato</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Status</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-slate-400 text-sm">
+              © 2024 MeetingAI. Todos os direitos reservados.
+            </p>
+            <div className="flex space-x-6 text-sm text-slate-400 mt-4 md:mt-0">
+              <a href="#" className="hover:text-white transition-colors">Privacidade</a>
+              <a href="#" className="hover:text-white transition-colors">Termos</a>
+              <a href="#" className="hover:text-white transition-colors">Cookies</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
