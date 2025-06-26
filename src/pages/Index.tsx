@@ -1,10 +1,29 @@
 
+import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Brain, Mic, MessageSquare, FileText, Zap, Shield, Users, Clock, Upload, Bot, BarChart3 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 export default function Index() {
+  const [currentText, setCurrentText] = useState(0)
+  
+  const dynamicTexts = [
+    "Transcrição Inteligente",
+    "Análise de Reuniões", 
+    "Respostas Instantâneas",
+    "Produtividade Empresarial",
+    "Automação Completa"
+  ]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentText((prev) => (prev + 1) % dynamicTexts.length)
+    }, 3000)
+    
+    return () => clearInterval(interval)
+  }, [])
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 text-white">
       {/* Animated background */}
@@ -27,10 +46,11 @@ export default function Index() {
             </div>
             
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              Transcrição Inteligente de 
-              <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                {' '}Reuniões
+              <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent transition-all duration-500">
+                {dynamicTexts[currentText]}
               </span>
+              <br />
+              <span className="text-slate-200">com IA Avançada</span>
             </h1>
             
             <p className="text-xl md:text-2xl text-slate-300 mb-8 leading-relaxed">
@@ -47,7 +67,7 @@ export default function Index() {
               </Link>
               
               <Link to="/login">
-                <Button variant="outline" size="lg" className="border-2 border-white/50 text-white hover:bg-white/20 hover:border-white/70 px-8 py-4 text-lg font-semibold backdrop-blur-sm bg-white/10">
+                <Button variant="outline" size="lg" className="border-2 border-white/70 text-white hover:bg-white/20 hover:border-white/90 px-8 py-4 text-lg font-semibold backdrop-blur-sm bg-white/10 hover:text-white">
                   Entrar
                 </Button>
               </Link>
