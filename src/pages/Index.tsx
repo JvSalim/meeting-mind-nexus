@@ -9,11 +9,7 @@ export default function Index() {
   const [currentText, setCurrentText] = useState(0)
   
   const dynamicTexts = [
-    "Transcrição Inteligente",
-    "Análise de Reuniões", 
-    "Respostas Instantâneas",
-    "Produtividade Empresarial",
-    "Automação Completa"
+    "Produtividade Empresarial"
   ]
 
   useEffect(() => {
@@ -148,14 +144,14 @@ export default function Index() {
           </p>
           <Link to="/register">
             <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300">
-              Começar Gratuitamente
+              Começar Agora
             </Button>
           </Link>
         </div>
       </div>
 
       {/* Footer */}
-      <footer className="py-16 px-4 sm:px-6 lg:px-8 border-t border-slate-800/50">
+      <footer className="py-16 px-4 sm:px-6 lg:px-8 border-t border-slate-800/50 bg-slate-950/80">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div className="col-span-2">

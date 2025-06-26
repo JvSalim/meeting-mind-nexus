@@ -53,7 +53,6 @@ export default function Dashboard() {
       date: "2024-01-15",
       duration: "1h 30min",
       participants: 5,
-      status: "Disponível",
       keyTopics: ["orçamento", "estratégia", "timeline"]
     },
     {
@@ -62,7 +61,6 @@ export default function Dashboard() {
       date: "2024-01-12",
       duration: "45min",
       participants: 8,
-      status: "Em análise",
       keyTopics: ["bugs", "features", "deploy"]
     },
     {
@@ -71,7 +69,6 @@ export default function Dashboard() {
       date: "2024-01-10",
       duration: "2h 15min",
       participants: 12,
-      status: "Completo",
       keyTopics: ["proposta", "cronograma", "aprovação"]
     }
   ]
@@ -172,7 +169,7 @@ export default function Dashboard() {
                 <div>
                   <h1 className="text-2xl font-bold text-white">Dashboard</h1>
                   <p className="text-slate-400 text-sm">
-                    Bem-vindo de volta, <span className="text-purple-400">{user.name?.split(' ')[0]}</span>!
+                    Bem-vindo de volta, <span className="text-purple-400">{user.name}</span>!
                   </p>
                 </div>
               </div>
@@ -182,21 +179,7 @@ export default function Dashboard() {
 
         <div className="p-6">
           {/* Quick Actions */}
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
-            <Card className="bg-gradient-to-r from-purple-600 to-blue-600 border-0 text-white cursor-pointer hover:from-purple-700 hover:to-blue-700 transition-all duration-300">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                    <Upload className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Upload de Áudio</h3>
-                    <p className="text-purple-100">Enviar nova gravação</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
             <Card className="bg-gradient-to-r from-green-600 to-emerald-600 border-0 text-white cursor-pointer hover:from-green-700 hover:to-emerald-700 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center space-x-4">
@@ -243,7 +226,7 @@ export default function Dashboard() {
                   placeholder="Buscar por título ou conteúdo..." 
                   className="bg-white/10 border-white/20 text-white placeholder-slate-400"
                 />
-                <Button className="bg-purple-600 hover:bg-purple-700">
+                <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300">
                   <Search className="w-4 h-4 mr-2" />
                   Buscar
                 </Button>
@@ -264,7 +247,11 @@ export default function Dashboard() {
                     Suas análises mais recentes
                   </CardDescription>
                 </div>
-                <Button variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/10">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 border-0"
+                >
                   <Filter className="w-4 h-4 mr-2" />
                   Filtrar
                 </Button>
@@ -303,16 +290,6 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <div className="flex items-center space-x-3 ml-4">
-                      <Badge 
-                        variant="outline"
-                        className={`${
-                          meeting.status === 'Completo' ? 'bg-green-600/20 text-green-300 border-green-500/30' :
-                          meeting.status === 'Em análise' ? 'bg-yellow-600/20 text-yellow-300 border-yellow-500/30' :
-                          'bg-blue-600/20 text-blue-300 border-blue-500/30'
-                        }`}
-                      >
-                        {meeting.status}
-                      </Badge>
                       <Button 
                         variant="ghost" 
                         size="sm"
@@ -327,7 +304,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          {/* Usage Stats Sidebar */}
+          {/* Usage Stats */}
           <Card className="bg-black/20 border-white/10 backdrop-blur-sm mt-8">
             <CardHeader>
               <CardTitle className="text-white text-lg">Estatísticas</CardTitle>

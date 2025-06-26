@@ -13,6 +13,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [companyToken, setCompanyToken] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,15 +36,16 @@ const Register = () => {
 
     // Simular registro
     setTimeout(() => {
-      if (name && email && password) {
+      if (name && email && password && companyToken) {
         localStorage.setItem("user", JSON.stringify({ 
           email, 
           name,
-          company: "Nova Empresa"
+          company: "Empresa Pendente",
+          companyToken
         }));
         toast({
           title: "Conta criada com sucesso!",
-          description: "Redirecionando para o dashboard...",
+          description: "Aguardando aprovação da empresa...",
         });
         navigate("/dashboard");
       } else {
@@ -112,6 +114,19 @@ const Register = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="seu@email.com"
+                  required
+                  className="h-12 bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-400 focus:ring-purple-400/20"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="companyToken" className="text-slate-200">Token da Empresa</Label>
+                <Input
+                  id="companyToken"
+                  type="text"
+                  value={companyToken}
+                  onChange={(e) => setCompanyToken(e.target.value)}
+                  placeholder="Token fornecido pela empresa"
                   required
                   className="h-12 bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-400 focus:ring-purple-400/20"
                 />
