@@ -1,259 +1,167 @@
 
 'use client'
 
-import { useState, useRef } from 'react'
-import { Upload, File, X, Check, AlertCircle } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowLeft, Upload, FileAudio, CheckCircle } from 'lucide-react'
+import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-
-interface UploadFile {
-  id: string
-  file: File
-  progress: number
-  status: 'uploading' | 'completed' | 'error'
-}
+import { Button } from '@/components/ui/button'
 
 export default function UploadPage() {
-  const [files, setFiles] = useState<UploadFile[]>([])
-  const [isDragging, setIsDragging] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadComplete, setUploadComplete] = useState(false)
 
-  const acceptedFormats = ['.mp3', '.mp4', '.wav', '.m4a', '.mov', '.avi']
-
-  const handleFileSelect = (selectedFiles: FileList) => {
-    const newFiles: UploadFile[] = Array.from(selectedFiles).map(file => ({
-      id: Math.random().toString(36).substr(2, 9),
-      file,
-      progress: 0,
-      status: 'uploading' as const
-    }))
-
-    setFiles(prev => [...prev, ...newFiles])
-
-    // Simular upload
-    newFiles.forEach(uploadFile => {
-      simulateUpload(uploadFile.id)
-    })
-  }
-
-  const simulateUpload = (fileId: string) => {
-    const interval = setInterval(() => {
-      setFiles(prev => prev.map(file => {
-        if (file.id === fileId) {
-          const newProgress = Math.min(file.progress + Math.random() * 15, 100)
-          const newStatus = newProgress >= 100 ? 'completed' : 'uploading'
-          return { ...file, progress: newProgress, status: newStatus }
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      setIsUploading(true)
+      
+      // Simulate upload progress
+      let progress = 0
+      const interval = setInterval(() => {
+        progress += 10
+        setUploadProgress(progress)
+        
+        if (progress >= 100) {
+          clearInterval(interval)
+          setIsUploading(false)
+          setUploadComplete(true)
         }
-        return file
-      }))
-    }, 500)
-
-    setTimeout(() => {
-      clearInterval(interval)
-      setFiles(prev => prev.map(file => 
-        file.id === fileId ? { ...file, progress: 100, status: 'completed' } : file
-      ))
-    }, 3000 + Math.random() * 2000)
-  }
-
-  const removeFile = (fileId: string) => {
-    setFiles(prev => prev.filter(file => file.id !== fileId))
-  }
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(true)
-  }
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(false)
-  }
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(false)
-    
-    const droppedFiles = e.dataTransfer.files
-    if (droppedFiles.length > 0) {
-      handleFileSelect(droppedFiles)
+      }, 200)
     }
   }
-
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes'
-    const k = 1024
-    const sizes = ['Bytes', 'KB', 'MB', 'GB']
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-  }
-
-  const completedFiles = files.filter(f => f.status === 'completed').length
-  const totalFiles = files.length
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Upload de Arquivos</h1>
+          <Link href="/dashboard" className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4 transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+            Voltar ao Dashboard
+          </Link>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">Upload de Reunião</h1>
           <p className="text-slate-600">Envie arquivos de áudio ou vídeo para transcrição automática</p>
         </div>
 
         {/* Upload Area */}
-        <Card className="mb-6">
-          <CardContent className="p-6">
-            <div
-              className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                isDragging 
-                  ? 'border-blue-500 bg-blue-50' 
-                  : 'border-slate-300 hover:border-slate-400 hover:bg-slate-50'
-              }`}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-            >
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Upload className="w-8 h-8 text-blue-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                Arraste arquivos aqui ou clique para selecionar
-              </h3>
-              <p className="text-slate-600 mb-4">
-                Suporte para MP3, MP4, WAV, M4A, MOV, AVI
-              </p>
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Selecionar Arquivos
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                multiple
-                accept={acceptedFormats.join(',')}
-                onChange={(e) => e.target.files && handleFileSelect(e.target.files)}
-                className="hidden"
-              />
-            </div>
-
-            {/* Accepted Formats */}
-            <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-              <div className="flex items-start gap-2">
-                <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
-                <div>
-                  <p className="text-sm font-medium text-blue-900">Formatos aceitos:</p>
-                  <p className="text-sm text-blue-700">
-                    {acceptedFormats.join(', ')} • Tamanho máximo: 500MB por arquivo
+        <Card className="bg-white border-slate-200 shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-slate-900 flex items-center gap-2">
+              <Upload className="w-5 h-5 text-blue-600" />
+              Selecionar Arquivo
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {!uploadComplete ? (
+              <div className="space-y-6">
+                <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors">
+                  <FileAudio className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                    Arrastar e soltar ou clique para selecionar
+                  </h3>
+                  <p className="text-slate-600 mb-4">
+                    Formatos suportados: MP3, MP4, WAV, M4A, WEBM
                   </p>
+                  <input
+                    type="file"
+                    accept="audio/*,video/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    id="file-upload"
+                  />
+                  <label htmlFor="file-upload">
+                    <Button className="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer">
+                      Selecionar Arquivo
+                    </Button>
+                  </label>
+                </div>
+
+                {isUploading && (
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-sm text-slate-600">
+                      <span>Enviando arquivo...</span>
+                      <span>{uploadProgress}%</span>
+                    </div>
+                    <div className="w-full bg-slate-200 rounded-full h-2">
+                      <div
+                        className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${uploadProgress}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                  Upload Concluído!
+                </h3>
+                <p className="text-slate-600 mb-6">
+                  Seu arquivo foi enviado com sucesso e está sendo processado pela IA.
+                </p>
+                <div className="flex gap-4 justify-center">
+                  <Link href="/meetings">
+                    <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                      Ver Reuniões
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setUploadComplete(false)
+                      setUploadProgress(0)
+                    }}
+                    className="border-slate-300 text-slate-700 hover:bg-slate-50"
+                  >
+                    Enviar Outro
+                  </Button>
                 </div>
               </div>
-            </div>
+            )}
           </CardContent>
         </Card>
 
-        {/* Progress Overview */}
-        {files.length > 0 && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>Progresso do Upload</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-600">
-                  {completedFiles} de {totalFiles} arquivos processados
-                </span>
-                <span className="text-sm font-medium text-slate-900">
-                  {totalFiles > 0 ? Math.round((completedFiles / totalFiles) * 100) : 0}%
-                </span>
+        {/* Info Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+          <Card className="bg-white border-slate-200">
+            <CardContent className="p-6 text-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <FileAudio className="w-6 h-6 text-blue-600" />
               </div>
-              <div className="w-full bg-slate-200 rounded-full h-2">
-                <div 
-                  className="bg-blue-600 h-2 rounded-full transition-all duration-500"
-                  style={{ width: `${totalFiles > 0 ? (completedFiles / totalFiles) * 100 : 0}%` }}
-                ></div>
-              </div>
+              <h3 className="font-semibold text-slate-900 mb-2">Transcrição Automática</h3>
+              <p className="text-sm text-slate-600">
+                Powered by IA avançada para máxima precisão
+              </p>
             </CardContent>
           </Card>
-        )}
 
-        {/* File List */}
-        {files.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Arquivos em Processamento</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {files.map((uploadFile) => (
-                  <div key={uploadFile.id} className="flex items-center gap-4 p-4 bg-slate-50 rounded-lg">
-                    <div className="flex-shrink-0">
-                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <File className="w-5 h-5 text-blue-600" />
-                      </div>
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-sm font-medium text-slate-900 truncate">
-                          {uploadFile.file.name}
-                        </p>
-                        <div className="flex items-center gap-2">
-                          {uploadFile.status === 'completed' && (
-                            <Check className="w-4 h-4 text-green-600" />
-                          )}
-                          <button
-                            onClick={() => removeFile(uploadFile.id)}
-                            className="p-1 hover:bg-slate-200 rounded transition-colors"
-                          >
-                            <X className="w-4 h-4 text-slate-400" />
-                          </button>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-4">
-                        <div className="flex-1">
-                          <div className="w-full bg-slate-200 rounded-full h-1.5">
-                            <div 
-                              className={`h-1.5 rounded-full transition-all duration-300 ${
-                                uploadFile.status === 'completed' ? 'bg-green-500' : 'bg-blue-500'
-                              }`}
-                              style={{ width: `${uploadFile.progress}%` }}
-                            ></div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 text-xs text-slate-500">
-                          <span>{formatFileSize(uploadFile.file.size)}</span>
-                          <span>•</span>
-                          <span>
-                            {uploadFile.status === 'completed' ? 'Concluído' : 
-                             uploadFile.status === 'uploading' ? 'Enviando...' : 'Erro'}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+          <Card className="bg-white border-slate-200">
+            <CardContent className="p-6 text-center">
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-6 h-6 text-green-600" />
               </div>
-
-              {completedFiles > 0 && (
-                <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-green-600" />
-                    <div>
-                      <p className="font-medium text-green-900">
-                        {completedFiles} arquivo{completedFiles > 1 ? 's' : ''} enviado{completedFiles > 1 ? 's' : ''} com sucesso!
-                      </p>
-                      <p className="text-sm text-green-700">
-                        A transcrição será processada automaticamente. Você receberá uma notificação quando estiver pronta.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
+              <h3 className="font-semibold text-slate-900 mb-2">Processamento Rápido</h3>
+              <p className="text-sm text-slate-600">
+                Resultados em poucos minutos
+              </p>
             </CardContent>
           </Card>
-        )}
+
+          <Card className="bg-white border-slate-200">
+            <CardContent className="p-6 text-center">
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Upload className="w-6 h-6 text-purple-600" />
+              </div>
+              <h3 className="font-semibold text-slate-900 mb-2">Múltiplos Formatos</h3>
+              <p className="text-sm text-slate-600">
+                Suporte a áudio e vídeo
+              </p>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )
