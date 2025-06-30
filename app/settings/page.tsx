@@ -2,201 +2,151 @@
 'use client'
 
 import { useState } from 'react'
-import { User, Globe, Palette, Moon, Sun, RotateCcw, Save, Check } from 'lucide-react'
+import { ArrowLeft, User, Globe, Palette, RotateCcw, Save } from 'lucide-react'
+import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-
-interface Settings {
-  name: string
-  email: string
-  language: string
-  theme: 'light' | 'dark' | 'auto'
-  colorScheme: string
-  notifications: {
-    email: boolean
-    push: boolean
-    transcription: boolean
-  }
-}
-
-const initialSettings: Settings = {
-  name: 'João Silva',
-  email: 'joao.silva@empresa.com',
-  language: 'pt-BR',
-  theme: 'light',
-  colorScheme: 'blue',
-  notifications: {
-    email: true,
-    push: true,
-    transcription: true
-  }
-}
-
-const languages = [
-  { code: 'pt-BR', name: 'Português (Brasil)' },
-  { code: 'en-US', name: 'English (US)' },
-  { code: 'es-ES', name: 'Español' }
-]
-
-const colorSchemes = [
-  { id: 'blue', name: 'Azul', color: 'bg-blue-600' },
-  { id: 'purple', name: 'Roxo', color: 'bg-purple-600' },
-  { id: 'green', name: 'Verde', color: 'bg-green-600' },
-  { id: 'orange', name: 'Laranja', color: 'bg-orange-600' },
-  { id: 'red', name: 'Vermelho', color: 'bg-red-600' }
-]
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
 
 export default function SettingsPage() {
-  const [settings, setSettings] = useState<Settings>(initialSettings)
-  const [saved, setSaved] = useState(false)
+  const [userName, setUserName] = useState('João Silva')
+  const [userEmail, setUserEmail] = useState('joao@meetingmind.com')
+  const [language, setLanguage] = useState('pt')
+  const [darkMode, setDarkMode] = useState(true)
+  const [colorScheme, setColorScheme] = useState('purple')
+  const [notifications, setNotifications] = useState(true)
 
   const handleSave = () => {
-    // Simulate saving
-    console.log('Saving settings:', settings)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+    // Simular salvamento
+    console.log('Configurações salvas:', {
+      userName,
+      userEmail,
+      language,
+      darkMode,
+      colorScheme,
+      notifications
+    })
   }
 
   const handleReset = () => {
-    setSettings(initialSettings)
+    setUserName('João Silva')
+    setUserEmail('joao@meetingmind.com')
+    setLanguage('pt')
+    setDarkMode(true)
+    setColorScheme('purple')
+    setNotifications(true)
   }
 
-  const updateSettings = (key: keyof Settings, value: any) => {
-    setSettings(prev => ({ ...prev, [key]: value }))
-  }
-
-  const updateNotifications = (key: keyof Settings['notifications'], value: boolean) => {
-    setSettings(prev => ({
-      ...prev,
-      notifications: { ...prev.notifications, [key]: value }
-    }))
-  }
+  const colorSchemes = [
+    { value: 'purple', label: 'Roxo & Azul', colors: 'from-purple-500 to-blue-500' },
+    { value: 'green', label: 'Verde & Esmeralda', colors: 'from-green-500 to-emerald-500' },
+    { value: 'orange', label: 'Laranja & Vermelho', colors: 'from-orange-500 to-red-500' },
+    { value: 'blue', label: 'Azul & Ciano', colors: 'from-blue-500 to-cyan-500' }
+  ]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
+          <Link href="/dashboard" className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4 transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+            Voltar ao Dashboard
+          </Link>
           <h1 className="text-3xl font-bold text-slate-900 mb-2">Configurações</h1>
-          <p className="text-slate-600">Personalize sua experiência no MeetingMind Nexus</p>
+          <p className="text-slate-600">Personalize sua experiência no MeetingMind</p>
         </div>
 
-        <div className="space-y-6">
-          {/* Profile Settings */}
-          <Card>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Perfil do Usuário */}
+          <Card className="bg-white border-slate-200 shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="w-5 h-5" />
+              <CardTitle className="text-slate-900 flex items-center gap-2">
+                <User className="w-5 h-5 text-blue-600" />
                 Perfil do Usuário
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Nome Completo
-                  </label>
-                  <input
-                    type="text"
-                    value={settings.name}
-                    onChange={(e) => updateSettings('name', e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    value={settings.email}
-                    onChange={(e) => updateSettings('email', e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
+              <div>
+                <Label htmlFor="userName" className="text-slate-700">Nome</Label>
+                <Input
+                  id="userName"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="userEmail" className="text-slate-700">Email</Label>
+                <Input
+                  id="userEmail"
+                  type="email"
+                  value={userEmail}
+                  onChange={(e) => setUserEmail(e.target.value)}
+                  className="mt-1"
+                />
               </div>
             </CardContent>
           </Card>
 
-          {/* Language & Region */}
-          <Card>
+          {/* Idioma */}
+          <Card className="bg-white border-slate-200 shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Globe className="w-5 h-5" />
-                Idioma e Região
+              <CardTitle className="text-slate-900 flex items-center gap-2">
+                <Globe className="w-5 h-5 text-green-600" />
+                Idioma
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="max-w-md">
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Idioma da Interface
-                </label>
-                <select
-                  value={settings.language}
-                  onChange={(e) => updateSettings('language', e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  {languages.map((lang) => (
-                    <option key={lang.code} value={lang.code}>
-                      {lang.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <Select value={language} onValueChange={setLanguage}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o idioma" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pt">Português (BR)</SelectItem>
+                  <SelectItem value="en">English (US)</SelectItem>
+                  <SelectItem value="es">Español</SelectItem>
+                </SelectContent>
+              </Select>
             </CardContent>
           </Card>
 
-          {/* Theme Settings */}
-          <Card>
+          {/* Aparência */}
+          <Card className="bg-white border-slate-200 shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Palette className="w-5 h-5" />
-                Tema e Aparência
+              <CardTitle className="text-slate-900 flex items-center gap-2">
+                <Palette className="w-5 h-5 text-purple-600" />
+                Aparência
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-3">
-                  Modo de Tema
-                </label>
-                <div className="flex gap-3">
-                  {[
-                    { value: 'light', label: 'Claro', icon: Sun },
-                    { value: 'dark', label: 'Escuro', icon: Moon },
-                    { value: 'auto', label: 'Automático', icon: RotateCcw }
-                  ].map(({ value, label, icon: Icon }) => (
-                    <button
-                      key={value}
-                      onClick={() => updateSettings('theme', value)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
-                        settings.theme === value
-                          ? 'bg-blue-50 border-blue-300 text-blue-700'
-                          : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                      }`}
-                    >
-                      <Icon className="w-4 h-4" />
-                      {label}
-                    </button>
-                  ))}
-                </div>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="darkMode" className="text-slate-700">Modo Escuro</Label>
+                <Switch
+                  id="darkMode"
+                  checked={darkMode}
+                  onCheckedChange={setDarkMode}
+                />
               </div>
-
+              
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-3">
-                  Esquema de Cores
-                </label>
-                <div className="flex gap-3">
+                <Label className="text-slate-700 mb-2 block">Esquema de Cores</Label>
+                <div className="grid grid-cols-2 gap-2">
                   {colorSchemes.map((scheme) => (
                     <button
-                      key={scheme.id}
-                      onClick={() => updateSettings('colorScheme', scheme.id)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
-                        settings.colorScheme === scheme.id
-                          ? 'bg-blue-50 border-blue-300 text-blue-700'
-                          : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                      key={scheme.value}
+                      onClick={() => setColorScheme(scheme.value)}
+                      className={`p-3 rounded-lg border-2 transition-all ${
+                        colorScheme === scheme.value 
+                          ? 'border-blue-500 bg-blue-50' 
+                          : 'border-slate-200 hover:border-slate-300'
                       }`}
                     >
-                      <div className={`w-4 h-4 rounded-full ${scheme.color}`}></div>
-                      {scheme.name}
+                      <div className={`w-full h-4 rounded bg-gradient-to-r ${scheme.colors} mb-2`} />
+                      <span className="text-sm text-slate-700">{scheme.label}</span>
                     </button>
                   ))}
                 </div>
@@ -204,79 +154,44 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          {/* Notifications */}
-          <Card>
+          {/* Notificações */}
+          <Card className="bg-white border-slate-200 shadow-lg">
             <CardHeader>
-              <CardTitle>Notificações</CardTitle>
+              <CardTitle className="text-slate-900">Notificações</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {[
-                {
-                  key: 'email' as const,
-                  label: 'Notificações por Email',
-                  description: 'Receber atualizações sobre transcrições e resumos por email'
-                },
-                {
-                  key: 'push' as const,
-                  label: 'Notificações Push',
-                  description: 'Receber notificações push no navegador'
-                },
-                {
-                  key: 'transcription' as const,
-                  label: 'Alertas de Transcrição',
-                  description: 'Ser notificado quando uma transcrição for concluída'
-                }
-              ].map((notification) => (
-                <div key={notification.key} className="flex items-start justify-between p-4 bg-slate-50 rounded-lg">
-                  <div className="flex-1">
-                    <h3 className="font-medium text-slate-900">{notification.label}</h3>
-                    <p className="text-sm text-slate-600 mt-1">{notification.description}</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer ml-4">
-                    <input
-                      type="checkbox"
-                      checked={settings.notifications[notification.key]}
-                      onChange={(e) => updateNotifications(notification.key, e.target.checked)}
-                      className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                  </label>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label htmlFor="notifications" className="text-slate-700">Receber Notificações</Label>
+                  <p className="text-sm text-slate-500">Seja notificado sobre novas transcrições</p>
                 </div>
-              ))}
+                <Switch
+                  id="notifications"
+                  checked={notifications}
+                  onCheckedChange={setNotifications}
+                />
+              </div>
             </CardContent>
           </Card>
+        </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center justify-between p-6 bg-white rounded-lg border border-slate-200">
-            <button
-              onClick={handleReset}
-              className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition-colors"
-            >
-              <RotateCcw className="w-4 h-4" />
-              Restaurar Padrões
-            </button>
-
-            <button
-              onClick={handleSave}
-              className={`flex items-center gap-2 px-6 py-2 rounded-lg transition-colors ${
-                saved
-                  ? 'bg-green-600 text-white'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}
-            >
-              {saved ? (
-                <>
-                  <Check className="w-4 h-4" />
-                  Salvo!
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4" />
-                  Salvar Configurações
-                </>
-              )}
-            </button>
-          </div>
+        {/* Botões de Ação */}
+        <div className="flex gap-4 mt-8 justify-end">
+          <Button
+            variant="outline"
+            onClick={handleReset}
+            className="border-slate-300 text-slate-700 hover:bg-slate-50"
+          >
+            <RotateCcw className="w-4 h-4 mr-2" />
+            Redefinir
+          </Button>
+          <Button
+            onClick={handleSave}
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            <Save className="w-4 h-4 mr-2" />
+            Salvar Configurações
+          </Button>
         </div>
       </div>
     </div>

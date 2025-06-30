@@ -18,14 +18,11 @@ import {
   X,
   Brain,
   BarChart3,
-  Download,
   Eye,
-  Bell,
   Clock,
   Users,
   Bot,
   Sparkles,
-  Filter,
   Upload
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -33,7 +30,6 @@ import Link from "next/link";
 
 const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -100,13 +96,13 @@ const Dashboard = () => {
   ];
 
   useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (!userData) {
-      router.push("/login");
-      return;
-    }
-    setUser(JSON.parse(userData));
-  }, [router]);
+    // Mock user data for development
+    setUser({
+      name: "João Silva",
+      company: "MeetingMind Corp",
+      email: "joao@meetingmind.com"
+    });
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -156,7 +152,7 @@ const Dashboard = () => {
             <Brain className="w-5 h-5 text-white" />
           </div>
           <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-            MeetingAI
+            MeetingMind
           </span>
         </div>
         <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(false)} className="lg:hidden text-slate-400 hover:text-white">
@@ -170,11 +166,7 @@ const Dashboard = () => {
             <Link key={item.id} href={item.href}>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 ${
-                  activeTab === item.id 
-                    ? 'bg-gradient-to-r from-purple-600/20 to-blue-600/20 text-purple-300 border border-purple-500/30 shadow-lg' 
-                    : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                }`}
+                className="w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 text-slate-300 hover:text-white hover:bg-slate-800/50"
               >
                 <item.icon className="w-5 h-5" />
                 <span className="font-medium">{item.label}</span>
