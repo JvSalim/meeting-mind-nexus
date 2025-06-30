@@ -25,9 +25,11 @@ import {
   Users,
   Bot,
   Sparkles,
-  Filter
+  Filter,
+  Upload
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
@@ -68,18 +70,32 @@ const Dashboard = () => {
 
   const quickActions = [
     {
+      title: "Upload",
+      description: "Enviar arquivo de reunião",
+      icon: Upload,
+      color: "from-blue-600 to-cyan-600",
+      href: "/upload"
+    },
+    {
       title: "Buscar IA",
       description: "Perguntas inteligentes",
       icon: Bot,
       color: "from-green-600 to-emerald-600",
-      action: () => setActiveTab("search")
+      href: "/chat"
     },
     {
       title: "Relatórios",
       description: "Analytics detalhados",
       icon: BarChart3,
       color: "from-orange-600 to-red-600",
-      action: () => setActiveTab("analytics")
+      href: "/analytics"
+    },
+    {
+      title: "Reuniões",
+      description: "Ver todas as reuniões",
+      icon: Calendar,
+      color: "from-purple-600 to-pink-600",
+      href: "/meetings"
     }
   ];
 
@@ -123,12 +139,13 @@ const Dashboard = () => {
   };
 
   const menuItems = [
-    { id: "dashboard", label: "Visão Geral", icon: BarChart3 },
-    { id: "meetings", label: "Reuniões", icon: Calendar },
-    { id: "transcriptions", label: "Transcrições", icon: FileText },
-    { id: "search", label: "Busca IA", icon: MessageSquare },
-    { id: "analytics", label: "Analytics", icon: TrendingUp },
-    { id: "settings", label: "Configurações", icon: Settings },
+    { id: "dashboard", label: "Visão Geral", icon: BarChart3, href: "/dashboard" },
+    { id: "meetings", label: "Reuniões", icon: Calendar, href: "/meetings" },
+    { id: "upload", label: "Upload", icon: Upload, href: "/upload" },
+    { id: "transcriptions", label: "Transcrições", icon: FileText, href: "/meetings" },
+    { id: "search", label: "Busca IA", icon: MessageSquare, href: "/chat" },
+    { id: "analytics", label: "Analytics", icon: TrendingUp, href: "/analytics" },
+    { id: "settings", label: "Configurações", icon: Settings, href: "/settings" },
   ];
 
   const Sidebar = () => (
@@ -150,21 +167,19 @@ const Dashboard = () => {
       <nav className="p-6">
         <div className="space-y-2">
           {menuItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => {
-                setActiveTab(item.id);
-                setSidebarOpen(false);
-              }}
-              className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 ${
-                activeTab === item.id 
-                  ? 'bg-gradient-to-r from-purple-600/20 to-blue-600/20 text-purple-300 border border-purple-500/30 shadow-lg' 
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-              }`}
-            >
-              <item.icon className="w-5 h-5" />
-              <span className="font-medium">{item.label}</span>
-            </button>
+            <Link key={item.id} href={item.href}>
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 ${
+                  activeTab === item.id 
+                    ? 'bg-gradient-to-r from-purple-600/20 to-blue-600/20 text-purple-300 border border-purple-500/30 shadow-lg' 
+                    : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
+                }`}
+              >
+                <item.icon className="w-5 h-5" />
+                <span className="font-medium">{item.label}</span>
+              </button>
+            </Link>
           ))}
         </div>
       </nav>
@@ -223,9 +238,7 @@ const Dashboard = () => {
                 <Menu className="w-4 h-4" />
               </Button>
               <div>
-                <h1 className="text-2xl font-bold text-white">
-                  {menuItems.find(item => item.id === activeTab)?.label || 'Dashboard'}
-                </h1>
+                <h1 className="text-2xl font-bold text-white">Dashboard</h1>
                 <p className="text-slate-400">
                   Bem-vindo de volta, <span className="text-purple-400 font-medium">{user.name}</span>!
                 </p>
@@ -233,14 +246,16 @@ const Dashboard = () => {
             </div>
             
             <div className="flex items-center space-x-4">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="bg-slate-800/50 border-slate-700/50 text-slate-300 hover:bg-slate-700/50"
-              >
-                <Bell className="w-4 h-4 mr-2" />
-                Notificações
-              </Button>
+              <Link href="/settings">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="bg-slate-800/50 border-slate-700/50 text-slate-300 hover:bg-slate-700/50"
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  Configurações
+                </Button>
+              </Link>
             </div>
           </div>
         </header>
@@ -259,19 +274,19 @@ const Dashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {quickActions.map((action, index) => (
-                    <Button 
-                      key={index}
-                      onClick={action.action}
-                      className={`h-auto p-6 bg-gradient-to-r ${action.color} hover:scale-105 text-white border-0 transition-all duration-200 group`}
-                    >
-                      <div className="text-center">
-                        <action.icon className="w-8 h-8 mx-auto mb-3 group-hover:scale-110 transition-transform" />
-                        <div className="font-semibold text-lg">{action.title}</div>
-                        <div className="text-sm opacity-90">{action.description}</div>
-                      </div>
-                    </Button>
+                    <Link key={index} href={action.href}>
+                      <Button 
+                        className={`h-auto p-6 bg-gradient-to-r ${action.color} hover:scale-105 text-white border-0 transition-all duration-200 group w-full`}
+                      >
+                        <div className="text-center">
+                          <action.icon className="w-8 h-8 mx-auto mb-3 group-hover:scale-110 transition-transform" />
+                          <div className="font-semibold text-lg">{action.title}</div>
+                          <div className="text-sm opacity-90">{action.description}</div>
+                        </div>
+                      </Button>
+                    </Link>
                   ))}
                 </div>
               </CardContent>
@@ -317,78 +332,71 @@ const Dashboard = () => {
                     Reuniões Recentes
                   </CardTitle>
                   <div className="flex space-x-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 border-0"
-                    >
-                      <Filter className="w-4 h-4 mr-2" />
-                      Filtrar
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 border-0"
-                    >
-                      <Eye className="w-4 h-4 mr-2" />
-                      Ver Todas
-                    </Button>
+                    <Link href="/meetings">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 border-0"
+                      >
+                        <Eye className="w-4 h-4 mr-2" />
+                        Ver Todas
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {recentMeetings.map((meeting) => (
-                    <div 
-                      key={meeting.id} 
-                      className="flex items-center justify-between p-4 border border-slate-700/50 rounded-lg hover:bg-slate-700/30 transition-all duration-200 group"
-                    >
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <Calendar className="w-5 h-5 text-purple-400" />
-                          <h3 className="font-semibold text-white group-hover:text-purple-300 transition-colors">
-                            {meeting.title}
-                          </h3>
+                    <Link key={meeting.id} href={`/meetings/${meeting.id}`}>
+                      <div className="flex items-center justify-between p-4 border border-slate-700/50 rounded-lg hover:bg-slate-700/30 transition-all duration-200 group cursor-pointer">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <Calendar className="w-5 h-5 text-purple-400" />
+                            <h3 className="font-semibold text-white group-hover:text-purple-300 transition-colors">
+                              {meeting.title}
+                            </h3>
+                          </div>
+                          
+                          <div className="flex items-center space-x-4 mb-3 text-sm text-slate-400">
+                            <span className="flex items-center">
+                              <Clock className="w-4 h-4 mr-1" />
+                              {new Date(meeting.date).toLocaleDateString('pt-BR')}
+                            </span>
+                            <span className="flex items-center">
+                              <Clock className="w-4 h-4 mr-1" />
+                              {meeting.duration}
+                            </span>
+                            <span className="flex items-center">
+                              <Users className="w-4 h-4 mr-1" />
+                              {meeting.participants} participantes
+                            </span>
+                          </div>
+                          
+                          <div className="flex flex-wrap gap-2">
+                            {meeting.keyTopics.map((topic, idx) => (
+                              <Badge 
+                                key={idx} 
+                                variant="outline" 
+                                className="text-xs bg-purple-600/10 text-purple-300 border-purple-500/30"
+                              >
+                                {topic}
+                              </Badge>
+                            ))}
+                          </div>
                         </div>
                         
-                        <div className="flex items-center space-x-4 mb-3 text-sm text-slate-400">
-                          <span className="flex items-center">
-                            <Clock className="w-4 h-4 mr-1" />
-                            {new Date(meeting.date).toLocaleDateString('pt-BR')}
-                          </span>
-                          <span className="flex items-center">
-                            <Clock className="w-4 h-4 mr-1" />
-                            {meeting.duration}
-                          </span>
-                          <span className="flex items-center">
-                            <Users className="w-4 h-4 mr-1" />
-                            {meeting.participants} participantes
-                          </span>
-                        </div>
-                        
-                        <div className="flex flex-wrap gap-2">
-                          {meeting.keyTopics.map((topic, idx) => (
-                            <Badge 
-                              key={idx} 
-                              variant="outline" 
-                              className="text-xs bg-purple-600/10 text-purple-300 border-purple-500/30"
-                            >
-                              {topic}
-                            </Badge>
-                          ))}
+                        <div className="flex items-center space-x-3 ml-4">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className="text-purple-400 hover:text-purple-300 hover:bg-purple-600/10"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
                         </div>
                       </div>
-                      
-                      <div className="flex items-center space-x-3 ml-4">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          className="text-purple-400 hover:text-purple-300 hover:bg-purple-600/10"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </CardContent>
