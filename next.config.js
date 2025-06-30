@@ -1,10 +1,16 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
+  typescript: {
+    ignoreBuildErrors: false,
   },
-  transpilePackages: ['lucide-react']
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
+  transpilePackages: ['lucide-react'],
+  images: {
+    domains: ['localhost'],
+  },
 }
 
 module.exports = nextConfig
