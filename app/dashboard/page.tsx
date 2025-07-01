@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState, useEffect } from "react";
@@ -31,7 +32,7 @@ import {
   Upload
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
@@ -40,6 +41,7 @@ const Dashboard = () => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   // Mock data
   const recentMeetings = [
@@ -75,7 +77,7 @@ const Dashboard = () => {
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (!userData) {
-      router.push("/auth/login");
+      router.push("/login");
       return;
     }
     setUser(JSON.parse(userData));
@@ -162,17 +164,24 @@ const Dashboard = () => {
       
       <nav className="p-6">
         <div className="space-y-2">
-          {menuItems.map((item) => (
-            <Link key={item.id} href={item.href}>
-              <button
-                onClick={() => setSidebarOpen(false)}
-                className="w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 text-slate-300 hover:text-white hover:bg-slate-800/50 hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-blue-600/20 hover:border hover:border-purple-500/30 hover:shadow-lg"
-              >
-                <item.icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
-              </button>
-            </Link>
-          ))}
+          {menuItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link key={item.id} href={item.href}>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-purple-600/20 to-blue-600/20 text-purple-300 border border-purple-500/30 shadow-lg' 
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800/50 hover:bg-gradient-to-r hover:from-purple-600/10 hover:to-blue-600/10'
+                  }`}
+                >
+                  <item.icon className="w-5 h-5" />
+                  <span className="font-medium">{item.label}</span>
+                </button>
+              </Link>
+            );
+          })}
         </div>
       </nav>
       

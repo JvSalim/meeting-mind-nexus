@@ -11,8 +11,10 @@ export default function HomePage() {
   
   const dynamicTexts = [
     "Produtividade Empresarial",
-    "Colaboração Remota",
-    "Gestão Inteligente"
+    "Colaboração Remota", 
+    "Gestão Inteligente",
+    "Automação Completa",
+    "Reuniões Eficientes"
   ]
 
   useEffect(() => {
@@ -32,7 +34,7 @@ export default function HomePage() {
       clearTimeout(loadingTimer)
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [])
+  }, [dynamicTexts.length])
 
   if (isLoading) {
     return (
@@ -100,7 +102,7 @@ export default function HomePage() {
             </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent transition-all duration-500 ease-in-out">
+              <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent transition-all duration-500 ease-in-out animate-pulse">
                 {dynamicTexts[currentText]}
               </span>
               <br />
