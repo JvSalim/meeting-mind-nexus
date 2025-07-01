@@ -17,13 +17,18 @@ import {
   Menu,
   X,
   Brain,
+  Zap,
   BarChart3,
+  Plus,
+  Download,
   Eye,
   Bell,
   Clock,
   Users,
   Bot,
   Sparkles,
+  Filter,
+  Star,
   Upload
 } from "lucide-react";
 import Link from "next/link";
@@ -33,6 +38,8 @@ const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const router = useRouter();
 
   // Mock data
@@ -68,48 +75,72 @@ const Dashboard = () => {
 
   const quickActions = [
     {
-      title: "Upload",
-      description: "Enviar nova reunião",
+      title: "Nova Reunião",
+      description: "Agendar ou iniciar",
+      icon: Plus,
+      color: "from-purple-600 to-blue-600",
+      href: "/meetings"
+    },
+    {
+      title: "Upload de Áudio",
+      description: "Analisar reunião",
       icon: Upload,
-      color: "from-blue-600 to-cyan-600",
+      color: "from-green-600 to-emerald-600",
       href: "/upload"
     },
     {
-      title: "Buscar IA",
+      title: "Chat IA",
       description: "Perguntas inteligentes",
       icon: Bot,
-      color: "from-green-600 to-emerald-600",
-      href: "/chat"
-    },
-    {
-      title: "Relatórios",
-      description: "Analytics detalhados",
-      icon: BarChart3,
       color: "from-orange-600 to-red-600",
-      href: "/analytics"
+      href: "/chat"
     }
   ];
 
   useEffect(() => {
-    // Mock user data for development
-    setUser({
-      name: "João Silva",
-      company: "MeetingAI Corp",
-      email: "joao@meetingai.com"
-    });
-  }, []);
+    const userData = localStorage.getItem("user");
+    if (!userData) {
+      router.push("/auth/login");
+      return;
+    }
+    setUser(JSON.parse(userData));
+  }, [router]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     router.push("/");
   };
 
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
+    
+    setIsSearching(true);
+    
+    setTimeout(() => {
+      const mockResults = [
+        {
+          meetingTitle: "Reunião de Planejamento Q1",
+          date: "2024-01-15",
+          snippet: "Discutimos o orçamento para o próximo trimestre, com foco em marketing digital e expansão da equipe.",
+          confidence: 0.95
+        },
+        {
+          meetingTitle: "Client Presentation - Project Alpha",
+          date: "2024-01-13",
+          snippet: "O cliente aprovou a proposta inicial e solicitou ajustes no cronograma de entrega.",
+          confidence: 0.87
+        }
+      ];
+      setSearchResults(mockResults);
+      setIsSearching(false);
+    }, 1500);
+  };
+
   const menuItems = [
     { id: "dashboard", label: "Visão Geral", icon: BarChart3, href: "/dashboard" },
     { id: "meetings", label: "Reuniões", icon: Calendar, href: "/meetings" },
     { id: "upload", label: "Upload", icon: Upload, href: "/upload" },
-    { id: "transcriptions", label: "Transcrições", icon: FileText, href: "/meetings" },
-    { id: "search", label: "Busca IA", icon: MessageSquare, href: "/chat" },
+    { id: "chat", label: "Chat IA", icon: MessageSquare, href: "/chat" },
     { id: "analytics", label: "Analytics", icon: TrendingUp, href: "/analytics" },
     { id: "settings", label: "Configurações", icon: Settings, href: "/settings" },
   ];
@@ -117,14 +148,14 @@ const Dashboard = () => {
   const Sidebar = () => (
     <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-slate-950 to-purple-950 shadow-2xl transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 border-r border-slate-800/50`}>
       <div className="flex items-center justify-between p-6 border-b border-slate-800/50 lg:justify-center">
-        <div className="flex items-center space-x-2">
+        <Link href="/" className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
             <Brain className="w-5 h-5 text-white" />
           </div>
           <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
             MeetingAI
           </span>
-        </div>
+        </Link>
         <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(false)} className="lg:hidden text-slate-400 hover:text-white">
           <X className="w-4 h-4" />
         </Button>
@@ -134,14 +165,13 @@ const Dashboard = () => {
         <div className="space-y-2">
           {menuItems.map((item) => (
             <Link key={item.id} href={item.href}>
-              <Button
-                variant="ghost"
+              <button
                 onClick={() => setSidebarOpen(false)}
-                className="w-full justify-start text-slate-300 hover:text-white hover:bg-slate-800/50"
+                className="w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 text-slate-300 hover:text-white hover:bg-slate-800/50 hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-blue-600/20 hover:border hover:border-purple-500/30 hover:shadow-lg"
               >
-                <item.icon className="w-5 h-5 mr-3" />
+                <item.icon className="w-5 h-5" />
                 <span className="font-medium">{item.label}</span>
-              </Button>
+              </button>
             </Link>
           ))}
         </div>
@@ -209,182 +239,216 @@ const Dashboard = () => {
             </div>
             
             <div className="flex items-center space-x-4">
-              <Link href="/settings">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="bg-slate-800/50 border-slate-700/50 text-slate-300 hover:bg-slate-700/50"
-                >
-                  <Settings className="w-4 h-4 mr-2" />
-                  Configurações
-                </Button>
-              </Link>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="bg-slate-800/50 border-slate-700/50 text-slate-300 hover:bg-slate-700/50"
+              >
+                <Bell className="w-4 h-4 mr-2" />
+                Notificações
+              </Button>
             </div>
           </div>
         </header>
 
         <main className="p-6 w-full">
-          <div className="space-y-8">
-            {/* Quick Actions */}
-            <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <Sparkles className="w-5 h-5 mr-2 text-purple-400" />
-                  Ações Rápidas
-                </CardTitle>
-                <CardDescription className="text-slate-400">
-                  Acesse rapidamente as principais funcionalidades
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {quickActions.map((action, index) => (
-                    <Link key={index} href={action.href}>
-                      <Button 
-                        className={`h-auto p-6 bg-gradient-to-r ${action.color} hover:scale-105 text-white border-0 transition-all duration-200 group w-full`}
-                      >
-                        <div className="text-center">
-                          <action.icon className="w-8 h-8 mx-auto mb-3 group-hover:scale-110 transition-transform" />
-                          <div className="font-semibold text-lg">{action.title}</div>
-                          <div className="text-sm opacity-90">{action.description}</div>
-                        </div>
-                      </Button>
-                    </Link>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+          {/* Quick Actions */}
+          <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm mb-8">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center">
+                <Sparkles className="w-5 h-5 mr-2 text-purple-400" />
+                Ações Rápidas
+              </CardTitle>
+              <CardDescription className="text-slate-400">
+                Acesse rapidamente as principais funcionalidades
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {quickActions.map((action, index) => (
+                  <Link key={index} href={action.href}>
+                    <Button 
+                      className={`h-auto p-6 bg-gradient-to-r ${action.color} hover:scale-105 text-white border-0 transition-all duration-200 group w-full`}
+                    >
+                      <div className="text-center">
+                        <action.icon className="w-8 h-8 mx-auto mb-3 group-hover:scale-110 transition-transform" />
+                        <div className="font-semibold text-lg">{action.title}</div>
+                        <div className="text-sm opacity-90">{action.description}</div>
+                      </div>
+                    </Button>
+                  </Link>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
-            {/* AI Search */}
-            <Card className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-purple-500/30 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center text-white">
-                  <Bot className="w-5 h-5 mr-2 text-purple-400" />
-                  Busca Inteligente
+          {/* AI Search */}
+          <Card className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-purple-500/30 backdrop-blur-sm mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center text-white">
+                <Bot className="w-5 h-5 mr-2 text-purple-400" />
+                Busca Inteligente
+              </CardTitle>
+              <CardDescription className="text-slate-300">
+                Faça perguntas sobre suas reuniões usando IA
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex space-x-3">
+                <Input
+                  placeholder="Ex: O que foi decidido sobre o orçamento na última reunião?"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                  className="flex-1 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400"
+                />
+                <Button 
+                  onClick={handleSearch} 
+                  disabled={isSearching}
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                >
+                  {isSearching ? <Bot className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Recent Meetings */}
+          <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm mb-8">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-white flex items-center">
+                  <Calendar className="w-5 h-5 mr-2 text-blue-400" />
+                  Reuniões Recentes
                 </CardTitle>
-                <CardDescription className="text-slate-300">
-                  Faça perguntas sobre suas reuniões usando IA
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex space-x-3">
-                  <Input
-                    placeholder="Ex: O que foi decidido sobre o orçamento na última reunião?"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="flex-1 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400"
-                  />
-                  <Link href="/chat">
-                    <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
-                      <Search className="w-4 h-4" />
+                <div className="flex space-x-2">
+                  <Button variant="outline" size="sm" className="bg-slate-700/50 border-slate-600/50 text-slate-300">
+                    <Filter className="w-4 h-4 mr-2" />
+                    Filtrar
+                  </Button>
+                  <Link href="/meetings">
+                    <Button variant="outline" size="sm" className="bg-slate-700/50 border-slate-600/50 text-slate-300">
+                      <Eye className="w-4 h-4 mr-2" />
+                      Ver Todas
                     </Button>
                   </Link>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {recentMeetings.map((meeting) => (
+                  <div 
+                    key={meeting.id} 
+                    className="flex items-center justify-between p-4 border border-slate-700/50 rounded-lg hover:bg-slate-700/30 transition-all duration-200 group"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-3 mb-2">
+                        <Calendar className="w-5 h-5 text-purple-400" />
+                        <h3 className="font-semibold text-white group-hover:text-purple-300 transition-colors">
+                          {meeting.title}
+                        </h3>
+                      </div>
+                      
+                      <div className="flex items-center space-x-4 mb-3 text-sm text-slate-400">
+                        <span className="flex items-center">
+                          <Clock className="w-4 h-4 mr-1" />
+                          {new Date(meeting.date).toLocaleDateString('pt-BR')}
+                        </span>
+                        <span className="flex items-center">
+                          <Clock className="w-4 h-4 mr-1" />
+                          {meeting.duration}
+                        </span>
+                        <span className="flex items-center">
+                          <Users className="w-4 h-4 mr-1" />
+                          {meeting.participants} participantes
+                        </span>
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-2">
+                        {meeting.keyTopics.map((topic, idx) => (
+                          <Badge 
+                            key={idx} 
+                            variant="outline" 
+                            className="text-xs bg-purple-600/10 text-purple-300 border-purple-500/30"
+                          >
+                            {topic}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center space-x-3 ml-4">
+                      <Badge variant="outline" className="bg-slate-700/50 text-slate-300 border-slate-600/50">
+                        {meeting.platform}
+                      </Badge>
+                      
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        className="text-purple-400 hover:text-purple-300 hover:bg-purple-600/10"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
-            {/* Recent Meetings */}
+          {/* Search Results */}
+          {searchResults.length > 0 && (
             <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-white flex items-center">
-                    <Calendar className="w-5 h-5 mr-2 text-blue-400" />
-                    Reuniões Recentes
-                  </CardTitle>
-                  <div className="flex space-x-2">
-                    <Link href="/meetings">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 border-0"
-                      >
-                        <Eye className="w-4 h-4 mr-2" />
-                        Ver Todas
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
+                <CardTitle className="text-white">Resultados da Busca IA</CardTitle>
+                <CardDescription className="text-slate-400">
+                  Encontrei {searchResults.length} resultados relevantes
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {recentMeetings.map((meeting) => (
-                    <Link key={meeting.id} href={`/meetings/${meeting.id}`}>
-                      <div className="flex items-center justify-between p-4 border border-slate-700/50 rounded-lg hover:bg-slate-700/30 transition-all duration-200 group cursor-pointer">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-3 mb-2">
-                            <Calendar className="w-5 h-5 text-purple-400" />
-                            <h3 className="font-semibold text-white group-hover:text-purple-300 transition-colors">
-                              {meeting.title}
-                            </h3>
-                          </div>
-                          
-                          <div className="flex items-center space-x-4 mb-3 text-sm text-slate-400">
-                            <span className="flex items-center">
-                              <Clock className="w-4 h-4 mr-1" />
-                              {new Date(meeting.date).toLocaleDateString('pt-BR')}
-                            </span>
-                            <span className="flex items-center">
-                              <Clock className="w-4 h-4 mr-1" />
-                              {meeting.duration}
-                            </span>
-                            <span className="flex items-center">
-                              <Users className="w-4 h-4 mr-1" />
-                              {meeting.participants} participantes
-                            </span>
-                          </div>
-                          
-                          <div className="flex flex-wrap gap-2">
-                            {meeting.keyTopics.map((topic, idx) => (
-                              <Badge 
-                                key={idx} 
-                                variant="outline" 
-                                className="text-xs bg-purple-600/10 text-purple-300 border-purple-500/30"
-                              >
-                                {topic}
-                              </Badge>
+                  {searchResults.map((result, index) => (
+                    <div key={index} className="p-4 border border-slate-700/50 rounded-lg bg-slate-700/20">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold text-white">{result.meetingTitle}</h3>
+                        <Badge variant="outline" className="bg-slate-600/50 text-slate-300 border-slate-500/50">
+                          {result.date}
+                        </Badge>
+                      </div>
+                      <p className="text-slate-300 mb-3">{result.snippet}</p>
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm text-slate-400">
+                            Confiança: {(result.confidence * 100).toFixed(0)}%
+                          </span>
+                          <div className="flex">
+                            {[...Array(5)].map((_, i) => (
+                              <Star 
+                                key={i} 
+                                className={`w-3 h-3 ${
+                                  i < Math.floor(result.confidence * 5) 
+                                    ? 'text-yellow-400 fill-current' 
+                                    : 'text-slate-600'
+                                }`} 
+                              />
                             ))}
                           </div>
                         </div>
-                        
-                        <div className="flex items-center space-x-3 ml-4">
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            className="text-purple-400 hover:text-purple-300 hover:bg-purple-600/10"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                        </div>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="bg-slate-700/50 border-slate-600/50 text-slate-300 hover:bg-slate-600/50"
+                        >
+                          Ver Transcrição
+                        </Button>
                       </div>
-                    </Link>
+                    </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
-
-            {/* Usage Stats */}
-            <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-white text-lg">Estatísticas</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-white mb-1">12</div>
-                    <div className="text-slate-300 text-sm">Reuniões este mês</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-white mb-1">18.5h</div>
-                    <div className="text-slate-300 text-sm">Horas analisadas</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-white mb-1">47</div>
-                    <div className="text-slate-300 text-sm">Perguntas feitas</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          )}
         </main>
       </div>
 
