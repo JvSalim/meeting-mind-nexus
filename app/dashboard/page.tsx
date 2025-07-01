@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useState, useEffect } from "react";
@@ -73,30 +72,6 @@ const Dashboard = () => {
     }
   ];
 
-  const quickActions = [
-    {
-      title: "Nova Reunião",
-      description: "Agendar ou iniciar",
-      icon: Plus,
-      color: "from-purple-600 to-blue-600",
-      href: "/meetings"
-    },
-    {
-      title: "Upload de Áudio",
-      description: "Analisar reunião",
-      icon: Upload,
-      color: "from-green-600 to-emerald-600",
-      href: "/upload"
-    },
-    {
-      title: "Chat IA",
-      description: "Perguntas inteligentes",
-      icon: Bot,
-      color: "from-orange-600 to-red-600",
-      href: "/chat"
-    }
-  ];
-
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (!userData) {
@@ -143,6 +118,30 @@ const Dashboard = () => {
     { id: "chat", label: "Chat IA", icon: MessageSquare, href: "/chat" },
     { id: "analytics", label: "Analytics", icon: TrendingUp, href: "/analytics" },
     { id: "settings", label: "Configurações", icon: Settings, href: "/settings" },
+  ];
+
+  const quickActions = [
+    {
+      title: "Nova Reunião",
+      description: "Agendar ou iniciar",
+      icon: Plus,
+      color: "from-purple-600 to-blue-600",
+      href: "/meetings"
+    },
+    {
+      title: "Upload de Áudio",
+      description: "Analisar reunião",
+      icon: Upload,
+      color: "from-green-600 to-emerald-600",
+      href: "/upload"
+    },
+    {
+      title: "Chat IA",
+      description: "Perguntas inteligentes",
+      icon: Bot,
+      color: "from-orange-600 to-red-600",
+      href: "/chat"
+    }
   ];
 
   const Sidebar = () => (

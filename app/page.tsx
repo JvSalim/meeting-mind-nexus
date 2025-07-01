@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -13,9 +12,7 @@ export default function HomePage() {
   const dynamicTexts = [
     "Produtividade Empresarial",
     "Colaboração Remota",
-    "Gestão Inteligente", 
-    "Reuniões Eficientes",
-    "Decisões Estratégicas"
+    "Gestão Inteligente"
   ]
 
   useEffect(() => {
