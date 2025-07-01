@@ -1,80 +1,26 @@
 
 'use client'
 
-import { ArrowLeft, TrendingUp, Users, Clock, MessageSquare, Calendar, Target } from 'lucide-react'
+import { ArrowLeft, TrendingUp, Users, Clock, MessageSquare } from 'lucide-react'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 
 export default function AnalyticsPage() {
-  // Mock data for charts
-  const monthlyMeetings = [
-    { month: 'Jan', meetings: 12, hours: 18.5 },
-    { month: 'Fev', meetings: 15, hours: 22.3 },
-    { month: 'Mar', meetings: 18, hours: 28.7 },
-    { month: 'Abr', meetings: 14, hours: 21.2 },
-    { month: 'Mai', meetings: 20, hours: 32.1 },
-    { month: 'Jun', meetings: 16, hours: 24.8 }
-  ]
-
-  const platformData = [
-    { name: 'Zoom', value: 45, color: '#3B82F6' },
-    { name: 'Teams', value: 30, color: '#8B5CF6' },
-    { name: 'Meet', value: 20, color: '#10B981' },
-    { name: 'Webex', value: 5, color: '#F59E0B' }
-  ]
-
-  const keywordData = [
-    { keyword: 'orçamento', count: 23 },
-    { keyword: 'estratégia', count: 18 },
-    { keyword: 'projeto', count: 15 },
-    { keyword: 'cliente', count: 12 },
-    { keyword: 'timeline', count: 10 },
-    { keyword: 'aprovação', count: 8 }
-  ]
-
-  const aiInteractions = [
-    { month: 'Jan', questions: 45 },
-    { month: 'Fev', questions: 62 },
-    { month: 'Mar', questions: 78 },
-    { month: 'Abr', questions: 55 },
-    { month: 'Mai', questions: 89 },
-    { month: 'Jun', questions: 67 }
-  ]
-
   const stats = [
-    {
-      title: 'Total de Reuniões',
-      value: '95',
-      subtitle: 'Este ano',
-      icon: Calendar,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100'
-    },
-    {
-      title: 'Horas Analisadas',
-      value: '147.6h',
-      subtitle: 'Tempo total',
-      icon: Clock,
-      color: 'text-green-600',
-      bgColor: 'bg-green-100'
-    },
-    {
-      title: 'Participantes Únicos',
-      value: '84',
-      subtitle: 'Pessoas diferentes',
-      icon: Users,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-100'
-    },
-    {
-      title: 'Perguntas IA',
-      value: '396',
-      subtitle: 'Total de interações',
-      icon: MessageSquare,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-100'
-    }
+    { title: 'Total de Reuniões', value: '247', change: '+12%', icon: MessageSquare },
+    { title: 'Horas Transcritas', value: '184.5h', change: '+8%', icon: Clock },
+    { title: 'Participantes Únicos', value: '89', change: '+15%', icon: Users },
+    { title: 'Taxa de Engajamento', value: '94%', change: '+3%', icon: TrendingUp }
+  ]
+
+  const monthlyData = [
+    { month: 'Jan', meetings: 18, hours: 24.5 },
+    { month: 'Fev', meetings: 22, hours: 31.2 },
+    { month: 'Mar', meetings: 28, hours: 39.8 },
+    { month: 'Abr', meetings: 25, hours: 33.4 },
+    { month: 'Mai', meetings: 32, hours: 42.1 },
+    { month: 'Jun', meetings: 29, hours: 38.7 }
   ]
 
   return (
@@ -90,19 +36,19 @@ export default function AnalyticsPage() {
           <p className="text-slate-600">Insights detalhados sobre suas reuniões e uso da plataforma</p>
         </div>
 
-        {/* Stats Cards */}
+        {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {stats.map((stat, index) => (
-            <Card key={index} className="bg-white border-slate-200 shadow-lg hover:shadow-xl transition-shadow">
+            <Card key={index} className="bg-white border-slate-200 shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-slate-600">{stat.title}</p>
-                    <p className="text-2xl font-bold text-slate-900 mt-1">{stat.value}</p>
-                    <p className="text-sm text-slate-500 mt-1">{stat.subtitle}</p>
+                    <p className="text-2xl font-bold text-slate-900">{stat.value}</p>
+                    <p className="text-sm text-green-600 font-medium">{stat.change}</p>
                   </div>
-                  <div className={`w-12 h-12 ${stat.bgColor} rounded-lg flex items-center justify-center`}>
-                    <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <stat.icon className="w-6 h-6 text-blue-600" />
                   </div>
                 </div>
               </CardContent>
@@ -110,135 +56,82 @@ export default function AnalyticsPage() {
           ))}
         </div>
 
+        {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Reuniões por Mês */}
+          {/* Monthly Meetings Chart */}
           <Card className="bg-white border-slate-200 shadow-lg">
             <CardHeader>
-              <CardTitle className="text-slate-900 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-blue-600" />
-                Reuniões por Mês
-              </CardTitle>
+              <CardTitle className="text-slate-900">Reuniões por Mês</CardTitle>
+              <CardDescription>Evolução mensal das reuniões transcritas</CardDescription>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={monthlyMeetings}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="meetings" fill="#3B82F6" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+              <div className="space-y-4">
+                {monthlyData.map((data, index) => (
+                  <div key={index} className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-slate-600">{data.month}</span>
+                    <div className="flex items-center space-x-4">
+                      <div className="w-32 bg-slate-200 rounded-full h-2">
+                        <div 
+                          className="bg-blue-600 h-2 rounded-full" 
+                          style={{ width: `${(data.meetings / 35) * 100}%` }}
+                        />
+                      </div>
+                      <span className="text-sm font-semibold text-slate-900 w-8">{data.meetings}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
 
-          {/* Plataformas Utilizadas */}
+          {/* Hours Chart */}
           <Card className="bg-white border-slate-200 shadow-lg">
             <CardHeader>
-              <CardTitle className="text-slate-900">Plataformas Utilizadas</CardTitle>
+              <CardTitle className="text-slate-900">Horas Transcritas</CardTitle>
+              <CardDescription>Total de horas processadas mensalmente</CardDescription>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={platformData}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    dataKey="value"
-                    label={({ name, value }) => `${name}: ${value}%`}
-                  >
-                    {platformData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Palavras-chave Mais Frequentes */}
-          <Card className="bg-white border-slate-200 shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-slate-900">Palavras-chave Mais Frequentes</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={keywordData} layout="horizontal">
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
-                  <YAxis dataKey="keyword" type="category" width={80} />
-                  <Tooltip />
-                  <Bar dataKey="count" fill="#8B5CF6" radius={[0, 4, 4, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* Interações com IA */}
-          <Card className="bg-white border-slate-200 shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-slate-900 flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-green-600" />
-                Interações com IA
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={aiInteractions}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line 
-                    type="monotone" 
-                    dataKey="questions" 
-                    stroke="#10B981" 
-                    strokeWidth={3}
-                    dot={{ fill: '#10B981', strokeWidth: 2, r: 6 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              <div className="space-y-4">
+                {monthlyData.map((data, index) => (
+                  <div key={index} className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-slate-600">{data.month}</span>
+                    <div className="flex items-center space-x-4">
+                      <div className="w-32 bg-slate-200 rounded-full h-2">
+                        <div 
+                          className="bg-green-600 h-2 rounded-full" 
+                          style={{ width: `${(data.hours / 45) * 100}%` }}
+                        />
+                      </div>
+                      <span className="text-sm font-semibold text-slate-900 w-12">{data.hours}h</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Insights */}
-        <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200 shadow-lg mt-8">
+        <Card className="bg-white border-slate-200 shadow-lg">
           <CardHeader>
-            <CardTitle className="text-slate-900 flex items-center gap-2">
-              <Target className="w-5 h-5 text-blue-600" />
-              Insights e Recomendações
-            </CardTitle>
+            <CardTitle className="text-slate-900">Insights Principais</CardTitle>
+            <CardDescription>Descobertas importantes sobre suas reuniões</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white p-4 rounded-lg border border-blue-200">
-                <h4 className="font-semibold text-slate-900 mb-2">📈 Tendência Positiva</h4>
-                <p className="text-sm text-slate-600">
-                  Suas reuniões aumentaram 25% nos últimos 3 meses, indicando maior engajamento da equipe.
-                </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="p-4 bg-blue-50 rounded-lg">
+                <h3 className="font-semibold text-blue-900 mb-2">Pico de Atividade</h3>
+                <p className="text-sm text-blue-700">Terças-feiras às 14h são seus horários mais produtivos para reuniões</p>
               </div>
-              <div className="bg-white p-4 rounded-lg border border-purple-200">
-                <h4 className="font-semibold text-slate-900 mb-2">🤖 IA Muito Utilizada</h4>
-                <p className="text-sm text-slate-600">
-                  Você fez 89 perguntas para a IA em maio - um recorde! Continue explorando os insights.
-                </p>
+              
+              <div className="p-4 bg-green-50 rounded-lg">
+                <h3 className="font-semibold text-green-900 mb-2">Palavras-chave Frequentes</h3>
+                <p className="text-sm text-green-700">"Projeto", "deadline" e "orçamento" são os temas mais discutidos</p>
               </div>
-              <div className="bg-white p-4 rounded-lg border border-green-200">
-                <h4 className="font-semibold text-slate-900 mb-2">⏰ Duração Otimizada</h4>
-                <p className="text-sm text-slate-600">
-                  Suas reuniões têm duração média ideal de 1h30min, mantendo produtividade alta.
-                </p>
-              </div>
-              <div className="bg-white p-4 rounded-lg border border-orange-200">
-                <h4 className="font-semibold text-slate-900 mb-2">📋 Tópicos Recorrentes</h4>
-                <p className="text-sm text-slate-600">
-                  "Orçamento" aparece em 24% das reuniões. Considere criar templates específicos.
-                </p>
+              
+              <div className="p-4 bg-purple-50 rounded-lg">
+                <h3 className="font-semibold text-purple-900 mb-2">Duração Média</h3>
+                <p className="text-sm text-purple-700">Suas reuniões duram em média 1h 12min, 8% acima da média geral</p>
               </div>
             </div>
           </CardContent>

@@ -18,18 +18,23 @@ import {
   X,
   Brain,
   BarChart3,
+  Plus,
   Eye,
+  Bell,
   Clock,
   Users,
   Bot,
   Sparkles,
+  Filter,
+  Star,
   Upload
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -43,6 +48,7 @@ const Dashboard = () => {
       title: "Reunião de Planejamento Q1",
       date: "2024-01-15",
       duration: "1h 23min",
+      platform: "Google Meet",
       participants: 8,
       keyTopics: ["orçamento", "estratégia", "timeline"]
     },
@@ -51,6 +57,7 @@ const Dashboard = () => {
       title: "Daily Standup - Dev Team",
       date: "2024-01-14", 
       duration: "32min",
+      platform: "Zoom",
       participants: 5,
       keyTopics: ["bugs", "features", "deploy"]
     },
@@ -59,6 +66,7 @@ const Dashboard = () => {
       title: "Client Presentation - Project Alpha",
       date: "2024-01-13",
       duration: "2h 15min", 
+      platform: "Teams",
       participants: 12,
       keyTopics: ["proposta", "cronograma", "aprovação"]
     }
@@ -67,7 +75,7 @@ const Dashboard = () => {
   const quickActions = [
     {
       title: "Upload",
-      description: "Enviar arquivo de reunião",
+      description: "Enviar nova reunião",
       icon: Upload,
       color: "from-blue-600 to-cyan-600",
       href: "/upload"
@@ -85,13 +93,6 @@ const Dashboard = () => {
       icon: BarChart3,
       color: "from-orange-600 to-red-600",
       href: "/analytics"
-    },
-    {
-      title: "Reuniões",
-      description: "Ver todas as reuniões",
-      icon: Calendar,
-      color: "from-purple-600 to-pink-600",
-      href: "/meetings"
     }
   ];
 
@@ -99,8 +100,8 @@ const Dashboard = () => {
     // Mock user data for development
     setUser({
       name: "João Silva",
-      company: "MeetingMind Corp",
-      email: "joao@meetingmind.com"
+      company: "MeetingAI Corp",
+      email: "joao@meetingai.com"
     });
   }, []);
 
@@ -152,7 +153,7 @@ const Dashboard = () => {
             <Brain className="w-5 h-5 text-white" />
           </div>
           <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-            MeetingMind
+            MeetingAI
           </span>
         </div>
         <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(false)} className="lg:hidden text-slate-400 hover:text-white">
@@ -266,7 +267,7 @@ const Dashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {quickActions.map((action, index) => (
                     <Link key={index} href={action.href}>
                       <Button 
@@ -304,13 +305,11 @@ const Dashboard = () => {
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                     className="flex-1 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400"
                   />
-                  <Button 
-                    onClick={handleSearch} 
-                    disabled={isSearching}
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                  >
-                    {isSearching ? <Bot className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-                  </Button>
+                  <Link href="/chat">
+                    <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+                      <Search className="w-4 h-4" />
+                    </Button>
+                  </Link>
                 </div>
               </CardContent>
             </Card>
@@ -394,46 +393,28 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            {/* Search Results */}
-            {searchResults.length > 0 && (
-              <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-white">Resultados da Busca IA</CardTitle>
-                  <CardDescription className="text-slate-400">
-                    Encontrei {searchResults.length} resultados relevantes
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {searchResults.map((result, index) => (
-                      <div key={index} className="p-4 border border-slate-700/50 rounded-lg bg-slate-700/20">
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-semibold text-white">{result.meetingTitle}</h3>
-                          <Badge variant="outline" className="bg-slate-600/50 text-slate-300 border-slate-500/50">
-                            {result.date}
-                          </Badge>
-                        </div>
-                        <p className="text-slate-300 mb-3">{result.snippet}</p>
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center space-x-2">
-                            <span className="text-sm text-slate-400">
-                              Confiança: {(result.confidence * 100).toFixed(0)}%
-                            </span>
-                          </div>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            className="bg-slate-700/50 border-slate-600/50 text-slate-300 hover:bg-slate-600/50"
-                          >
-                            Ver Transcrição
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
+            {/* Usage Stats */}
+            <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-white text-lg">Estatísticas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-white mb-1">12</div>
+                    <div className="text-slate-300 text-sm">Reuniões este mês</div>
                   </div>
-                </CardContent>
-              </Card>
-            )}
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-white mb-1">18.5h</div>
+                    <div className="text-slate-300 text-sm">Horas analisadas</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-white mb-1">47</div>
+                    <div className="text-slate-300 text-sm">Perguntas feitas</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </main>
       </div>
