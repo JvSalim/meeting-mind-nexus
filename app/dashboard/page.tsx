@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useState, useEffect } from "react";
@@ -167,18 +166,18 @@ const Dashboard = () => {
           {menuItems.map((item) => {
             const isActive = pathname === item.href;
             return (
-              <Link key={item.id} href={item.href}>
-                <button
-                  onClick={() => setSidebarOpen(false)}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 ${
+              <Link key={item.id} href={item.href} className="block">
+                <div
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 cursor-pointer ${
                     isActive
                       ? 'bg-gradient-to-r from-purple-600/20 to-blue-600/20 text-purple-300 border border-purple-500/30 shadow-lg' 
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/50 hover:bg-gradient-to-r hover:from-purple-600/10 hover:to-blue-600/10'
                   }`}
+                  onClick={() => setSidebarOpen(false)}
                 >
                   <item.icon className="w-5 h-5" />
                   <span className="font-medium">{item.label}</span>
-                </button>
+                </div>
               </Link>
             );
           })}
@@ -274,16 +273,16 @@ const Dashboard = () => {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {quickActions.map((action, index) => (
-                  <Link key={index} href={action.href}>
-                    <Button 
-                      className={`h-auto p-6 bg-gradient-to-r ${action.color} hover:scale-105 text-white border-0 transition-all duration-200 group w-full`}
+                  <Link key={index} href={action.href} className="block">
+                    <div 
+                      className={`h-auto p-6 bg-gradient-to-r ${action.color} hover:scale-105 text-white border-0 transition-all duration-200 group w-full rounded-lg cursor-pointer`}
                     >
                       <div className="text-center">
                         <action.icon className="w-8 h-8 mx-auto mb-3 group-hover:scale-110 transition-transform" />
                         <div className="font-semibold text-lg">{action.title}</div>
                         <div className="text-sm opacity-90">{action.description}</div>
                       </div>
-                    </Button>
+                    </div>
                   </Link>
                 ))}
               </div>
