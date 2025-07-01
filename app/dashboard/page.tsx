@@ -18,15 +18,12 @@ import {
   X,
   Brain,
   BarChart3,
-  Plus,
   Eye,
   Bell,
   Clock,
   Users,
   Bot,
   Sparkles,
-  Filter,
-  Star,
   Upload
 } from "lucide-react";
 import Link from "next/link";
@@ -34,11 +31,8 @@ import { useRouter } from "next/navigation";
 
 const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
   const router = useRouter();
 
   // Mock data
@@ -110,31 +104,6 @@ const Dashboard = () => {
     router.push("/");
   };
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
-    
-    setIsSearching(true);
-    
-    setTimeout(() => {
-      const mockResults = [
-        {
-          meetingTitle: "Reunião de Planejamento Q1",
-          date: "2024-01-15",
-          snippet: "Discutimos o orçamento para o próximo trimestre, com foco em marketing digital e expansão da equipe.",
-          confidence: 0.95
-        },
-        {
-          meetingTitle: "Client Presentation - Project Alpha",
-          date: "2024-01-13",
-          snippet: "O cliente aprovou a proposta inicial e solicitou ajustes no cronograma de entrega.",
-          confidence: 0.87
-        }
-      ];
-      setSearchResults(mockResults);
-      setIsSearching(false);
-    }, 1500);
-  };
-
   const menuItems = [
     { id: "dashboard", label: "Visão Geral", icon: BarChart3, href: "/dashboard" },
     { id: "meetings", label: "Reuniões", icon: Calendar, href: "/meetings" },
@@ -165,13 +134,14 @@ const Dashboard = () => {
         <div className="space-y-2">
           {menuItems.map((item) => (
             <Link key={item.id} href={item.href}>
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => setSidebarOpen(false)}
-                className="w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 text-slate-300 hover:text-white hover:bg-slate-800/50"
+                className="w-full justify-start text-slate-300 hover:text-white hover:bg-slate-800/50"
               >
-                <item.icon className="w-5 h-5" />
+                <item.icon className="w-5 h-5 mr-3" />
                 <span className="font-medium">{item.label}</span>
-              </button>
+              </Button>
             </Link>
           ))}
         </div>
@@ -302,7 +272,6 @@ const Dashboard = () => {
                     placeholder="Ex: O que foi decidido sobre o orçamento na última reunião?"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                     className="flex-1 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400"
                   />
                   <Link href="/chat">
