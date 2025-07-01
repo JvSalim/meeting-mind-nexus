@@ -1,154 +1,167 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Mic, Brain, Zap, Shield, Users, FileText, ArrowRight, Play, Check, Star, ChevronDown, Calendar, BarChart3, Bot, Sparkles } from 'lucide-react'
 import Link from 'next/link'
+import {
+  Mic,
+  Brain,
+  Zap,
+  Shield,
+  Users,
+  ArrowRight,
+  Play,
+  Check,
+  Star,
+  ChevronDown,
+  Calendar,
+  Bot,
+  Sparkles
+} from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 export default function HomePage() {
-  const [currentText, setCurrentText] = useState(0)
+  // ─── Splash & Scroll ───────────────────────────────────────────
   const [isLoading, setIsLoading] = useState(true)
   const [scrollY, setScrollY] = useState(0)
-  
-  const dynamicTexts = [
-    "Produtividade Empresarial",
-    "Colaboração Remota", 
-    "Gestão Inteligente",
-    "Automação Completa",
-    "Reuniões Eficientes"
-  ]
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentText((prev) => (prev + 1) % dynamicTexts.length)
-    }, 2500)
-    
-    const loadingTimer = setTimeout(() => {
-      setIsLoading(false)
-    }, 2000)
-
-    const handleScroll = () => setScrollY(window.scrollY)
-    window.addEventListener('scroll', handleScroll)
-
+    const timer = setTimeout(() => setIsLoading(false), 2000)
+    const onScroll = () => setScrollY(window.scrollY)
+    window.addEventListener('scroll', onScroll)
     return () => {
-      clearInterval(interval)
-      clearTimeout(loadingTimer)
-      window.removeEventListener('scroll', handleScroll)
+      clearTimeout(timer)
+      window.removeEventListener('scroll', onScroll)
     }
   }, [])
 
+  // ─── Typewriter interno ────────────────────────────────────────
+  const dynamicTexts = [
+    'Produtividade Empresarial',
+    'Inovação Colaborativa',
+    'Eficiência Operacional',
+  ]
+  const TYPING_SPEED = 100
+  const DELETING_SPEED = 50
+  const PAUSE_BEFORE_DELETE = 1500
+
+  const [displayedText, setDisplayedText] = useState('')
+  const [wordIndex, setWordIndex] = useState(0)
+  const [charIndex, setCharIndex] = useState(0)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  useEffect(() => {
+    const currentWord = dynamicTexts[wordIndex]
+    let timeout: ReturnType<typeof setTimeout>
+
+    if (!isDeleting && charIndex <= currentWord.length) {
+      timeout = setTimeout(() => {
+        setDisplayedText(currentWord.slice(0, charIndex + 1))
+        setCharIndex(charIndex + 1)
+      }, TYPING_SPEED)
+    }
+    else if (isDeleting && charIndex >= 0) {
+      timeout = setTimeout(() => {
+        setDisplayedText(currentWord.slice(0, charIndex - 1))
+        setCharIndex(charIndex - 1)
+      }, DELETING_SPEED)
+    }
+    else if (!isDeleting && charIndex > currentWord.length) {
+      timeout = setTimeout(() => setIsDeleting(true), PAUSE_BEFORE_DELETE)
+    }
+    else if (isDeleting && charIndex < 0) {
+      setIsDeleting(false)
+      setWordIndex((wordIndex + 1) % dynamicTexts.length)
+      setCharIndex(0)
+    }
+
+    return () => clearTimeout(timeout)
+  }, [charIndex, isDeleting, wordIndex])
+
+  // ─── Splash Screen ──────────────────────────────────────────────
   if (isLoading) {
     return (
       <div className="fixed inset-0 bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 flex items-center justify-center z-50">
-        <div className="relative z-10 text-center">
-          <div className="mb-8">
-            <div className="relative inline-block">
-              <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center transform animate-pulse">
-                <Brain className="w-10 h-10 text-white animate-bounce" />
-              </div>
-              <div className="absolute -inset-2 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl blur opacity-50 animate-glow" />
-            </div>
+        <div className="text-center">
+          <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center animate-pulse">
+            <Brain className="w-10 h-10 text-white animate-bounce" />
           </div>
-
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+          <h1 className="mt-6 text-4xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
             MeetingAI
           </h1>
-          <p className="text-slate-300 mb-8 text-lg animate-fade-in">
-            Inicializando sistema...
-          </p>
+          <p className="mt-2 text-slate-300">Inicializando sistema...</p>
         </div>
       </div>
     )
   }
 
+  // ─── Main Content ────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 text-white w-full">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 text-white">
       {/* Header */}
       <nav className="fixed top-0 w-full bg-slate-900/80 backdrop-blur-md border-b border-slate-800/50 z-40 glass-effect">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center transform hover:scale-110 transition-transform">
-                <Brain className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                MeetingAI
-              </span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center hover:scale-110 transition-transform">
+              <Brain className="w-5 h-5 text-white" />
             </div>
-            <div className="flex space-x-4">
-              <Link 
-                href="/login" 
-                className="px-6 py-2 bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 rounded-lg font-medium transition-all transform hover:scale-105 shadow-lg hover:shadow-xl border border-slate-500/30 backdrop-blur-sm"
-              >
-                Entrar
-              </Link>
-              <Link 
-                href="/register" 
-                className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 rounded-lg font-medium transition-all transform hover:scale-105 shadow-lg hover:shadow-2xl"
-              >
-                Começar Agora
-              </Link>
-            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+              MeetingAI
+            </span>
+          </div>
+          <div className="flex space-x-4">
+            <Link href="/auth/login" className="px-6 py-2 bg-gradient-to-r from-slate-700 to-slate-600 rounded-lg hover:from-slate-600 hover:to-slate-500 transition transform hover:scale-105">
+              Entrar
+            </Link>
+            <Link href="/auth/register" className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg hover:from-purple-700 hover:to-blue-700 transition transform hover:scale-105">
+              Começar Agora
+            </Link>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero */}
       <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 relative min-h-screen flex items-center">
-        <div className="max-w-7xl mx-auto text-center relative z-10 w-full">
-          <div className="mb-8">
-            <div className="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-8 border border-white/20">
-              <Sparkles className="w-4 h-4 text-purple-400 mr-2" />
-              <span className="text-sm text-slate-300">Nova versão com IA avançada</span>
-            </div>
-            
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent transition-all duration-1000 ease-in-out block min-h-[1.2em]">
-                {dynamicTexts[currentText]}
-              </span>
-              <br />
-              <span className="text-slate-200">com IA Avançada</span>
-            </h1>
-            
-            <p className="text-lg sm:text-xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Automatize a transcrição e análise de suas reuniões. Faça perguntas sobre qualquer reunião e obtenha respostas instantâneas.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 max-w-md mx-auto sm:max-w-none">
-              <Link 
-                href="/register" 
-                className="w-full sm:w-auto group px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 rounded-xl font-semibold text-lg transition-all transform hover:scale-105 shadow-2xl flex items-center justify-center space-x-2 hover:shadow-purple-500/25"
-              >
-                <span>Começar Gratuitamente</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              
-              <button className="w-full sm:w-auto group px-8 py-4 border-2 border-purple-500/50 hover:border-purple-400 rounded-xl font-semibold text-lg transition-all flex items-center justify-center space-x-2 hover:bg-purple-500/10 glass-effect">
-                <Play className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                <span>Ver Demonstração</span>
-              </button>
-            </div>
+        <div className="max-w-3xl mx-auto text-center">
+          <div className="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-8 border border-white/20">
+            <Sparkles className="w-4 h-4 text-purple-400 mr-2" />
+            <span className="text-sm text-slate-300">Nova versão com IA avançada</span>
+          </div>
 
-            {/* Trust Indicators */}
-            <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
-              <div className="flex items-center space-x-2">
-                <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                <span className="text-sm">4.9/5 avaliação</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Users className="w-4 h-4 text-blue-400" />
-                <span className="text-sm">+1000 empresas</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Shield className="w-4 h-4 text-green-400" />
-                <span className="text-sm">100% seguro</span>
-              </div>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+            <span className="block min-h-[1.2em] bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              {displayedText}
+            </span>
+            <br/>
+            <span className="text-slate-200">com IA Avançada</span>
+          </h1>
+
+          <p className="text-lg sm:text-xl text-slate-300 mb-8 leading-relaxed">
+            Automatize a transcrição e análise de suas reuniões. Pergunte sobre qualquer reunião e receba respostas instantâneas.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <Link href="/auth/register" className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl font-semibold transition hover:scale-105">
+              Começar Gratuitamente <ArrowRight className="inline w-5 h-5 ml-2"/>
+            </Link>
+            <button className="px-8 py-4 border-2 border-purple-500 rounded-xl font-semibold transition hover:scale-105">
+              Ver Demonstração <Play className="inline w-5 h-5 ml-2"/>
+            </button>
+          </div>
+
+          {/* Trust */}
+          <div className="flex flex-wrap justify-center gap-8 opacity-60">
+            <div className="flex items-center space-x-2">
+              <Star className="w-4 h-4 text-yellow-400"/> <span>4.9/5</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Users className="w-4 h-4 text-blue-400"/> <span>+1000 empresas</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Shield className="w-4 h-4 text-green-400"/> <span>100% seguro</span>
             </div>
           </div>
         </div>
-        
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <ChevronDown className="w-6 h-6 text-slate-400" />
-        </div>
+
+        <ChevronDown className="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-6 h-6 text-slate-400 animate-bounce"/>
       </section>
 
       {/* Features Section */}
