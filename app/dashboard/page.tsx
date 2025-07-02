@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect } from "react";
-import { Button } from "../components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { Input } from "../components/ui/input";
-import { Badge } from "../components/ui/badge";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
+import { Badge } from "../../components/ui/badge";
 import { 
   Search, 
   Settings, 
@@ -42,7 +42,7 @@ const Dashboard = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Mock data
+  // Mock data - single declaration
   const recentMeetings = [
     {
       id: 1,
@@ -112,37 +112,6 @@ const Dashboard = () => {
     }, 1500);
   };
 
-  // Mock data
-  const recentMeetings = [
-    {
-      id: 1,
-      title: "Reunião de Planejamento Q1",
-      date: "2024-01-15",
-      duration: "1h 23min",
-      platform: "Google Meet",
-      participants: 8,
-      keyTopics: ["orçamento", "estratégia", "timeline"]
-    },
-    {
-      id: 2,
-      title: "Daily Standup - Dev Team",
-      date: "2024-01-14", 
-      duration: "32min",
-      platform: "Zoom",
-      participants: 5,
-      keyTopics: ["bugs", "features", "deploy"]
-    },
-    {
-      id: 3,
-      title: "Client Presentation - Project Alpha",
-      date: "2024-01-13",
-      duration: "2h 15min", 
-      platform: "Teams",
-      participants: 12,
-      keyTopics: ["proposta", "cronograma", "aprovação"]
-    }
-  ];
-
   const menuItems = [
     { id: "dashboard", label: "Visão Geral", icon: BarChart3, href: "/dashboard" },
     { id: "meetings", label: "Reuniões", icon: Calendar, href: "/meetings" },
@@ -173,36 +142,6 @@ const Dashboard = () => {
       icon: Bot,
       color: "from-orange-600 to-red-600",
       href: "/chat"
-    }
-  ];
-
-  const recentMeetings = [
-    {
-      id: 1,
-      title: "Reunião de Planejamento Q1",
-      date: "2024-01-15",
-      duration: "1h 23min",
-      platform: "Google Meet",
-      participants: 8,
-      keyTopics: ["orçamento", "estratégia", "timeline"]
-    },
-    {
-      id: 2,
-      title: "Daily Standup - Dev Team",
-      date: "2024-01-14", 
-      duration: "32min",
-      platform: "Zoom",
-      participants: 5,
-      keyTopics: ["bugs", "features", "deploy"]
-    },
-    {
-      id: 3,
-      title: "Client Presentation - Project Alpha",
-      date: "2024-01-13",
-      duration: "2h 15min", 
-      platform: "Teams",
-      participants: 12,
-      keyTopics: ["proposta", "cronograma", "aprovação"]
     }
   ];
 

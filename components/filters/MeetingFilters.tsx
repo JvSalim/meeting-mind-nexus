@@ -8,12 +8,11 @@ import { Input } from '../ui/input'
 import { Badge } from '../ui/badge'
 
 interface MeetingFiltersProps {
-  onFiltersChange: (filters: any) => void
-  totalMeetings: number
-  filteredCount: number
+  onFilter: (filters: any) => void
+  onSearch: (keyword: string) => void
 }
 
-const MeetingFilters = ({ onFiltersChange, totalMeetings, filteredCount }: MeetingFiltersProps) => {
+const MeetingFilters = ({ onFilter, onSearch }: MeetingFiltersProps) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [dateRange, setDateRange] = useState({ start: '', end: '' })
   const [platforms, setPlatforms] = useState<string[]>([])
@@ -25,13 +24,13 @@ const MeetingFilters = ({ onFiltersChange, totalMeetings, filteredCount }: Meeti
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSearchTerm(value)
-    onFiltersChange({ searchTerm: value, dateRange, platforms, duration, participants, keywords })
+    onSearch(value)
   }
 
   const handleDateChange = (type: 'start' | 'end', value: string) => {
     const newDateRange = { ...dateRange, [type]: value }
     setDateRange(newDateRange)
-    onFiltersChange({ searchTerm, dateRange: newDateRange, platforms, duration, participants, keywords })
+    onFilter({ searchTerm, dateRange: newDateRange, platforms, duration, participants, keywords })
   }
 
   const handlePlatformChange = (platform: string) => {
@@ -42,19 +41,19 @@ const MeetingFilters = ({ onFiltersChange, totalMeetings, filteredCount }: Meeti
       newPlatforms.push(platform)
     }
     setPlatforms(newPlatforms)
-    onFiltersChange({ searchTerm, dateRange, platforms: newPlatforms, duration, participants, keywords })
+    onFilter({ searchTerm, dateRange, platforms: newPlatforms, duration, participants, keywords })
   }
 
   const handleDurationChange = (type: 'min' | 'max', value: number) => {
     const newDuration = { ...duration, [type]: value }
     setDuration(newDuration)
-    onFiltersChange({ searchTerm, dateRange, platforms, duration: newDuration, participants, keywords })
+    onFilter({ searchTerm, dateRange, platforms, duration: newDuration, participants, keywords })
   }
 
   const handleParticipantsChange = (type: 'min' | 'max', value: number) => {
     const newParticipants = { ...participants, [type]: value }
     setParticipants(newParticipants)
-    onFiltersChange({ searchTerm, dateRange, platforms, duration, participants: newParticipants, keywords })
+    onFilter({ searchTerm, dateRange, platforms, duration, participants: newParticipants, keywords })
   }
 
   const handleKeywordChange = (keyword: string) => {
@@ -65,7 +64,7 @@ const MeetingFilters = ({ onFiltersChange, totalMeetings, filteredCount }: Meeti
       newKeywords.push(keyword)
     }
     setKeywords(newKeywords)
-    onFiltersChange({ searchTerm, dateRange, platforms, duration, participants, keywords: newKeywords })
+    onFilter({ searchTerm, dateRange, platforms, duration, participants, keywords: newKeywords })
   }
 
   const toggleFilter = () => {
@@ -79,7 +78,7 @@ const MeetingFilters = ({ onFiltersChange, totalMeetings, filteredCount }: Meeti
     setDuration({ min: 0, max: 200 })
     setParticipants({ min: 0, max: 20 })
     setKeywords([])
-    onFiltersChange({ searchTerm: '', dateRange: { start: '', end: '' }, platforms: [], duration: { min: 0, max: 200 }, participants: { min: 0, max: 20 }, keywords: [] })
+    onFilter({ searchTerm: '', dateRange: { start: '', end: '' }, platforms: [], duration: { min: 0, max: 200 }, participants: { min: 0, max: 20 }, keywords: [] })
   }
 
   const commonKeywords = ['estratégia', 'vendas', 'produto', 'marketing', 'revisão', 'projeto']
@@ -93,9 +92,6 @@ const MeetingFilters = ({ onFiltersChange, totalMeetings, filteredCount }: Meeti
             Filtros
           </div>
         </CardTitle>
-        <div className="text-sm text-slate-600">
-          {filteredCount} de {totalMeetings} reuniões
-        </div>
       </CardHeader>
       <CardContent>
         <div className="mb-4">
@@ -207,7 +203,7 @@ const MeetingFilters = ({ onFiltersChange, totalMeetings, filteredCount }: Meeti
                       <Badge
                         key={keyword}
                         variant="outline"
-                        className={`text-xs ${keywords.includes(keyword) ? 'bg-blue-100 text-blue-700 border-blue-300' : 'text-slate-600 border-slate-300'}`}
+                        className={`text-xs cursor-pointer ${keywords.includes(keyword) ? 'bg-blue-100 text-blue-700 border-blue-300' : 'text-slate-600 border-slate-300'}`}
                         onClick={() => handleKeywordChange(keyword)}
                       >
                         {keyword}
