@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useState } from 'react'
@@ -12,8 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch'
 
 export default function SettingsPage() {
-  const [userName, setUserName] = useState('João Silva')
-  const [userEmail, setUserEmail] = useState('joao@meetingmind.com')
+  const [profile, setProfile] = useState({
+    name: 'João Silva',
+    email: 'joao@meetingmind.com'
+  })
   const [language, setLanguage] = useState('pt')
   const [darkMode, setDarkMode] = useState(true)
   const [colorScheme, setColorScheme] = useState('purple')
@@ -22,8 +23,7 @@ export default function SettingsPage() {
   const handleSave = () => {
     // Simular salvamento
     console.log('Configurações salvas:', {
-      userName,
-      userEmail,
+      profile,
       language,
       darkMode,
       colorScheme,
@@ -32,8 +32,10 @@ export default function SettingsPage() {
   }
 
   const handleReset = () => {
-    setUserName('João Silva')
-    setUserEmail('joao@meetingmind.com')
+    setProfile({
+      name: 'João Silva',
+      email: 'joao@meetingmind.com'
+    })
     setLanguage('pt')
     setDarkMode(true)
     setColorScheme('purple')
@@ -70,25 +72,29 @@ export default function SettingsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="userName" className="text-slate-700">Nome</Label>
-                <Input
-                  id="userName"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label htmlFor="userEmail" className="text-slate-700">Email</Label>
-                <Input
-                  id="userEmail"
-                  type="email"
-                  value={userEmail}
-                  onChange={(e) => setUserEmail(e.target.value)}
-                  className="mt-1"
-                />
-              </div>
+              <form className="space-y-6">
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="name">Nome completo</Label>
+                    <Input
+                      id="name"
+                      value={profile.name}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProfile({...profile, name: e.target.value})}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="email">E-mail</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={profile.email}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProfile({...profile, email: e.target.value})}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+              </form>
             </CardContent>
           </Card>
 
