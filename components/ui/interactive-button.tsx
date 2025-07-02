@@ -5,16 +5,19 @@ import { motion } from 'framer-motion'
 import { forwardRef } from 'react'
 import { cn } from '../../lib/utils'
 
-interface InteractiveButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface InteractiveButtonProps {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost'
   size?: 'sm' | 'md' | 'lg'
   children: React.ReactNode
   className?: string
+  onClick?: () => void
+  disabled?: boolean
+  type?: 'button' | 'submit' | 'reset'
   asChild?: boolean
 }
 
 const InteractiveButton = forwardRef<HTMLButtonElement, InteractiveButtonProps>(
-  ({ className, variant = 'primary', size = 'md', children, disabled, ...props }, ref) => {
+  ({ className, variant = 'primary', size = 'md', children, onClick, disabled, type = 'button', ...props }, ref) => {
     const baseStyles = "relative overflow-hidden font-semibold transition-all duration-150 ease-in-out rounded-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
     
     const variants = {
@@ -33,6 +36,7 @@ const InteractiveButton = forwardRef<HTMLButtonElement, InteractiveButtonProps>(
     return (
       <motion.button
         ref={ref}
+        type={type}
         whileHover={{ 
           scale: 1.05,
           boxShadow: variant === 'primary' ? '0 10px 30px rgba(168, 85, 247, 0.4)' : 
@@ -41,8 +45,8 @@ const InteractiveButton = forwardRef<HTMLButtonElement, InteractiveButtonProps>(
         }}
         whileTap={{ scale: 0.98 }}
         className={cn(baseStyles, variants[variant], sizes[size], className)}
+        onClick={onClick}
         disabled={disabled}
-        {...props}
       >
         <motion.div
           initial={{ opacity: 0, x: -20 }}
