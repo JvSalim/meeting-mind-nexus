@@ -61,7 +61,7 @@ const Register = () => {
     }
   };
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
@@ -225,7 +225,7 @@ const Register = () => {
                             id="name"
                             type="text"
                             value={formData.name}
-                            onChange={(e) => handleInputChange('name', e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('name', e.target.value)}
                             placeholder="Seu nome completo"
                             required
                             className="h-12 bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-400 focus:ring-purple-400/20"
@@ -238,7 +238,7 @@ const Register = () => {
                             id="phone"
                             type="tel"
                             value={formData.phone}
-                            onChange={(e) => handleInputChange('phone', e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('phone', e.target.value)}
                             placeholder="(11) 99999-9999"
                             required
                             className="h-12 bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-400 focus:ring-purple-400/20"
@@ -253,7 +253,7 @@ const Register = () => {
                             id="companyName"
                             type="text"
                             value={formData.companyName}
-                            onChange={(e) => handleInputChange('companyName', e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('companyName', e.target.value)}
                             placeholder="Nome da empresa"
                             required
                             className="h-12 bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-blue-400 focus:ring-blue-400/20"
@@ -266,7 +266,7 @@ const Register = () => {
                             id="cnpj"
                             type="text"
                             value={formData.cnpj}
-                            onChange={(e) => handleInputChange('cnpj', e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('cnpj', e.target.value)}
                             placeholder="00.000.000/0000-00"
                             required
                             className={`h-12 bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-blue-400 focus:ring-blue-400/20 ${cnpjError ? 'border-red-500' : ''}`}
@@ -325,7 +325,7 @@ const Register = () => {
                         id="email"
                         type="email"
                         value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('email', e.target.value)}
                         placeholder="seu@email.com"
                         required
                         className={`h-12 bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 ${accountType === 'user' ? 'focus:border-purple-400 focus:ring-purple-400/20' : 'focus:border-blue-400 focus:ring-blue-400/20'}`}
@@ -339,7 +339,7 @@ const Register = () => {
                           id="password"
                           type={showPassword ? "text" : "password"}
                           value={formData.password}
-                          onChange={(e) => handleInputChange('password', e.target.value)}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('password', e.target.value)}
                           placeholder="Sua senha"
                           required
                           className={`h-12 pr-10 bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 ${accountType === 'user' ? 'focus:border-purple-400 focus:ring-purple-400/20' : 'focus:border-blue-400 focus:ring-blue-400/20'}`}
@@ -361,7 +361,7 @@ const Register = () => {
                           id="confirmPassword"
                           type={showConfirmPassword ? "text" : "password"}
                           value={formData.confirmPassword}
-                          onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('confirmPassword', e.target.value)}
                           placeholder="Confirme sua senha"
                           required
                           className={`h-12 pr-10 bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 ${accountType === 'user' ? 'focus:border-purple-400 focus:ring-purple-400/20' : 'focus:border-blue-400 focus:ring-blue-400/20'}`}

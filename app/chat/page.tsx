@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useState } from 'react'
@@ -54,7 +53,7 @@ export default function ChatPage() {
     }, 2000)
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSendMessage()
     }
@@ -139,7 +138,7 @@ export default function ChatPage() {
             <div className="flex gap-2">
               <Input
                 value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputText(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Digite sua pergunta sobre as reuniões..."
                 className="flex-1"

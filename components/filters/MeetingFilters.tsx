@@ -120,7 +120,7 @@ export default function MeetingFilters({ onFiltersChange, totalMeetings, filtere
               <Input
                 placeholder="Buscar por título, conteúdo ou participantes..."
                 value={filters.searchTerm}
-                onChange={(e) => updateFilters({ searchTerm: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateFilters({ searchTerm: e.target.value })}
                 className="pl-10 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400"
               />
             </div>
@@ -180,7 +180,7 @@ export default function MeetingFilters({ onFiltersChange, totalMeetings, filtere
                   <Input
                     type="date"
                     value={filters.dateRange.start}
-                    onChange={(e) => updateFilters({ 
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateFilters({ 
                       dateRange: { ...filters.dateRange, start: e.target.value }
                     })}
                     className="bg-slate-700/50 border-slate-600/50 text-white"
@@ -191,7 +191,7 @@ export default function MeetingFilters({ onFiltersChange, totalMeetings, filtere
                   <Input
                     type="date"
                     value={filters.dateRange.end}
-                    onChange={(e) => updateFilters({ 
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateFilters({ 
                       dateRange: { ...filters.dateRange, end: e.target.value }
                     })}
                     className="bg-slate-700/50 border-slate-600/50 text-white"
@@ -238,7 +238,7 @@ export default function MeetingFilters({ onFiltersChange, totalMeetings, filtere
                     min="0"
                     max="600"
                     value={filters.duration.min}
-                    onChange={(e) => updateFilters({ 
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateFilters({ 
                       duration: { ...filters.duration, min: parseInt(e.target.value) || 0 }
                     })}
                     className="bg-slate-700/50 border-slate-600/50 text-white"
@@ -251,7 +251,7 @@ export default function MeetingFilters({ onFiltersChange, totalMeetings, filtere
                     min="0"
                     max="600"
                     value={filters.duration.max}
-                    onChange={(e) => updateFilters({ 
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateFilters({ 
                       duration: { ...filters.duration, max: parseInt(e.target.value) || 300 }
                     })}
                     className="bg-slate-700/50 border-slate-600/50 text-white"
@@ -274,7 +274,7 @@ export default function MeetingFilters({ onFiltersChange, totalMeetings, filtere
                     min="1"
                     max="100"
                     value={filters.participants.min}
-                    onChange={(e) => updateFilters({ 
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateFilters({ 
                       participants: { ...filters.participants, min: parseInt(e.target.value) || 1 }
                     })}
                     className="bg-slate-700/50 border-slate-600/50 text-white"
@@ -287,7 +287,7 @@ export default function MeetingFilters({ onFiltersChange, totalMeetings, filtere
                     min="1"
                     max="100"
                     value={filters.participants.max}
-                    onChange={(e) => updateFilters({ 
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateFilters({ 
                       participants: { ...filters.participants, max: parseInt(e.target.value) || 50 }
                     })}
                     className="bg-slate-700/50 border-slate-600/50 text-white"

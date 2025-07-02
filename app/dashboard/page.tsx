@@ -228,31 +228,40 @@ const Dashboard = () => {
       <div className="flex-1 lg:ml-0 w-full">
         <header className="bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-slate-800/50 p-4 sticky top-0 z-30">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSidebarOpen(true)}
-                className="lg:hidden text-slate-400 hover:text-white"
-              >
-                <Menu className="w-4 h-4" />
-              </Button>
-              <div>
-                <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-                <p className="text-slate-400">
-                  Bem-vindo de volta, <span className="text-purple-400 font-medium">{user.name}</span>!
-                </p>
+            <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(true)} className="lg:hidden text-slate-400 hover:text-white">
+              <Menu className="w-5 h-5" />
+            </Button>
+            
+            <div className="flex items-center space-x-4 flex-1 max-w-2xl mx-auto">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+                <Input
+                  placeholder="Pesquisar em reuniões, transcrições, decisões..."
+                  value={searchQuery}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                    if (e.key === 'Enter') {
+                      handleSearch();
+                    }
+                  }}
+                  className="pl-10 bg-slate-800/50 border-slate-700/50 text-white placeholder-slate-400 focus:border-purple-500 focus:ring-purple-500/20"
+                />
               </div>
+              <Button 
+                onClick={handleSearch}
+                disabled={isSearching}
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white border-0"
+              >
+                {isSearching ? <Brain className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+              </Button>
             </div>
             
-            <div className="flex items-center space-x-4">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="bg-slate-800/50 border-slate-700/50 text-slate-300 hover:bg-slate-700/50"
-              >
-                <Bell className="w-4 h-4 mr-2" />
-                Notificações
+            <div className="flex items-center space-x-3">
+              <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white">
+                <Bell className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white">
+                <Settings className="w-5 h-5" />
               </Button>
             </div>
           </div>

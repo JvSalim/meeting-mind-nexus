@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { forwardRef, ButtonHTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 
-interface InteractiveButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface InteractiveButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onAnimationStart' | 'onAnimationEnd'> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost'
   size?: 'sm' | 'md' | 'lg'
   children: React.ReactNode

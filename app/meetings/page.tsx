@@ -123,7 +123,7 @@ export default function MeetingsPage() {
       filtered = filtered.filter(meeting =>
         meeting.title.toLowerCase().includes(searchLower) ||
         meeting.content.toLowerCase().includes(searchLower) ||
-        meeting.keywords.some(keyword => 
+        meeting.keywords.some((keyword: string) => 
           keyword.toLowerCase().includes(searchLower)
         )
       )
