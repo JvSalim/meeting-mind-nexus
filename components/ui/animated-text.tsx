@@ -15,36 +15,36 @@ interface AnimatedTextProps {
 export default function AnimatedText({
   texts,
   className = '',
-  typingSpeed = 100,
-  deletingSpeed = 50,
-  pauseDuration = 2000
+  typingSpeed = 80,
+  deletingSpeed = 40,
+  pauseDuration = 3000
 }: AnimatedTextProps) {
   const [currentTextIndex, setCurrentTextIndex] = useState(0)
   const [currentText, setCurrentText] = useState('')
   const [isDeleting, setIsDeleting] = useState(false)
-  const [isBlinking, setIsBlinking] = useState(true)
+  const [isTyping, setIsTyping] = useState(true)
 
   useEffect(() => {
     const currentFullText = texts[currentTextIndex]
     
     const timeout = setTimeout(() => {
-      if (!isDeleting) {
-        if (currentText.length < currentFullText.length) {
-          setCurrentText(currentFullText.slice(0, currentText.length + 1))
-          setIsBlinking(false)
-        } else {
-          setIsBlinking(true)
-          setTimeout(() => setIsDeleting(true), pauseDuration)
-        }
-      } else {
-        if (currentText.length > 0) {
-          setCurrentText(currentText.slice(0, -1))
-          setIsBlinking(false)
-        } else {
-          setIsDeleting(false)
-          setCurrentTextIndex((prev) => (prev + 1) % texts.length)
-          setIsBlinking(true)
-        }
+      if (!isDeleting && currentText.length < currentFullText.length) {
+        // Typing
+        setCurrentText(currentFullText.slice(0, currentText.length + 1))
+        setIsTyping(true)
+      } else if (!isDeleting && currentText.length === currentFullText.length) {
+        // Pause before deleting
+        setIsTyping(false)
+        setTimeout(() => setIsDeleting(true), pauseDuration)
+      } else if (isDeleting && currentText.length > 0) {
+        // Deleting
+        setCurrentText(currentText.slice(0, -1))
+        setIsTyping(true)
+      } else if (isDeleting && currentText.length === 0) {
+        // Move to next text
+        setIsDeleting(false)
+        setCurrentTextIndex((prev) => (prev + 1) % texts.length)
+        setIsTyping(false)
       }
     }, isDeleting ? deletingSpeed : typingSpeed)
 
@@ -61,9 +61,16 @@ export default function AnimatedText({
         {currentText}
       </motion.span>
       <motion.span
-        animate={{ opacity: isBlinking ? [1, 0, 1] : 1 }}
-        transition={{ duration: 0.8, repeat: isBlinking ? Infinity : 0 }}
-        className="inline-block w-0.5 h-[1em] bg-current ml-1 align-middle"
+        animate={{ 
+          opacity: isTyping ? [1, 0, 1] : 1,
+          scale: isTyping ? [1, 1.1, 1] : 1
+        }}
+        transition={{ 
+          duration: 0.8, 
+          repeat: isTyping ? Infinity : 0,
+          ease: "easeInOut"
+        }}
+        className="inline-block w-0.5 h-[1em] bg-gradient-to-t from-purple-400 to-blue-400 ml-1 align-middle rounded-full"
       />
     </div>
   )
