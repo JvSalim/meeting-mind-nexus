@@ -1,0 +1,13 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/chat/page": "/chat",
+  "/analytics/page": "/analytics",
+  "/dashboard/page": "/dashboard",
+  "/login/page": "/login",
+  "/meetings/[id]/page": "/meetings/[id]",
+  "/meetings/page": "/meetings",
+  "/page": "/",
+  "/register/page": "/register",
+  "/settings/page": "/settings",
+  "/upload/page": "/upload"
+}

@@ -1,4 +1,4 @@
-// File: /Users/joaovictorsalim/meeting-mind-nexus-4/app/layout.tsx
+// File: /Users/joaovictorsalim/meeting-mind-nexus-5/app/layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

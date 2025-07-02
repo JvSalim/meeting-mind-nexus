@@ -6,6 +6,8 @@
 
     "build": "next build",
 
+    "build:dev": "next build",
+
     "lint": "eslint .",
 
     "start": "next start"
@@ -134,8 +136,6 @@
 
     "@types/react-dom": "^18.3.0",
 
-    "@vitejs/plugin-react-swc": "^3.5.0",
-
     "autoprefixer": "^10.4.21",
 
     "eslint": "^9.9.0",
@@ -154,7 +154,9 @@
 
     "typescript": "^5.5.3",
 
-    "typescript-eslint": "^8.0.1"
+    "typescript-eslint": "^8.0.1",
+
+    "vite": "^5.4.19"
 
   }
 
