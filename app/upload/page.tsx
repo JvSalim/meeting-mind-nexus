@@ -4,8 +4,8 @@
 import { useState } from 'react'
 import { ArrowLeft, Upload, FileAudio, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
+import { Button } from '../../components/ui/button'
 
 export default function UploadPage() {
   const [uploadProgress, setUploadProgress] = useState(0)

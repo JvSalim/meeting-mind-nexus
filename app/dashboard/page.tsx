@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Badge } from "../components/ui/badge";
 import { 
   Search, 
   Settings, 
@@ -112,6 +112,37 @@ const Dashboard = () => {
     }, 1500);
   };
 
+  // Mock data
+  const recentMeetings = [
+    {
+      id: 1,
+      title: "Reunião de Planejamento Q1",
+      date: "2024-01-15",
+      duration: "1h 23min",
+      platform: "Google Meet",
+      participants: 8,
+      keyTopics: ["orçamento", "estratégia", "timeline"]
+    },
+    {
+      id: 2,
+      title: "Daily Standup - Dev Team",
+      date: "2024-01-14", 
+      duration: "32min",
+      platform: "Zoom",
+      participants: 5,
+      keyTopics: ["bugs", "features", "deploy"]
+    },
+    {
+      id: 3,
+      title: "Client Presentation - Project Alpha",
+      date: "2024-01-13",
+      duration: "2h 15min", 
+      platform: "Teams",
+      participants: 12,
+      keyTopics: ["proposta", "cronograma", "aprovação"]
+    }
+  ];
+
   const menuItems = [
     { id: "dashboard", label: "Visão Geral", icon: BarChart3, href: "/dashboard" },
     { id: "meetings", label: "Reuniões", icon: Calendar, href: "/meetings" },
@@ -142,6 +173,36 @@ const Dashboard = () => {
       icon: Bot,
       color: "from-orange-600 to-red-600",
       href: "/chat"
+    }
+  ];
+
+  const recentMeetings = [
+    {
+      id: 1,
+      title: "Reunião de Planejamento Q1",
+      date: "2024-01-15",
+      duration: "1h 23min",
+      platform: "Google Meet",
+      participants: 8,
+      keyTopics: ["orçamento", "estratégia", "timeline"]
+    },
+    {
+      id: 2,
+      title: "Daily Standup - Dev Team",
+      date: "2024-01-14", 
+      duration: "32min",
+      platform: "Zoom",
+      participants: 5,
+      keyTopics: ["bugs", "features", "deploy"]
+    },
+    {
+      id: 3,
+      title: "Client Presentation - Project Alpha",
+      date: "2024-01-13",
+      duration: "2h 15min", 
+      platform: "Teams",
+      participants: 12,
+      keyTopics: ["proposta", "cronograma", "aprovação"]
     }
   ];
 
@@ -268,7 +329,6 @@ const Dashboard = () => {
         </header>
 
         <main className="p-6 w-full">
-          {/* Quick Actions */}
           <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm mb-8">
             <CardHeader>
               <CardTitle className="text-white flex items-center">
@@ -298,7 +358,6 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {/* AI Search */}
           <Card className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-purple-500/30 backdrop-blur-sm mb-8">
             <CardHeader>
               <CardTitle className="flex items-center text-white">
@@ -314,8 +373,8 @@ const Dashboard = () => {
                 <Input
                   placeholder="Ex: O que foi decidido sobre o orçamento na última reunião?"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && handleSearch()}
                   className="flex-1 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400"
                 />
                 <Button 
@@ -329,7 +388,6 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Recent Meetings */}
           <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm mb-8">
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -413,7 +471,6 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Search Results */}
           {searchResults.length > 0 && (
             <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
               <CardHeader>
