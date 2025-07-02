@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useState } from 'react'
@@ -7,7 +6,7 @@ import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
 import { Button } from '../../components/ui/button'
 import { Badge } from '../../components/ui/badge'
-import MeetingFilters from '../../components/filters/MeetingFilters'
+import { MeetingFilters } from '../../components/filters/MeetingFilters'
 
 export default function MeetingsPage() {
   const [filteredMeetings, setFilteredMeetings] = useState<any[]>([])
@@ -48,7 +47,7 @@ export default function MeetingsPage() {
   const handleFilter = (filters: any) => {
     let filtered = meetings
 
-    if (filters.dateRange.from || filters.dateRange.to) {
+    if (filters.dateRange?.from || filters.dateRange?.to) {
       filtered = filtered.filter(meeting => {
         const meetingDate = new Date(meeting.date)
         const fromDate = filters.dateRange.from ? new Date(filters.dateRange.from) : null
@@ -60,7 +59,7 @@ export default function MeetingsPage() {
       })
     }
 
-    if (filters.participants.min || filters.participants.max) {
+    if (filters.participants?.min || filters.participants?.max) {
       filtered = filtered.filter(meeting => {
         if (filters.participants.min && meeting.participants < filters.participants.min) return false
         if (filters.participants.max && meeting.participants > filters.participants.max) return false
@@ -68,7 +67,7 @@ export default function MeetingsPage() {
       })
     }
 
-    if (filters.tags.length > 0) {
+    if (filters.tags?.length > 0) {
       filtered = filtered.filter(meeting =>
         filters.tags.some((tag: string) => 
           meeting.tags.some(meetingTag => 
