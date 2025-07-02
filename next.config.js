@@ -7,9 +7,12 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: false,
   },
-  transpilePackages: ['lucide-react'],
+  transpilePackages: ['lucide-react', 'framer-motion'],
   images: {
     domains: ['localhost'],
+  },
+  experimental: {
+    esmExternals: true,
   },
 }
 
