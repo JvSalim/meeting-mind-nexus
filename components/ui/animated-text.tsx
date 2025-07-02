@@ -15,9 +15,9 @@ interface AnimatedTextProps {
 export default function AnimatedText({
   texts,
   className = '',
-  typingSpeed = 80,
-  deletingSpeed = 40,
-  pauseDuration = 3000
+  typingSpeed = 100,
+  deletingSpeed = 50,
+  pauseDuration = 2000
 }: AnimatedTextProps) {
   const [currentTextIndex, setCurrentTextIndex] = useState(0)
   const [currentText, setCurrentText] = useState('')
@@ -63,7 +63,6 @@ export default function AnimatedText({
       <motion.span
         animate={{ 
           opacity: isTyping ? [1, 0, 1] : 1,
-          scale: isTyping ? [1, 1.1, 1] : 1
         }}
         transition={{ 
           duration: 0.8, 

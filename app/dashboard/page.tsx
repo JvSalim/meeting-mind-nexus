@@ -5,6 +5,7 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import { Badge } from "../../components/ui/badge";
+import { EnhancedButton } from "../../components/ui/enhanced-button";
 import { 
   Search, 
   Settings, 
@@ -32,6 +33,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { PageTransition, FadeInSection, SlideInSection, StaggerContainer, StaggerItem } from "../../components/ui/page-animations";
 
 const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
@@ -146,7 +149,11 @@ const Dashboard = () => {
   ];
 
   const Sidebar = () => (
-    <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-slate-950 to-purple-950 shadow-2xl transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 border-r border-slate-800/50`}>
+    <motion.div 
+      initial={{ x: -300 }}
+      animate={{ x: sidebarOpen ? 0 : -300 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className={`fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-slate-950 to-purple-950 shadow-2xl transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 border-r border-slate-800/50`}>
       <div className="flex items-center justify-between p-6 border-b border-slate-800/50 lg:justify-center">
         <Link href="/" className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
@@ -163,29 +170,43 @@ const Dashboard = () => {
       
       <nav className="p-6">
         <div className="space-y-2">
-          {menuItems.map((item) => {
+          {menuItems.map((item, index) => {
             const isActive = pathname === item.href;
             return (
-              <Link key={item.id} href={item.href} className="block">
-                <div
-                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 cursor-pointer ${
-                    isActive
-                      ? 'bg-gradient-to-r from-purple-600/20 to-blue-600/20 text-purple-300 border border-purple-500/30 shadow-lg' 
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800/50 hover:bg-gradient-to-r hover:from-purple-600/10 hover:to-blue-600/10'
-                  }`}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  <item.icon className="w-5 h-5" />
-                  <span className="font-medium">{item.label}</span>
-                </div>
-              </Link>
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Link href={item.href} className="block">
+                  <motion.div
+                    whileHover={{ scale: 1.02, x: 4 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 cursor-pointer ${
+                      isActive
+                        ? 'bg-gradient-to-r from-purple-600/20 to-blue-600/20 text-purple-300 border border-purple-500/30 shadow-lg' 
+                        : 'text-slate-300 hover:text-white hover:bg-slate-800/50 hover:bg-gradient-to-r hover:from-purple-600/10 hover:to-blue-600/10'
+                    }`}
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    <item.icon className="w-5 h-5" />
+                    <span className="font-medium">{item.label}</span>
+                  </motion.div>
+                </Link>
+              </motion.div>
             );
           })}
         </div>
       </nav>
       
       <div className="absolute bottom-4 left-4 right-4">
-        <div className="p-4 bg-slate-800/50 backdrop-blur-sm rounded-lg mb-4 border border-slate-700/50">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="p-4 bg-slate-800/50 backdrop-blur-sm rounded-lg mb-4 border border-slate-700/50"
+        >
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
               {user?.name?.charAt(0) || 'U'}
@@ -195,282 +216,309 @@ const Dashboard = () => {
               <p className="text-xs text-slate-400">{user?.company || 'Empresa'}</p>
             </div>
           </div>
-        </div>
-        <Button
+        </motion.div>
+        <EnhancedButton
           variant="outline"
           onClick={handleLogout}
           className="w-full justify-start bg-slate-800/50 border-slate-700/50 text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all"
         >
           <LogOut className="w-4 h-4 mr-2" />
           Sair
-        </Button>
+        </EnhancedButton>
       </div>
-    </div>
+    </motion.div>
   );
 
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 flex items-center justify-center">
-        <div className="text-center">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center"
+        >
           <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-pulse">
             <Brain className="w-8 h-8 text-white" />
           </div>
           <p className="text-slate-300">Carregando...</p>
-        </div>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 flex w-full">
-      <Sidebar />
-      
-      <div className="flex-1 lg:ml-0 w-full">
-        <header className="bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-slate-800/50 p-4 sticky top-0 z-30">
-          <div className="flex items-center justify-between">
-            <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(true)} className="lg:hidden text-slate-400 hover:text-white">
-              <Menu className="w-5 h-5" />
-            </Button>
-            
-            <div className="flex items-center space-x-4 flex-1 max-w-2xl mx-auto">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-                <Input
-                  placeholder="Pesquisar em reuniões, transcrições, decisões..."
-                  value={searchQuery}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                    if (e.key === 'Enter') {
-                      handleSearch();
-                    }
-                  }}
-                  className="pl-10 bg-slate-800/50 border-slate-700/50 text-white placeholder-slate-400 focus:border-purple-500 focus:ring-purple-500/20"
-                />
-              </div>
-              <Button 
-                onClick={handleSearch}
-                disabled={isSearching}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white border-0"
-              >
-                {isSearching ? <Brain className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-              </Button>
-            </div>
-            
-            <div className="flex items-center space-x-3">
-              <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white">
-                <Bell className="w-5 h-5" />
-              </Button>
-              <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white">
-                <Settings className="w-5 h-5" />
-              </Button>
-            </div>
-          </div>
-        </header>
-
-        <main className="p-6 w-full">
-          <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm mb-8">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <Sparkles className="w-5 h-5 mr-2 text-purple-400" />
-                Ações Rápidas
-              </CardTitle>
-              <CardDescription className="text-slate-400">
-                Acesse rapidamente as principais funcionalidades
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {quickActions.map((action, index) => (
-                  <Link key={index} href={action.href} className="block">
-                    <div 
-                      className={`h-auto p-6 bg-gradient-to-r ${action.color} hover:scale-105 text-white border-0 transition-all duration-200 group w-full rounded-lg cursor-pointer`}
-                    >
-                      <div className="text-center">
-                        <action.icon className="w-8 h-8 mx-auto mb-3 group-hover:scale-110 transition-transform" />
-                        <div className="font-semibold text-lg">{action.title}</div>
-                        <div className="text-sm opacity-90">{action.description}</div>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-purple-500/30 backdrop-blur-sm mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center text-white">
-                <Bot className="w-5 h-5 mr-2 text-purple-400" />
-                Busca Inteligente
-              </CardTitle>
-              <CardDescription className="text-slate-300">
-                Faça perguntas sobre suas reuniões usando IA
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex space-x-3">
-                <Input
-                  placeholder="Ex: O que foi decidido sobre o orçamento na última reunião?"
-                  value={searchQuery}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && handleSearch()}
-                  className="flex-1 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400"
-                />
-                <Button 
-                  onClick={handleSearch} 
-                  disabled={isSearching}
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                >
-                  {isSearching ? <Bot className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm mb-8">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-white flex items-center">
-                  <Calendar className="w-5 h-5 mr-2 text-blue-400" />
-                  Reuniões Recentes
-                </CardTitle>
-                <div className="flex space-x-2">
-                  <Button variant="outline" size="sm" className="bg-slate-700/50 border-slate-600/50 text-slate-300">
-                    <Filter className="w-4 h-4 mr-2" />
-                    Filtrar
-                  </Button>
-                  <Link href="/meetings">
-                    <Button variant="outline" size="sm" className="bg-slate-700/50 border-slate-600/50 text-slate-300">
-                      <Eye className="w-4 h-4 mr-2" />
-                      Ver Todas
-                    </Button>
-                  </Link>
+    <PageTransition>
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 flex w-full">
+        <Sidebar />
+        
+        <div className="flex-1 lg:ml-0 w-full">
+          <header className="bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-slate-800/50 p-4 sticky top-0 z-30">
+            <div className="flex items-center justify-between">
+              <EnhancedButton variant="ghost" size="sm" onClick={() => setSidebarOpen(true)} className="lg:hidden text-slate-400 hover:text-white">
+                <Menu className="w-5 h-5" />
+              </EnhancedButton>
+              
+              <div className="flex items-center space-x-4 flex-1 max-w-2xl mx-auto">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+                  <Input
+                    placeholder="Pesquisar em reuniões, transcrições, decisões..."
+                    value={searchQuery}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                    onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                      if (e.key === 'Enter') {
+                        handleSearch();
+                      }
+                    }}
+                    className="pl-10 bg-slate-800/50 border-slate-700/50 text-white placeholder-slate-400 focus:border-purple-500 focus:ring-purple-500/20"
+                  />
                 </div>
+                <EnhancedButton 
+                  onClick={handleSearch}
+                  disabled={isSearching}
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white border-0"
+                >
+                  {isSearching ? <Brain className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                </EnhancedButton>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {recentMeetings.map((meeting) => (
-                  <div 
-                    key={meeting.id} 
-                    className="flex items-center justify-between p-4 border border-slate-700/50 rounded-lg hover:bg-slate-700/30 transition-all duration-200 group"
-                  >
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <Calendar className="w-5 h-5 text-purple-400" />
-                        <h3 className="font-semibold text-white group-hover:text-purple-300 transition-colors">
-                          {meeting.title}
-                        </h3>
-                      </div>
-                      
-                      <div className="flex items-center space-x-4 mb-3 text-sm text-slate-400">
-                        <span className="flex items-center">
-                          <Clock className="w-4 h-4 mr-1" />
-                          {new Date(meeting.date).toLocaleDateString('pt-BR')}
-                        </span>
-                        <span className="flex items-center">
-                          <Clock className="w-4 h-4 mr-1" />
-                          {meeting.duration}
-                        </span>
-                        <span className="flex items-center">
-                          <Users className="w-4 h-4 mr-1" />
-                          {meeting.participants} participantes
-                        </span>
-                      </div>
-                      
-                      <div className="flex flex-wrap gap-2">
-                        {meeting.keyTopics.map((topic, idx) => (
-                          <Badge 
-                            key={idx} 
-                            variant="outline" 
-                            className="text-xs bg-purple-600/10 text-purple-300 border-purple-500/30"
-                          >
-                            {topic}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center space-x-3 ml-4">
-                      <Badge variant="outline" className="bg-slate-700/50 text-slate-300 border-slate-600/50">
-                        {meeting.platform}
-                      </Badge>
-                      
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        className="text-purple-400 hover:text-purple-300 hover:bg-purple-600/10"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
+              
+              <div className="flex items-center space-x-3">
+                <EnhancedButton variant="ghost" size="sm" className="text-slate-400 hover:text-white">
+                  <Bell className="w-5 h-5" />
+                </EnhancedButton>
+                <EnhancedButton variant="ghost" size="sm" className="text-slate-400 hover:text-white">
+                  <Settings className="w-5 h-5" />
+                </EnhancedButton>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </header>
 
-          {searchResults.length > 0 && (
-            <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-white">Resultados da Busca IA</CardTitle>
-                <CardDescription className="text-slate-400">
-                  Encontrei {searchResults.length} resultados relevantes
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {searchResults.map((result, index) => (
-                    <div key={index} className="p-4 border border-slate-700/50 rounded-lg bg-slate-700/20">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-semibold text-white">{result.meetingTitle}</h3>
-                        <Badge variant="outline" className="bg-slate-600/50 text-slate-300 border-slate-500/50">
-                          {result.date}
-                        </Badge>
+          <main className="p-6 w-full">
+            <StaggerContainer staggerDelay={0.1}>
+              <StaggerItem>
+                <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm mb-8">
+                  <CardHeader>
+                    <CardTitle className="text-white flex items-center">
+                      <Sparkles className="w-5 h-5 mr-2 text-purple-400" />
+                      Ações Rápidas
+                    </CardTitle>
+                    <CardDescription className="text-slate-400">
+                      Acesse rapidamente as principais funcionalidades
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {quickActions.map((action, index) => (
+                        <motion.div
+                          key={index}
+                          whileHover={{ scale: 1.02, y: -4 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          <Link href={action.href} className="block">
+                            <div 
+                              className={`h-auto p-6 bg-gradient-to-r ${action.color} hover:scale-105 text-white border-0 transition-all duration-200 group w-full rounded-lg cursor-pointer shadow-lg hover:shadow-xl`}
+                            >
+                              <div className="text-center">
+                                <action.icon className="w-8 h-8 mx-auto mb-3 group-hover:scale-110 transition-transform" />
+                                <div className="font-semibold text-lg">{action.title}</div>
+                                <div className="text-sm opacity-90">{action.description}</div>
+                              </div>
+                            </div>
+                          </Link>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </StaggerItem>
+
+              <StaggerItem>
+                <Card className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-purple-500/30 backdrop-blur-sm mb-8">
+                  <CardHeader>
+                    <CardTitle className="flex items-center text-white">
+                      <Bot className="w-5 h-5 mr-2 text-purple-400" />
+                      Busca Inteligente
+                    </CardTitle>
+                    <CardDescription className="text-slate-300">
+                      Faça perguntas sobre suas reuniões usando IA
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex space-x-3">
+                      <Input
+                        placeholder="Ex: O que foi decidido sobre o orçamento na última reunião?"
+                        value={searchQuery}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                        onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && handleSearch()}
+                        className="flex-1 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400"
+                      />
+                      <EnhancedButton 
+                        onClick={handleSearch} 
+                        disabled={isSearching}
+                        className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                      >
+                        {isSearching ? <Bot className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                      </EnhancedButton>
+                    </div>
+                  </CardContent>
+                </Card>
+              </StaggerItem>
+
+              <StaggerItem>
+                <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm mb-8">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-white flex items-center">
+                        <Calendar className="w-5 h-5 mr-2 text-blue-400" />
+                        Reuniões Recentes
+                      </CardTitle>
+                      <div className="flex space-x-2">
+                        <Button variant="outline" size="sm" className="bg-slate-700/50 border-slate-600/50 text-slate-300">
+                          <Filter className="w-4 h-4 mr-2" />
+                          Filtrar
+                        </Button>
+                        <Link href="/meetings">
+                          <Button variant="outline" size="sm" className="bg-slate-700/50 border-slate-600/50 text-slate-300">
+                            <Eye className="w-4 h-4 mr-2" />
+                            Ver Todas
+                          </Button>
+                        </Link>
                       </div>
-                      <p className="text-slate-300 mb-3">{result.snippet}</p>
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm text-slate-400">
-                            Confiança: {(result.confidence * 100).toFixed(0)}%
-                          </span>
-                          <div className="flex">
-                            {[...Array(5)].map((_, i) => (
-                              <Star 
-                                key={i} 
-                                className={`w-3 h-3 ${
-                                  i < Math.floor(result.confidence * 5) 
-                                    ? 'text-yellow-400 fill-current' 
-                                    : 'text-slate-600'
-                                }`} 
-                              />
-                            ))}
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {recentMeetings.map((meeting) => (
+                        <div 
+                          key={meeting.id} 
+                          className="flex items-center justify-between p-4 border border-slate-700/50 rounded-lg hover:bg-slate-700/30 transition-all duration-200 group"
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-3 mb-2">
+                              <Calendar className="w-5 h-5 text-purple-400" />
+                              <h3 className="font-semibold text-white group-hover:text-purple-300 transition-colors">
+                                {meeting.title}
+                              </h3>
+                            </div>
+                            
+                            <div className="flex items-center space-x-4 mb-3 text-sm text-slate-400">
+                              <span className="flex items-center">
+                                <Clock className="w-4 h-4 mr-1" />
+                                {new Date(meeting.date).toLocaleDateString('pt-BR')}
+                              </span>
+                              <span className="flex items-center">
+                                <Clock className="w-4 h-4 mr-1" />
+                                {meeting.duration}
+                              </span>
+                              <span className="flex items-center">
+                                <Users className="w-4 h-4 mr-1" />
+                                {meeting.participants} participantes
+                              </span>
+                            </div>
+                            
+                            <div className="flex flex-wrap gap-2">
+                              {meeting.keyTopics.map((topic, idx) => (
+                                <Badge 
+                                  key={idx} 
+                                  variant="outline" 
+                                  className="text-xs bg-purple-600/10 text-purple-300 border-purple-500/30"
+                                >
+                                  {topic}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center space-x-3 ml-4">
+                            <Badge variant="outline" className="bg-slate-700/50 text-slate-300 border-slate-600/50">
+                              {meeting.platform}
+                            </Badge>
+                            
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              className="text-purple-400 hover:text-purple-300 hover:bg-purple-600/10"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
                           </div>
                         </div>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className="bg-slate-700/50 border-slate-600/50 text-slate-300 hover:bg-slate-600/50"
-                        >
-                          Ver Transcrição
-                        </Button>
-                      </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </main>
-      </div>
+                  </CardContent>
+                </Card>
+              </StaggerItem>
 
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-    </div>
+              {searchResults.length > 0 && (
+                <StaggerItem>
+                  <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
+                    <CardHeader>
+                      <CardTitle className="text-white">Resultados da Busca IA</CardTitle>
+                      <CardDescription className="text-slate-400">
+                        Encontrei {searchResults.length} resultados relevantes
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {searchResults.map((result, index) => (
+                          <div key={index} className="p-4 border border-slate-700/50 rounded-lg bg-slate-700/20">
+                            <div className="flex items-center justify-between mb-2">
+                              <h3 className="font-semibold text-white">{result.meetingTitle}</h3>
+                              <Badge variant="outline" className="bg-slate-600/50 text-slate-300 border-slate-500/50">
+                                {result.date}
+                              </Badge>
+                            </div>
+                            <p className="text-slate-300 mb-3">{result.snippet}</p>
+                            <div className="flex justify-between items-center">
+                              <div className="flex items-center space-x-2">
+                                <span className="text-sm text-slate-400">
+                                  Confiança: {(result.confidence * 100).toFixed(0)}%
+                                </span>
+                                <div className="flex">
+                                  {[...Array(5)].map((_, i) => (
+                                    <Star 
+                                      key={i} 
+                                      className={`w-3 h-3 ${
+                                        i < Math.floor(result.confidence * 5) 
+                                          ? 'text-yellow-400 fill-current' 
+                                          : 'text-slate-600'
+                                      }`} 
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                className="bg-slate-700/50 border-slate-600/50 text-slate-300 hover:bg-slate-600/50"
+                              >
+                                Ver Transcrição
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </StaggerItem>
+              )}
+            </StaggerContainer>
+          </main>
+        </div>
+
+        <AnimatePresence>
+          {sidebarOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+              onClick={() => setSidebarOpen(false)}
+            />
+          )}
+        </AnimatePresence>
+      </div>
+    </PageTransition>
   );
 };
 

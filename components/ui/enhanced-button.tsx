@@ -13,7 +13,6 @@ interface EnhancedButtonProps extends MotionProps {
   onClick?: () => void
   disabled?: boolean
   type?: 'button' | 'submit' | 'reset'
-  href?: string
 }
 
 const EnhancedButton = forwardRef<HTMLButtonElement, EnhancedButtonProps>(
@@ -39,11 +38,13 @@ const EnhancedButton = forwardRef<HTMLButtonElement, EnhancedButtonProps>(
         type={type}
         whileHover={{ 
           scale: 1.02,
-          transition: { duration: 0.15 }
+          y: -2,
+          transition: { duration: 0.15, ease: "easeInOut" }
         }}
         whileTap={{ 
           scale: 0.98,
-          transition: { duration: 0.1 }
+          y: 0,
+          transition: { duration: 0.1, ease: "easeInOut" }
         }}
         className={cn(baseStyles, variants[variant], sizes[size], className)}
         onClick={onClick}
