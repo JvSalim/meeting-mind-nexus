@@ -33,24 +33,18 @@ const EnhancedButton = forwardRef<HTMLButtonElement, EnhancedButtonProps>(
       lg: "px-8 py-4 text-lg h-14"
     }
 
-    const hoverVariants = {
-      hover: { 
-        scale: 1.02,
-        transition: { duration: 0.15, ease: "easeInOut" }
-      },
-      tap: { 
-        scale: 0.98,
-        transition: { duration: 0.1, ease: "easeInOut" }
-      }
-    }
-
     return (
       <motion.button
         ref={ref}
         type={type}
-        variants={hoverVariants}
-        whileHover="hover"
-        whileTap="tap"
+        whileHover={{ 
+          scale: 1.02,
+          transition: { duration: 0.15 }
+        }}
+        whileTap={{ 
+          scale: 0.98,
+          transition: { duration: 0.1 }
+        }}
         className={cn(baseStyles, variants[variant], sizes[size], className)}
         onClick={onClick}
         disabled={disabled}
