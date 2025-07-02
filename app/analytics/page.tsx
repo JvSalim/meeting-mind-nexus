@@ -1,10 +1,9 @@
-
 'use client'
 
 import { ArrowLeft, TrendingUp, Users, Clock, MessageSquare } from 'lucide-react'
 import Link from 'next/link'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
+import { Button } from '../../components/ui/button'
 
 export default function AnalyticsPage() {
   const stats = [

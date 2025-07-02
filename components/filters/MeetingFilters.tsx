@@ -1,383 +1,235 @@
-
 'use client'
 
 import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { 
-  Filter, 
-  Search, 
-  Calendar, 
-  Clock, 
-  Users, 
-  X,
-  ChevronDown,
-  Video
-} from 'lucide-react'
-
-interface FilterOptions {
-  searchTerm: string
-  dateRange: {
-    start: string
-    end: string
-  }
-  platforms: string[]
-  duration: {
-    min: number
-    max: number
-  }
-  participants: {
-    min: number
-    max: number
-  }
-  keywords: string[]
-}
+import { Search, Filter, X, Calendar, Clock, Users, Tag } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Button } from '../ui/button'
+import { Input } from '../ui/input'
+import { Badge } from '../ui/badge'
 
 interface MeetingFiltersProps {
-  onFiltersChange: (filters: FilterOptions) => void
+  onFiltersChange: (filters: any) => void
   totalMeetings: number
   filteredCount: number
 }
 
-const platforms = [
-  { id: 'zoom', name: 'Zoom', icon: '🔵', color: 'bg-blue-100 text-blue-800' },
-  { id: 'teams', name: 'Microsoft Teams', icon: '🟣', color: 'bg-purple-100 text-purple-800' },
-  { id: 'meet', name: 'Google Meet', icon: '🟢', color: 'bg-green-100 text-green-800' },
-  { id: 'webex', name: 'Cisco Webex', icon: '🟠', color: 'bg-orange-100 text-orange-800' }
-]
+const MeetingFilters = ({ onFiltersChange, totalMeetings, filteredCount }: MeetingFiltersProps) => {
+  const [searchTerm, setSearchTerm] = useState('')
+  const [dateRange, setDateRange] = useState({ start: '', end: '' })
+  const [platforms, setPlatforms] = useState<string[]>([])
+  const [duration, setDuration] = useState({ min: 0, max: 200 })
+  const [participants, setParticipants] = useState({ min: 0, max: 20 })
+  const [keywords, setKeywords] = useState<string[]>([])
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
 
-const commonKeywords = [
-  'planejamento', 'estratégia', 'orçamento', 'vendas', 'marketing', 
-  'desenvolvimento', 'produto', 'cliente', 'projeto', 'timeline',
-  'metas', 'resultados', 'análise', 'retrospectiva', 'revisão'
-]
-
-export default function MeetingFilters({ onFiltersChange, totalMeetings, filteredCount }: MeetingFiltersProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
-  const [filters, setFilters] = useState<FilterOptions>({
-    searchTerm: '',
-    dateRange: { start: '', end: '' },
-    platforms: [],
-    duration: { min: 0, max: 300 },
-    participants: { min: 1, max: 50 },
-    keywords: []
-  })
-
-  const updateFilters = (newFilters: Partial<FilterOptions>) => {
-    const updated = { ...filters, ...newFilters }
-    setFilters(updated)
-    onFiltersChange(updated)
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setSearchTerm(value)
+    onFiltersChange({ searchTerm: value, dateRange, platforms, duration, participants, keywords })
   }
 
-  const clearAllFilters = () => {
-    const clearedFilters: FilterOptions = {
-      searchTerm: '',
-      dateRange: { start: '', end: '' },
-      platforms: [],
-      duration: { min: 0, max: 300 },
-      participants: { min: 1, max: 50 },
-      keywords: []
+  const handleDateChange = (type: 'start' | 'end', value: string) => {
+    const newDateRange = { ...dateRange, [type]: value }
+    setDateRange(newDateRange)
+    onFiltersChange({ searchTerm, dateRange: newDateRange, platforms, duration, participants, keywords })
+  }
+
+  const handlePlatformChange = (platform: string) => {
+    let newPlatforms = [...platforms]
+    if (platforms.includes(platform)) {
+      newPlatforms = platforms.filter(p => p !== platform)
+    } else {
+      newPlatforms.push(platform)
     }
-    setFilters(clearedFilters)
-    onFiltersChange(clearedFilters)
+    setPlatforms(newPlatforms)
+    onFiltersChange({ searchTerm, dateRange, platforms: newPlatforms, duration, participants, keywords })
   }
 
-  const togglePlatform = (platformId: string) => {
-    const newPlatforms = filters.platforms.includes(platformId)
-      ? filters.platforms.filter(p => p !== platformId)
-      : [...filters.platforms, platformId]
-    updateFilters({ platforms: newPlatforms })
+  const handleDurationChange = (type: 'min' | 'max', value: number) => {
+    const newDuration = { ...duration, [type]: value }
+    setDuration(newDuration)
+    onFiltersChange({ searchTerm, dateRange, platforms, duration: newDuration, participants, keywords })
   }
 
-  const toggleKeyword = (keyword: string) => {
-    const newKeywords = filters.keywords.includes(keyword)
-      ? filters.keywords.filter(k => k !== keyword)
-      : [...filters.keywords, keyword]
-    updateFilters({ keywords: newKeywords })
+  const handleParticipantsChange = (type: 'min' | 'max', value: number) => {
+    const newParticipants = { ...participants, [type]: value }
+    setParticipants(newParticipants)
+    onFiltersChange({ searchTerm, dateRange, platforms, duration, participants: newParticipants, keywords })
   }
 
-  const hasActiveFilters = 
-    filters.searchTerm || 
-    filters.dateRange.start || 
-    filters.dateRange.end ||
-    filters.platforms.length > 0 ||
-    filters.keywords.length > 0 ||
-    filters.duration.min > 0 ||
-    filters.duration.max < 300 ||
-    filters.participants.min > 1 ||
-    filters.participants.max < 50
+  const handleKeywordChange = (keyword: string) => {
+    let newKeywords = [...keywords]
+    if (keywords.includes(keyword)) {
+      newKeywords = keywords.filter(k => k !== keyword)
+    } else {
+      newKeywords.push(keyword)
+    }
+    setKeywords(newKeywords)
+    onFiltersChange({ searchTerm, dateRange, platforms, duration, participants, keywords: newKeywords })
+  }
+
+  const toggleFilter = () => {
+    setIsFilterOpen(!isFilterOpen)
+  }
+
+  const clearFilters = () => {
+    setSearchTerm('')
+    setDateRange({ start: '', end: '' })
+    setPlatforms([])
+    setDuration({ min: 0, max: 200 })
+    setParticipants({ min: 0, max: 20 })
+    setKeywords([])
+    onFiltersChange({ searchTerm: '', dateRange: { start: '', end: '' }, platforms: [], duration: { min: 0, max: 200 }, participants: { min: 0, max: 20 }, keywords: [] })
+  }
+
+  const commonKeywords = ['estratégia', 'vendas', 'produto', 'marketing', 'revisão', 'projeto']
 
   return (
-    <div className="space-y-4">
-      {/* Search Bar */}
-      <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
-        <CardContent className="p-4">
-          <div className="flex gap-3">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-              <Input
-                placeholder="Buscar por título, conteúdo ou participantes..."
-                value={filters.searchTerm}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateFilters({ searchTerm: e.target.value })}
-                className="pl-10 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400"
-              />
-            </div>
-            <Button
-              onClick={() => setIsExpanded(!isExpanded)}
-              variant="outline"
-              className="bg-slate-700/50 border-slate-600/50 text-slate-300 hover:bg-slate-600/50"
-            >
-              <Filter className="w-4 h-4 mr-2" />
-              Filtros
-              <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-              {hasActiveFilters && (
-                <div className="w-2 h-2 bg-purple-500 rounded-full ml-2"></div>
-              )}
-            </Button>
+    <Card className="bg-white border-slate-200 shadow-md">
+      <CardHeader className="flex items-center justify-between">
+        <CardTitle className="text-lg font-semibold text-slate-900">
+          <div className="flex items-center gap-2">
+            <Filter className="w-5 h-5 text-blue-600" />
+            Filtros
           </div>
-        </CardContent>
-      </Card>
+        </CardTitle>
+        <div className="text-sm text-slate-600">
+          {filteredCount} de {totalMeetings} reuniões
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="mb-4">
+          <Input
+            type="search"
+            placeholder="Buscar por título, conteúdo..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="w-full"
+          />
+        </div>
 
-      {/* Expanded Filters */}
-      {isExpanded && (
-        <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-white flex items-center">
-                <Filter className="w-5 h-5 mr-2" />
-                Filtros Avançados
-              </CardTitle>
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-slate-400">
-                  {filteredCount} de {totalMeetings} reuniões
-                </span>
-                {hasActiveFilters && (
-                  <Button
-                    onClick={clearAllFilters}
-                    variant="outline"
-                    size="sm"
-                    className="bg-slate-700/50 border-slate-600/50 text-slate-300 hover:bg-slate-600/50"
-                  >
-                    <X className="w-4 h-4 mr-1" />
-                    Limpar
-                  </Button>
-                )}
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Date Range */}
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-3">
-                <Calendar className="w-4 h-4 inline mr-2" />
-                Período
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs text-slate-400 mb-1">Data início</label>
-                  <Input
-                    type="date"
-                    value={filters.dateRange.start}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateFilters({ 
-                      dateRange: { ...filters.dateRange, start: e.target.value }
-                    })}
-                    className="bg-slate-700/50 border-slate-600/50 text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-slate-400 mb-1">Data fim</label>
-                  <Input
-                    type="date"
-                    value={filters.dateRange.end}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateFilters({ 
-                      dateRange: { ...filters.dateRange, end: e.target.value }
-                    })}
-                    className="bg-slate-700/50 border-slate-600/50 text-white"
-                  />
-                </div>
-              </div>
-            </div>
+        <div className="space-y-4">
+          <Button
+            onClick={toggleFilter}
+            className="w-full justify-start gap-2 bg-blue-50 hover:bg-blue-100 text-blue-700"
+          >
+            <Filter className="w-4 h-4" />
+            Mais Filtros
+          </Button>
 
-            {/* Platforms */}
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-3">
-                <Video className="w-4 h-4 inline mr-2" />
-                Plataformas
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {platforms.map((platform) => (
-                  <button
-                    key={platform.id}
-                    onClick={() => togglePlatform(platform.id)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
-                      filters.platforms.includes(platform.id)
-                        ? 'bg-purple-600/20 border-purple-500/50 text-purple-300'
-                        : 'bg-slate-700/50 border-slate-600/50 text-slate-300 hover:bg-slate-600/50'
-                    }`}
-                  >
-                    <span className="text-lg">{platform.icon}</span>
-                    <span className="text-sm">{platform.name}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
+          {isFilterOpen && (
+            <div className="border-t border-slate-200 pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="text-sm font-medium text-slate-700 mb-2">
+                    <Calendar className="w-4 h-4 inline-block mr-1" />
+                    Data
+                  </h4>
+                  <div className="flex gap-2">
+                    <Input
+                      type="date"
+                      value={dateRange.start}
+                      onChange={(e) => handleDateChange('start', e.target.value)}
+                      className="w-1/2"
+                    />
+                    <Input
+                      type="date"
+                      value={dateRange.end}
+                      onChange={(e) => handleDateChange('end', e.target.value)}
+                      className="w-1/2"
+                    />
+                  </div>
+                </div>
 
-            {/* Duration */}
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-3">
-                <Clock className="w-4 h-4 inline mr-2" />
-                Duração (minutos)
-              </label>
-              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-slate-400 mb-1">Mínimo</label>
-                  <Input
-                    type="number"
-                    min="0"
-                    max="600"
-                    value={filters.duration.min}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateFilters({ 
-                      duration: { ...filters.duration, min: parseInt(e.target.value) || 0 }
-                    })}
-                    className="bg-slate-700/50 border-slate-600/50 text-white"
-                  />
+                  <h4 className="text-sm font-medium text-slate-700 mb-2">Plataformas</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {['zoom', 'teams', 'meet', 'webex'].map((platform) => (
+                      <Button
+                        key={platform}
+                        variant="outline"
+                        className={`text-xs ${platforms.includes(platform) ? 'bg-blue-100 text-blue-700 border-blue-300' : 'text-slate-600 border-slate-300'}`}
+                        onClick={() => handlePlatformChange(platform)}
+                      >
+                        {platform}
+                      </Button>
+                    ))}
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-xs text-slate-400 mb-1">Máximo</label>
-                  <Input
-                    type="number"
-                    min="0"
-                    max="600"
-                    value={filters.duration.max}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateFilters({ 
-                      duration: { ...filters.duration, max: parseInt(e.target.value) || 300 }
-                    })}
-                    className="bg-slate-700/50 border-slate-600/50 text-white"
-                  />
-                </div>
-              </div>
-            </div>
 
-            {/* Participants */}
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-3">
-                <Users className="w-4 h-4 inline mr-2" />
-                Número de Participantes
-              </label>
-              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-slate-400 mb-1">Mínimo</label>
-                  <Input
-                    type="number"
-                    min="1"
-                    max="100"
-                    value={filters.participants.min}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateFilters({ 
-                      participants: { ...filters.participants, min: parseInt(e.target.value) || 1 }
-                    })}
-                    className="bg-slate-700/50 border-slate-600/50 text-white"
-                  />
+                  <h4 className="text-sm font-medium text-slate-700 mb-2">Duração (min)</h4>
+                  <div className="flex gap-2">
+                    <Input
+                      type="number"
+                      placeholder="Min"
+                      value={duration.min}
+                      onChange={(e) => handleDurationChange('min', Number(e.target.value))}
+                      className="w-1/2"
+                    />
+                    <Input
+                      type="number"
+                      placeholder="Max"
+                      value={duration.max}
+                      onChange={(e) => handleDurationChange('max', Number(e.target.value))}
+                      className="w-1/2"
+                    />
+                  </div>
                 </div>
+
                 <div>
-                  <label className="block text-xs text-slate-400 mb-1">Máximo</label>
-                  <Input
-                    type="number"
-                    min="1"
-                    max="100"
-                    value={filters.participants.max}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateFilters({ 
-                      participants: { ...filters.participants, max: parseInt(e.target.value) || 50 }
-                    })}
-                    className="bg-slate-700/50 border-slate-600/50 text-white"
-                  />
+                  <h4 className="text-sm font-medium text-slate-700 mb-2">Participantes</h4>
+                  <div className="flex gap-2">
+                    <Input
+                      type="number"
+                      placeholder="Min"
+                      value={participants.min}
+                      onChange={(e) => handleParticipantsChange('min', Number(e.target.value))}
+                      className="w-1/2"
+                    />
+                    <Input
+                      type="number"
+                      placeholder="Max"
+                      value={participants.max}
+                      onChange={(e) => handleParticipantsChange('max', Number(e.target.value))}
+                      className="w-1/2"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-medium text-slate-700 mb-2">
+                    <Tag className="w-4 h-4 inline-block mr-1" />
+                    Palavras-chave
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {commonKeywords.map((keyword) => (
+                      <Badge
+                        key={keyword}
+                        variant="outline"
+                        className={`text-xs ${keywords.includes(keyword) ? 'bg-blue-100 text-blue-700 border-blue-300' : 'text-slate-600 border-slate-300'}`}
+                        onClick={() => handleKeywordChange(keyword)}
+                      >
+                        {keyword}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Keywords */}
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-3">
-                Palavras-chave Comuns
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {commonKeywords.map((keyword) => (
-                  <button
-                    key={keyword}
-                    onClick={() => toggleKeyword(keyword)}
-                    className={`px-3 py-1 rounded-full text-sm transition-colors border ${
-                      filters.keywords.includes(keyword)
-                        ? 'bg-purple-600/20 border-purple-500/50 text-purple-300'
-                        : 'bg-slate-700/50 border-slate-600/50 text-slate-300 hover:bg-slate-600/50'
-                    }`}
-                  >
-                    {keyword}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Active Filters Display */}
-      {hasActiveFilters && (
-        <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-medium text-slate-300">Filtros ativos:</span>
               <Button
-                onClick={clearAllFilters}
-                variant="ghost"
-                size="sm"
-                className="text-slate-400 hover:text-white"
+                onClick={clearFilters}
+                className="w-full mt-4 justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700"
               >
-                <X className="w-4 h-4 mr-1" />
-                Limpar todos
+                <X className="w-4 h-4" />
+                Limpar Filtros
               </Button>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {filters.searchTerm && (
-                <Badge variant="outline" className="bg-purple-600/10 text-purple-300 border-purple-500/30">
-                  Busca: "{filters.searchTerm}"
-                  <button
-                    onClick={() => updateFilters({ searchTerm: '' })}
-                    className="ml-2 hover:text-white"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </Badge>
-              )}
-              {filters.platforms.map((platformId) => {
-                const platform = platforms.find(p => p.id === platformId)
-                return platform ? (
-                  <Badge key={platformId} variant="outline" className="bg-purple-600/10 text-purple-300 border-purple-500/30">
-                    {platform.icon} {platform.name}
-                    <button
-                      onClick={() => togglePlatform(platformId)}
-                      className="ml-2 hover:text-white"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </Badge>
-                ) : null
-              })}
-              {filters.keywords.map((keyword) => (
-                <Badge key={keyword} variant="outline" className="bg-purple-600/10 text-purple-300 border-purple-500/30">
-                  {keyword}
-                  <button
-                    onClick={() => toggleKeyword(keyword)}
-                    className="ml-2 hover:text-white"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   )
 }
+
+export default MeetingFilters

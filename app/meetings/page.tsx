@@ -3,10 +3,10 @@
 import { useState } from 'react'
 import { Calendar, Clock, Users, MessageSquare, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import MeetingFilters from '@/components/filters/MeetingFilters'
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
+import { Button } from '../../components/ui/button'
+import { Badge } from '../../components/ui/badge'
+import MeetingFilters from '../../components/filters/MeetingFilters'
 
 interface Meeting {
   id: string

@@ -1,10 +1,9 @@
-
 'use client'
 
 import { useState } from 'react'
 import { Calendar, Clock, Users, Download, FileText, ArrowLeft, Copy, Check } from 'lucide-react'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
 
 interface MeetingDetail {
   id: string
