@@ -1,6 +1,7 @@
+
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Calendar, Clock, Users, Download, FileText, ArrowLeft, Copy, Check } from 'lucide-react'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
@@ -59,8 +60,17 @@ const mockMeetingDetail: MeetingDetail = {
   keywords: ['estratégia', 'Q4', 'metas', 'vendas', 'expansão', 'crescimento', 'ROI', 'EBITDA', 'roadmap']
 }
 
-export default function MeetingDetailPage({ params }: { params: { id: string } }) {
+export default function MeetingDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const [copied, setCopied] = useState(false)
+  const [meetingId, setMeetingId] = useState<string>('')
+
+  useEffect(() => {
+    const getParams = async () => {
+      const resolvedParams = await params
+      setMeetingId(resolvedParams.id)
+    }
+    getParams()
+  }, [params])
 
   const handleCopy = async (text: string) => {
     await navigator.clipboard.writeText(text)
