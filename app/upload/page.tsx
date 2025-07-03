@@ -4,28 +4,24 @@
 import { useState, useCallback } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
 import { EnhancedButton } from "../../components/ui/enhanced-button";
+import { Progress } from "../../components/ui/progress";
 import { Badge } from "../../components/ui/badge";
 import { 
-  Upload as UploadIcon, 
+  Upload, 
   FileAudio, 
-  FileVideo,
-  File,
-  X,
-  Check,
+  FileVideo, 
+  File, 
+  Check, 
+  AlertCircle, 
   Clock,
-  Brain,
-  Download,
+  Trash2,
   Play,
   Pause,
-  Volume2,
-  Settings,
-  Sparkles,
-  AlertCircle,
-  Loader2
+  Download,
+  Eye
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageTransition, FadeInSection, StaggerContainer, StaggerItem } from "../../components/ui/page-animations";
-import { useRouter } from "next/navigation";
 
 interface UploadedFile {
   id: string;
@@ -34,123 +30,93 @@ interface UploadedFile {
   type: string;
   status: 'uploading' | 'processing' | 'completed' | 'error';
   progress: number;
-  transcription?: string;
+  transcript?: string;
+  summary?: string;
   uploadedAt: Date;
 }
 
-const Upload = () => {
-  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
-  const [isDragActive, setIsDragActive] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const router = useRouter();
+const UploadPage = () => {
+  const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [dragActive, setDragActive] = useState(false);
 
-  const onDragEnter = useCallback((e: React.DragEvent) => {
+  const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsDragActive(true);
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
   }, []);
 
-  const onDragLeave = useCallback((e: React.DragEvent) => {
+  const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsDragActive(false);
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFiles(Array.from(e.dataTransfer.files));
+    }
   }, []);
 
-  const onDragOver = useCallback((e: React.DragEvent) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    e.stopPropagation();
+    if (e.target.files && e.target.files[0]) {
+      handleFiles(Array.from(e.target.files));
+    }
   }, []);
 
-  const onDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragActive(false);
+  const handleFiles = (fileList: File[]) => {
+    const newFiles: UploadedFile[] = fileList.map(file => ({
+      id: Math.random().toString(36).substr(2, 9),
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      status: 'uploading',
+      progress: 0,
+      uploadedAt: new Date()
+    }));
 
-    const files = Array.from(e.dataTransfer.files);
-    handleFiles(files);
-  }, []);
+    setFiles(prev => [...prev, ...newFiles]);
 
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    handleFiles(files);
-  }, []);
-
-  const handleFiles = (files: File[]) => {
-    const validFiles = files.filter(file => 
-      file.type.startsWith('audio/') || 
-      file.type.startsWith('video/') ||
-      file.type === 'application/pdf'
-    );
-
-    validFiles.forEach(file => {
-      const newFile: UploadedFile = {
-        id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        status: 'uploading',
-        progress: 0,
-        uploadedAt: new Date()
-      };
-
-      setUploadedFiles(prev => [...prev, newFile]);
-
-      // Simulate upload progress
-      simulateUpload(newFile.id);
+    // Simulate upload and processing
+    newFiles.forEach(file => {
+      simulateUpload(file.id);
     });
   };
 
-  const simulateUpload = async (fileId: string) => {
-    // Simulate upload progress
-    for (let progress = 0; progress <= 100; progress += 10) {
-      await new Promise(resolve => setTimeout(resolve, 200));
-      setUploadedFiles(prev => 
-        prev.map(file => 
-          file.id === fileId 
-            ? { ...file, progress }
-            : file
-        )
-      );
-    }
-
-    // Change to processing
-    setUploadedFiles(prev => 
-      prev.map(file => 
-        file.id === fileId 
-          ? { ...file, status: 'processing', progress: 0 }
-          : file
-      )
-    );
-
-    // Simulate processing
-    for (let progress = 0; progress <= 100; progress += 5) {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      setUploadedFiles(prev => 
-        prev.map(file => 
-          file.id === fileId 
-            ? { ...file, progress }
-            : file
-        )
-      );
-    }
-
-    // Complete processing
-    setUploadedFiles(prev => 
-      prev.map(file => 
-        file.id === fileId 
-          ? { 
+  const simulateUpload = (fileId: string) => {
+    const interval = setInterval(() => {
+      setFiles(prev => prev.map(file => {
+        if (file.id === fileId) {
+          if (file.status === 'uploading' && file.progress < 100) {
+            return { ...file, progress: Math.min(file.progress + 10, 100) };
+          } else if (file.status === 'uploading' && file.progress === 100) {
+            return { 
               ...file, 
-              status: 'completed', 
-              progress: 100,
-              transcription: `Transcrição completa do arquivo ${file.name}. Esta é uma simulação da transcrição que seria gerada pela IA após o processamento do arquivo de áudio ou vídeo.`
-            }
-          : file
-      )
-    );
+              status: 'processing', 
+              progress: 0 
+            };
+          } else if (file.status === 'processing' && file.progress < 100) {
+            return { ...file, progress: Math.min(file.progress + 5, 100) };
+          } else if (file.status === 'processing' && file.progress === 100) {
+            return { 
+              ...file, 
+              status: 'completed',
+              transcript: "Esta é uma transcrição de exemplo gerada automaticamente pela IA. O conteúdo real seria baseado no arquivo de áudio ou vídeo enviado.",
+              summary: "Resumo: Reunião de planejamento semanal com discussão sobre metas e objetivos do projeto."
+            };
+          }
+        }
+        return file;
+      }));
+    }, 1000);
+
+    setTimeout(() => clearInterval(interval), 15000);
   };
 
   const removeFile = (fileId: string) => {
-    setUploadedFiles(prev => prev.filter(file => file.id !== fileId));
+    setFiles(prev => prev.filter(file => file.id !== fileId));
   };
 
   const formatFileSize = (bytes: number) => {
@@ -162,8 +128,8 @@ const Upload = () => {
   };
 
   const getFileIcon = (type: string) => {
-    if (type.startsWith('audio/')) return FileAudio;
-    if (type.startsWith('video/')) return FileVideo;
+    if (type.includes('audio')) return FileAudio;
+    if (type.includes('video')) return FileVideo;
     return File;
   };
 
@@ -179,11 +145,11 @@ const Upload = () => {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'uploading': return <Loader2 className="w-3 h-3 animate-spin" />;
-      case 'processing': return <Brain className="w-3 h-3" />;
-      case 'completed': return <Check className="w-3 h-3" />;
-      case 'error': return <AlertCircle className="w-3 h-3" />;
-      default: return <Clock className="w-3 h-3" />;
+      case 'uploading': return Upload;
+      case 'processing': return Clock;
+      case 'completed': return Check;
+      case 'error': return AlertCircle;
+      default: return File;
     }
   };
 
@@ -193,12 +159,12 @@ const Upload = () => {
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <FadeInSection>
-            <div className="text-center mb-12">
+            <div className="text-center mb-8">
               <h1 className="text-4xl font-bold text-white mb-4">
                 Upload de Arquivos
               </h1>
-              <p className="text-slate-300 text-lg max-w-2xl mx-auto">
-                Faça upload de arquivos de áudio, vídeo ou documentos para transcrição e análise com IA
+              <p className="text-slate-300 text-lg">
+                Faça upload de arquivos de áudio ou vídeo para transcrição automática
               </p>
             </div>
           </FadeInSection>
@@ -208,188 +174,169 @@ const Upload = () => {
             <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm mb-8">
               <CardContent className="p-8">
                 <div
-                  className={`relative border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-300 ${
-                    isDragActive
-                      ? 'border-purple-400 bg-purple-600/10'
-                      : 'border-slate-600 hover:border-slate-500 hover:bg-slate-700/20'
-                  }`}
-                  onDragEnter={onDragEnter}
-                  onDragLeave={onDragLeave}
-                  onDragOver={onDragOver}
-                  onDrop={onDrop}
+                  className={`
+                    relative border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-300
+                    ${dragActive 
+                      ? 'border-purple-500 bg-purple-500/10' 
+                      : 'border-slate-600/50 hover:border-slate-500/50 hover:bg-slate-700/30'
+                    }
+                  `}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
                 >
                   <input
                     type="file"
                     multiple
-                    accept="audio/*,video/*,.pdf"
-                    onChange={handleFileSelect}
+                    accept="audio/*,video/*"
+                    onChange={handleChange}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   />
                   
-                  <motion.div
-                    animate={{ 
-                      scale: isDragActive ? 1.05 : 1,
-                      rotate: isDragActive ? 5 : 0 
-                    }}
-                    className="flex flex-col items-center space-y-4"
-                  >
-                    <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center">
-                      <UploadIcon className="w-8 h-8 text-white" />
+                  <div className="space-y-4">
+                    <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center mx-auto">
+                      <Upload className="w-8 h-8 text-white" />
                     </div>
                     
                     <div>
                       <h3 className="text-xl font-semibold text-white mb-2">
-                        {isDragActive ? 'Solte os arquivos aqui' : 'Faça upload dos seus arquivos'}
+                        Arraste arquivos aqui ou clique para selecionar
                       </h3>
-                      <p className="text-slate-300 mb-4">
-                        Arraste e solte ou clique para selecionar arquivos
+                      <p className="text-slate-300">
+                        Suportamos arquivos de áudio e vídeo (MP3, MP4, WAV, M4A, MOV)
                       </p>
-                      <div className="flex flex-wrap justify-center gap-2">
-                        <Badge variant="outline" className="bg-slate-700/50 text-slate-300 border-slate-600/50">
-                          <FileAudio className="w-3 h-3 mr-1" />
-                          Áudio
-                        </Badge>
-                        <Badge variant="outline" className="bg-slate-700/50 text-slate-300 border-slate-600/50">
-                          <FileVideo className="w-3 h-3 mr-1" />
-                          Vídeo
-                        </Badge>
-                        <Badge variant="outline" className="bg-slate-700/50 text-slate-300 border-slate-600/50">
-                          <File className="w-3 h-3 mr-1" />
-                          PDF
-                        </Badge>
-                      </div>
                     </div>
-                  </motion.div>
+                    
+                    <EnhancedButton variant="outline">
+                      Selecionar Arquivos
+                    </EnhancedButton>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </FadeInSection>
 
-          {/* Uploaded Files */}
-          {uploadedFiles.length > 0 && (
+          {/* Files List */}
+          {files.length > 0 && (
             <FadeInSection>
               <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
-                    <Sparkles className="w-5 h-5 mr-2 text-purple-400" />
-                    Arquivos Enviados
+                    <FileAudio className="w-5 h-5 mr-2" />
+                    Arquivos Enviados ({files.length})
                   </CardTitle>
                   <CardDescription className="text-slate-300">
-                    Acompanhe o progresso da transcrição dos seus arquivos
+                    Acompanhe o progresso de upload e processamento dos seus arquivos
                   </CardDescription>
                 </CardHeader>
+                
                 <CardContent>
                   <StaggerContainer staggerDelay={0.1}>
                     <div className="space-y-4">
                       <AnimatePresence>
-                        {uploadedFiles.map((file) => {
+                        {files.map((file) => {
                           const FileIcon = getFileIcon(file.type);
+                          const StatusIcon = getStatusIcon(file.status);
+                          
                           return (
                             <StaggerItem key={file.id}>
                               <motion.div
+                                layout
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                                whileHover={{ scale: 1.01 }}
-                                className="p-6 bg-slate-700/30 rounded-lg border border-slate-600/50 hover:bg-slate-700/50 transition-all duration-300"
+                                className="bg-slate-700/30 border border-slate-600/30 rounded-xl p-4 hover:bg-slate-700/50 transition-all duration-300"
                               >
                                 <div className="flex items-center justify-between">
-                                  <div className="flex items-center space-x-4 flex-1">
-                                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+                                  <div className="flex items-center space-x-4 flex-1 min-w-0">
+                                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center flex-shrink-0">
                                       <FileIcon className="w-6 h-6 text-white" />
                                     </div>
                                     
                                     <div className="flex-1 min-w-0">
-                                      <h4 className="font-medium text-white truncate">
+                                      <h4 className="text-white font-medium truncate">
                                         {file.name}
                                       </h4>
-                                      <div className="flex items-center space-x-4 text-sm text-slate-300">
+                                      <div className="flex items-center space-x-4 text-sm text-slate-400">
                                         <span>{formatFileSize(file.size)}</span>
                                         <span>•</span>
-                                        <span>{new Date(file.uploadedAt).toLocaleTimeString('pt-BR')}</span>
+                                        <span>{file.uploadedAt.toLocaleTimeString()}</span>
                                       </div>
                                     </div>
                                   </div>
-
+                                  
                                   <div className="flex items-center space-x-4">
                                     <Badge variant="outline" className={getStatusColor(file.status)}>
-                                      {getStatusIcon(file.status)}
-                                      <span className="ml-1 capitalize">
-                                        {file.status === 'uploading' && 'Enviando'}
-                                        {file.status === 'processing' && 'Processando'}
-                                        {file.status === 'completed' && 'Concluído'}
-                                        {file.status === 'error' && 'Erro'}
-                                      </span>
+                                      <StatusIcon className="w-3 h-3 mr-1" />
+                                      {file.status === 'uploading' && 'Enviando'}
+                                      {file.status === 'processing' && 'Processando'}
+                                      {file.status === 'completed' && 'Concluído'}
+                                      {file.status === 'error' && 'Erro'}
                                     </Badge>
-
+                                    
                                     {file.status === 'completed' && (
-                                      <EnhancedButton
-                                        variant="outline"
-                                        size="sm"
-                                        className="bg-slate-600/50 border-slate-500/50 text-slate-300"
-                                      >
-                                        <Download className="w-4 h-4 mr-1" />
-                                        Baixar
-                                      </EnhancedButton>
+                                      <div className="flex space-x-2">
+                                        <EnhancedButton
+                                          variant="ghost"
+                                          size="sm"
+                                          className="text-blue-400 hover:text-blue-300"
+                                        >
+                                          <Eye className="w-4 h-4" />
+                                        </EnhancedButton>
+                                        
+                                        <EnhancedButton
+                                          variant="ghost"
+                                          size="sm"
+                                          className="text-green-400 hover:text-green-300"
+                                        >
+                                          <Download className="w-4 h-4" />
+                                        </EnhancedButton>
+                                      </div>
                                     )}
-
+                                    
                                     <EnhancedButton
                                       variant="ghost"
                                       size="sm"
                                       onClick={() => removeFile(file.id)}
-                                      className="text-slate-400 hover:text-red-400"
+                                      className="text-red-400 hover:text-red-300"
                                     >
-                                      <X className="w-4 h-4" />
+                                      <Trash2 className="w-4 h-4" />
                                     </EnhancedButton>
                                   </div>
                                 </div>
-
-                                {/* Progress Bar */}
+                                
                                 {(file.status === 'uploading' || file.status === 'processing') && (
                                   <div className="mt-4">
-                                    <div className="flex items-center justify-between mb-2">
-                                      <span className="text-sm text-slate-300">
-                                        {file.status === 'uploading' ? 'Enviando...' : 'Processando com IA...'}
+                                    <div className="flex items-center justify-between text-sm text-slate-400 mb-2">
+                                      <span>
+                                        {file.status === 'uploading' ? 'Enviando' : 'Processando'}...
                                       </span>
-                                      <span className="text-sm text-slate-300">
-                                        {file.progress}%
-                                      </span>
+                                      <span>{file.progress}%</span>
                                     </div>
-                                    <div className="w-full bg-slate-600/50 rounded-full h-2">
-                                      <motion.div
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${file.progress}%` }}
-                                        className="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full"
-                                        transition={{ duration: 0.3 }}
-                                      />
-                                    </div>
+                                    <Progress 
+                                      value={file.progress} 
+                                      className="h-2 bg-slate-600/50"
+                                    />
                                   </div>
                                 )}
-
-                                {/* Transcription Preview */}
-                                {file.status === 'completed' && file.transcription && (
-                                  <motion.div
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: 'auto' }}
-                                    className="mt-4 p-4 bg-slate-800/50 rounded-lg border border-slate-600/30"
-                                  >
-                                    <div className="flex items-center justify-between mb-2">
-                                      <h5 className="font-medium text-white flex items-center">
-                                        <Brain className="w-4 h-4 mr-2 text-purple-400" />
-                                        Transcrição
-                                      </h5>
-                                      <EnhancedButton
-                                        variant="outline"
-                                        size="sm"
-                                        className="bg-slate-700/50 border-slate-600/50 text-slate-300"
-                                      >
-                                        Ver Completa
-                                      </EnhancedButton>
-                                    </div>
-                                    <p className="text-slate-300 text-sm line-clamp-3">
-                                      {file.transcription}
+                                
+                                {file.status === 'completed' && file.transcript && (
+                                  <div className="mt-4 p-4 bg-slate-800/50 rounded-lg">
+                                    <h5 className="text-white font-medium mb-2">Transcrição:</h5>
+                                    <p className="text-slate-300 text-sm leading-relaxed">
+                                      {file.transcript}
                                     </p>
-                                  </motion.div>
+                                    
+                                    {file.summary && (
+                                      <div className="mt-3 pt-3 border-t border-slate-600/30">
+                                        <h5 className="text-white font-medium mb-2">Resumo:</h5>
+                                        <p className="text-slate-300 text-sm">
+                                          {file.summary}
+                                        </p>
+                                      </div>
+                                    )}
+                                  </div>
                                 )}
                               </motion.div>
                             </StaggerItem>
@@ -402,60 +349,10 @@ const Upload = () => {
               </Card>
             </FadeInSection>
           )}
-
-          {/* Quick Actions */}
-          <FadeInSection>
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
-                <CardContent className="p-6 text-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mx-auto mb-4">
-                    <Settings className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="font-semibold text-white mb-2">Configurações</h3>
-                  <p className="text-slate-300 text-sm mb-4">
-                    Ajuste as preferências de transcrição
-                  </p>
-                  <EnhancedButton variant="outline" size="sm" className="bg-slate-700/50 border-slate-600/50 text-slate-300">
-                    Configurar
-                  </EnhancedButton>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
-                <CardContent className="p-6 text-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center mx-auto mb-4">
-                    <Brain className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="font-semibold text-white mb-2">IA Analytics</h3>
-                  <p className="text-slate-300 text-sm mb-4">
-                    Análise inteligente dos arquivos
-                  </p>
-                  <EnhancedButton variant="outline" size="sm" className="bg-slate-700/50 border-slate-600/50 text-slate-300">
-                    Ver Análises
-                  </EnhancedButton>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
-                <CardContent className="p-6 text-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mx-auto mb-4">
-                    <Download className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="font-semibold text-white mb-2">Exportar Tudo</h3>
-                  <p className="text-slate-300 text-sm mb-4">
-                    Baixe todas as transcrições
-                  </p>
-                  <EnhancedButton variant="outline" size="sm" className="bg-slate-700/50 border-slate-600/50 text-slate-300">
-                    Exportar
-                  </EnhancedButton>
-                </CardContent>
-              </Card>
-            </div>
-          </FadeInSection>
         </div>
       </div>
     </PageTransition>
   );
 };
 
-export default Upload;
+export default UploadPage;
