@@ -70,7 +70,7 @@ export function Sidebar({ user, onLogout }: SidebarProps) {
       <motion.div
         initial={{ x: -300 }}
         animate={{ x: isOpen || typeof window !== 'undefined' && window.innerWidth >= 1024 ? 0 : -300 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
         className="fixed left-0 top-0 h-full w-64 bg-slate-900/95 backdrop-blur-xl border-r border-slate-800/50 z-50 lg:relative lg:translate-x-0"
       >
         {/* Header */}
@@ -95,12 +95,13 @@ export function Sidebar({ user, onLogout }: SidebarProps) {
                   key={item.id}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
+                  transition={{ delay: index * 0.05, duration: 0.2, ease: "easeOut" }}
                 >
                   <Link href={item.href} onClick={() => setIsOpen(false)}>
                     <motion.div
                       whileHover={{ scale: 1.02, x: 4 }}
                       whileTap={{ scale: 0.98 }}
+                      transition={{ duration: 0.1 }}
                       className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 cursor-pointer ${
                         active
                           ? 'bg-gradient-to-r from-purple-600/20 to-blue-600/20 text-purple-300 border border-purple-500/30 shadow-lg' 
@@ -122,7 +123,7 @@ export function Sidebar({ user, onLogout }: SidebarProps) {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.3, duration: 0.2 }}
             className="p-4 bg-slate-800/50 backdrop-blur-sm rounded-lg mb-4 border border-slate-700/50"
           >
             <div className="flex items-center space-x-3">
