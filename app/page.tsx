@@ -24,7 +24,7 @@ import {
 import { useState, useEffect } from "react";
 import AnimatedText from "../components/ui/animated-text";
 import { EnhancedButton } from "../components/ui/enhanced-button";
-import { PageTransition, FadeInSection, SlideInSection, ScaleInSection, StaggerContainer, StaggerItem } from "../components/ui/page-animations";
+import { motion } from "framer-motion";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -32,6 +32,27 @@ export default function Home() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Optimized animations with reduced complexity
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: "easeOut" }
+    }
+  };
 
   const features = [
     {
@@ -106,324 +127,353 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 text-white overflow-hidden">
-      {/* Enhanced animated background elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-green-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse delay-2000" />
-        
-        {/* Floating particles */}
-        <div className="absolute inset-0">
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className={`absolute w-2 h-2 bg-white/10 rounded-full animate-float`}
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${i * 0.5}s`,
-                animationDuration: `${4 + Math.random() * 2}s`
-              }}
-            />
-          ))}
-        </div>
+      {/* Simplified background elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-30">
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" />
       </div>
 
-      <PageTransition>
-        {/* Enhanced Header */}
-        <header className="relative z-20 flex items-center justify-between p-8 max-w-7xl mx-auto">
-          <SlideInSection direction="left">
-            <Link href="/" className="flex items-center space-x-3 group">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Mic className="w-7 h-7 text-white" />
-              </div>
-              <span className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                MeetingAI
+      {/* Header */}
+      <header className="relative z-20 flex items-center justify-between p-8 max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Link href="/" className="flex items-center space-x-3 group">
+            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <Mic className="w-7 h-7 text-white" />
+            </div>
+            <span className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+              MeetingAI
+            </span>
+          </Link>
+        </motion.div>
+        
+        <motion.nav
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="hidden md:flex items-center space-x-8"
+        >
+          <a href="#features" className="text-slate-300 hover:text-white transition-colors duration-300 font-medium">Recursos</a>
+          <a href="#testimonials" className="text-slate-300 hover:text-white transition-colors duration-300 font-medium">Depoimentos</a>
+          <a href="#stats" className="text-slate-300 hover:text-white transition-colors duration-300 font-medium">Resultados</a>
+        </motion.nav>
+        
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="flex items-center space-x-4"
+        >
+          <Link href="/login">
+            <EnhancedButton variant="ghost" size="md" className="text-slate-300 hover:text-white">
+              Entrar
+            </EnhancedButton>
+          </Link>
+          <Link href="/register">
+            <EnhancedButton variant="primary" size="md">
+              Começar Grátis
+            </EnhancedButton>
+          </Link>
+        </motion.div>
+      </header>
+
+      {/* Hero Section */}
+      <main className="relative z-10 flex flex-col items-center justify-center min-h-[85vh] px-8 text-center">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="max-w-6xl mx-auto"
+        >
+          <motion.div variants={itemVariants} className="mb-12 flex items-center justify-center space-x-2">
+            <div className="px-6 py-3 bg-gradient-to-r from-purple-600/20 to-blue-600/20 border border-purple-500/30 rounded-2xl backdrop-blur-sm">
+              <span className="text-sm font-medium text-purple-300 flex items-center">
+                <Sparkles className="w-4 h-4 mr-2" />
+                IA Avançada para Reuniões
               </span>
+            </div>
+          </motion.div>
+          
+          <motion.h1 
+            variants={itemVariants}
+            className="text-6xl md:text-8xl font-bold mb-8 leading-tight tracking-tight"
+          >
+            Transforme suas{" "}
+            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+              reuniões
+            </span>
+            <br />
+            em <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">insights</span>
+          </motion.h1>
+          
+          <motion.div variants={itemVariants} className="text-2xl md:text-3xl text-slate-300 mb-6 h-12 flex items-center justify-center">
+            <AnimatedText 
+              texts={aiTexts}
+              className="font-medium bg-gradient-to-r from-slate-300 to-slate-100 bg-clip-text text-transparent"
+              typingSpeed={60}
+              deletingSpeed={30}
+              pauseDuration={2500}
+            />
+          </motion.div>
+          
+          <motion.p 
+            variants={itemVariants}
+            className="text-xl text-slate-400 mb-16 max-w-3xl mx-auto leading-relaxed"
+          >
+            Plataforma completa de IA para transcrever, analisar e otimizar suas reuniões. 
+            Economize tempo e nunca perca informações importantes novamente.
+          </motion.p>
+          
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col sm:flex-row items-center justify-center space-y-6 sm:space-y-0 sm:space-x-8 mb-16"
+          >
+            <Link href="/register">
+              <EnhancedButton size="lg" className="w-full sm:w-auto min-w-[200px] h-16 text-lg">
+                <Play className="w-6 h-6 mr-3" />
+                Começar Gratuitamente
+                <ArrowRight className="w-6 h-6 ml-3" />
+              </EnhancedButton>
             </Link>
-          </SlideInSection>
+            
+            <Link href="/upload">
+              <EnhancedButton variant="outline" size="lg" className="w-full sm:w-auto min-w-[200px] h-16 text-lg">
+                <Upload className="w-6 h-6 mr-3" />
+                Testar Agora
+              </EnhancedButton>
+            </Link>
+          </motion.div>
           
-          <SlideInSection direction="down" delay={0.2}>
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-slate-300 hover:text-white transition-colors duration-300 font-medium">Recursos</a>
-              <a href="#testimonials" className="text-slate-300 hover:text-white transition-colors duration-300 font-medium">Depoimentos</a>
-              <a href="#stats" className="text-slate-300 hover:text-white transition-colors duration-300 font-medium">Resultados</a>
-            </nav>
-          </SlideInSection>
-          
-          <SlideInSection direction="right" delay={0.3}>
-            <div className="flex items-center space-x-4">
-              <Link href="/login">
-                <EnhancedButton variant="ghost" size="md" className="text-slate-300 hover:text-white">
-                  Entrar
-                </EnhancedButton>
-              </Link>
-              <Link href="/register">
-                <EnhancedButton variant="primary" size="md">
-                  Começar Grátis
-                </EnhancedButton>
-              </Link>
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-wrap items-center justify-center gap-8 text-sm text-slate-400"
+          >
+            <div className="flex items-center space-x-2">
+              <CheckCircle className="w-5 h-5 text-green-400" />
+              <span>Grátis para começar</span>
             </div>
-          </SlideInSection>
-        </header>
+            <div className="flex items-center space-x-2">
+              <Shield className="w-5 h-5 text-green-400" />
+              <span>Sem cartão de crédito</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Clock className="w-5 h-5 text-green-400" />
+              <span>Setup em 2 minutos</span>
+            </div>
+          </motion.div>
+        </motion.div>
+      </main>
 
-        {/* Hero Section with Eonix-inspired design */}
-        <main className="relative z-10 flex flex-col items-center justify-center min-h-[85vh] px-8 text-center">
-          <FadeInSection className="max-w-6xl mx-auto">
-            <ScaleInSection delay={0.2}>
-              <div className="mb-12 flex items-center justify-center space-x-2">
-                <div className="px-6 py-3 bg-gradient-to-r from-purple-600/20 to-blue-600/20 border border-purple-500/30 rounded-2xl backdrop-blur-sm">
-                  <span className="text-sm font-medium text-purple-300 flex items-center">
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    IA Avançada para Reuniões
-                  </span>
-                </div>
+      {/* Stats Section */}
+      <section id="stats" className="py-24 px-8 max-w-7xl mx-auto relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            Resultados que{" "}
+            <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+              impressionam
+            </span>
+          </h2>
+        </motion.div>
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {stats.map((stat, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.02, y: -4 }}
+              className="text-center p-8 rounded-2xl bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300"
+            >
+              <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent mb-2">
+                {stat.number}
               </div>
-            </ScaleInSection>
-            
-            <FadeInSection delay={0.4}>
-              <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight tracking-tight">
-                Transforme suas{" "}
-                <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-                  reuniões
-                </span>
-                <br />
-                em <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">insights</span>
-              </h1>
-            </FadeInSection>
-            
-            <FadeInSection delay={0.6}>
-              <div className="text-2xl md:text-3xl text-slate-300 mb-6 h-12 flex items-center justify-center">
-                <AnimatedText 
-                  texts={aiTexts}
-                  className="font-medium bg-gradient-to-r from-slate-300 to-slate-100 bg-clip-text text-transparent"
-                  typingSpeed={60}
-                  deletingSpeed={30}
-                  pauseDuration={2500}
-                />
+              <div className="text-slate-400 font-medium">{stat.label}</div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-24 px-8 max-w-7xl mx-auto relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="text-center mb-20"
+        >
+          <h2 className="text-5xl md:text-6xl font-bold mb-8">
+            Recursos{" "}
+            <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+              Inteligentes
+            </span>
+          </h2>
+          <p className="text-xl text-slate-400 max-w-3xl mx-auto">
+            Tecnologia de ponta para revolucionar como você gerencia reuniões e acelera sua produtividade
+          </p>
+        </motion.div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {features.map((feature, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.02, y: -4 }}
+              className="group p-10 rounded-3xl bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 hover:border-purple-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20"
+            >
+              <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300`}>
+                <feature.icon className="w-8 h-8 text-white" />
               </div>
-            </FadeInSection>
-            
-            <FadeInSection delay={0.8}>
-              <p className="text-xl text-slate-400 mb-16 max-w-3xl mx-auto leading-relaxed">
-                Plataforma completa de IA para transcrever, analisar e otimizar suas reuniões. 
-                Economize tempo e nunca perca informações importantes novamente.
+              <h3 className="text-2xl font-semibold mb-6 text-white group-hover:text-purple-300 transition-colors duration-300">
+                {feature.title}
+              </h3>
+              <p className="text-slate-400 leading-relaxed text-lg">
+                {feature.description}
               </p>
-            </FadeInSection>
-            
-            <StaggerContainer delay={1} staggerDelay={0.2}>
-              <div className="flex flex-col sm:flex-row items-center justify-center space-y-6 sm:space-y-0 sm:space-x-8 mb-16">
-                <StaggerItem>
-                  <Link href="/register">
-                    <EnhancedButton size="lg" className="w-full sm:w-auto min-w-[200px] h-16 text-lg">
-                      <Play className="w-6 h-6 mr-3" />
-                      Começar Gratuitamente
-                      <ArrowRight className="w-6 h-6 ml-3" />
-                    </EnhancedButton>
-                  </Link>
-                </StaggerItem>
-                
-                <StaggerItem>
-                  <Link href="/upload">
-                    <EnhancedButton variant="outline" size="lg" className="w-full sm:w-auto min-w-[200px] h-16 text-lg">
-                      <Upload className="w-6 h-6 mr-3" />
-                      Testar Agora
-                    </EnhancedButton>
-                  </Link>
-                </StaggerItem>
-              </div>
-            </StaggerContainer>
-            
-            <StaggerContainer delay={1.2} staggerDelay={0.1}>
-              <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-slate-400">
-                <StaggerItem>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="w-5 h-5 text-green-400" />
-                    <span>Grátis para começar</span>
-                  </div>
-                </StaggerItem>
-                <StaggerItem>
-                  <div className="flex items-center space-x-2">
-                    <Shield className="w-5 h-5 text-green-400" />
-                    <span>Sem cartão de crédito</span>
-                  </div>
-                </StaggerItem>
-                <StaggerItem>
-                  <div className="flex items-center space-x-2">
-                    <Clock className="w-5 h-5 text-green-400" />
-                    <span>Setup em 2 minutos</span>
-                  </div>
-                </StaggerItem>
-              </div>
-            </StaggerContainer>
-          </FadeInSection>
-        </main>
+            </motion.div>
+          ))}
+        </div>
+      </section>
 
-        {/* Stats Section */}
-        <section id="stats" className="py-24 px-8 max-w-7xl mx-auto relative z-10">
-          <FadeInSection className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Resultados que{" "}
-              <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                impressionam
-              </span>
-            </h2>
-          </FadeInSection>
-          
-          <StaggerContainer staggerDelay={0.2}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {stats.map((stat, index) => (
-                <StaggerItem key={index}>
-                  <div className="text-center p-8 rounded-2xl bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 group hover:scale-105">
-                    <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">
-                      {stat.number}
-                    </div>
-                    <div className="text-slate-400 font-medium">{stat.label}</div>
-                  </div>
-                </StaggerItem>
-              ))}
-            </div>
-          </StaggerContainer>
-        </section>
-
-        {/* Enhanced Features Section */}
-        <section id="features" className="py-24 px-8 max-w-7xl mx-auto relative z-10">
-          <FadeInSection className="text-center mb-20">
+      {/* Testimonials */}
+      <section id="testimonials" className="py-24 px-8 bg-slate-800/20 backdrop-blur-sm relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-20"
+          >
             <h2 className="text-5xl md:text-6xl font-bold mb-8">
-              Recursos{" "}
+              O que nossos{" "}
               <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                Inteligentes
+                usuários dizem
               </span>
             </h2>
-            <p className="text-xl text-slate-400 max-w-3xl mx-auto">
-              Tecnologia de ponta para revolucionar como você gerencia reuniões e acelera sua produtividade
+            <p className="text-xl text-slate-400">
+              Histórias reais de transformação e produtividade
             </p>
-          </FadeInSection>
+          </motion.div>
           
-          <StaggerContainer staggerDelay={0.2}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {features.map((feature, index) => (
-                <StaggerItem key={index}>
-                  <div className="group p-10 rounded-3xl bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 hover:border-purple-500/50 transition-all duration-500 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/20">
-                    <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300`}>
-                      <feature.icon className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="text-2xl font-semibold mb-6 text-white group-hover:text-purple-300 transition-colors duration-300">
-                      {feature.title}
-                    </h3>
-                    <p className="text-slate-400 leading-relaxed text-lg">
-                      {feature.description}
-                    </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                whileHover={{ scale: 1.02, y: -4 }}
+                className="p-8 rounded-3xl bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 hover:border-purple-500/30 transition-all duration-300"
+              >
+                <div className="flex items-center mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                    {testimonial.avatar}
                   </div>
-                </StaggerItem>
-              ))}
-            </div>
-          </StaggerContainer>
-        </section>
-
-        {/* Enhanced Testimonials */}
-        <section id="testimonials" className="py-24 px-8 bg-slate-800/20 backdrop-blur-sm relative z-10">
-          <div className="max-w-7xl mx-auto">
-            <FadeInSection className="text-center mb-20">
-              <h2 className="text-5xl md:text-6xl font-bold mb-8">
-                O que nossos{" "}
-                <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                  usuários dizem
-                </span>
-              </h2>
-              <p className="text-xl text-slate-400">
-                Histórias reais de transformação e produtividade
-              </p>
-            </FadeInSection>
-            
-            <StaggerContainer staggerDelay={0.3}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {testimonials.map((testimonial, index) => (
-                  <StaggerItem key={index}>
-                    <div className="p-8 rounded-3xl bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 hover:border-purple-500/30 transition-all duration-300 hover:transform hover:scale-105 group">
-                      <div className="flex items-center mb-6">
-                        <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-4">
-                          {testimonial.avatar}
-                        </div>
-                        <div>
-                          <p className="text-white font-semibold">{testimonial.name}</p>
-                          <p className="text-slate-400 text-sm">{testimonial.role}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center mb-6">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                        ))}
-                      </div>
-                      <p className="text-slate-300 italic leading-relaxed group-hover:text-slate-200 transition-colors">
-                        "{testimonial.content}"
-                      </p>
-                    </div>
-                  </StaggerItem>
-                ))}
-              </div>
-            </StaggerContainer>
-          </div>
-        </section>
-
-        {/* Enhanced CTA Section */}
-        <section className="py-32 px-8 relative z-10">
-          <div className="max-w-5xl mx-auto text-center">
-            <FadeInSection>
-              <div className="p-16 rounded-3xl bg-gradient-to-r from-purple-600/20 via-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-purple-500/30">
-                <h2 className="text-5xl md:text-6xl font-bold mb-8">
-                  Pronto para{" "}
-                  <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                    revolucionar
-                  </span>
-                  <br />suas reuniões?
-                </h2>
-                <p className="text-xl text-slate-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-                  Junte-se a milhares de profissionais que já transformaram sua produtividade com nossa plataforma de IA avançada
+                  <div>
+                    <p className="text-white font-semibold">{testimonial.name}</p>
+                    <p className="text-slate-400 text-sm">{testimonial.role}</p>
+                  </div>
+                </div>
+                <div className="flex items-center mb-6">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-slate-300 italic leading-relaxed">
+                  "{testimonial.content}"
                 </p>
-                <div className="flex flex-col sm:flex-row items-center justify-center space-y-6 sm:space-y-0 sm:space-x-8">
-                  <Link href="/register">
-                    <EnhancedButton size="lg" className="min-w-[220px] h-16 text-lg">
-                      <Zap className="w-6 h-6 mr-3" />
-                      Começar Agora - Grátis
-                      <ArrowRight className="w-6 h-6 ml-3" />
-                    </EnhancedButton>
-                  </Link>
-                  <Link href="/login">
-                    <EnhancedButton variant="outline" size="lg" className="min-w-[220px] h-16 text-lg">
-                      <Users className="w-6 h-6 mr-3" />
-                      Fazer Login
-                    </EnhancedButton>
-                  </Link>
-                </div>
-              </div>
-            </FadeInSection>
+              </motion.div>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Enhanced Footer */}
-        <footer className="py-16 px-8 border-t border-slate-800/50 relative z-10">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row items-center justify-between">
-              <SlideInSection direction="left">
-                <Link href="/" className="flex items-center space-x-3 mb-8 md:mb-0">
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center">
-                    <Mic className="w-6 h-6 text-white" />
-                  </div>
-                  <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                    MeetingAI
-                  </span>
-                </Link>
-              </SlideInSection>
-              <SlideInSection direction="right">
-                <div className="text-slate-400 text-sm">
-                  © 2024 MeetingAI. Todos os direitos reservados.
-                </div>
-              </SlideInSection>
+      {/* CTA Section */}
+      <section className="py-32 px-8 relative z-10">
+        <div className="max-w-5xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="p-16 rounded-3xl bg-gradient-to-r from-purple-600/20 via-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-purple-500/30"
+          >
+            <h2 className="text-5xl md:text-6xl font-bold mb-8">
+              Pronto para{" "}
+              <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                revolucionar
+              </span>
+              <br />suas reuniões?
+            </h2>
+            <p className="text-xl text-slate-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+              Junte-se a milhares de profissionais que já transformaram sua produtividade com nossa plataforma de IA avançada
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center space-y-6 sm:space-y-0 sm:space-x-8">
+              <Link href="/register">
+                <EnhancedButton size="lg" className="min-w-[220px] h-16 text-lg">
+                  <Zap className="w-6 h-6 mr-3" />
+                  Começar Agora - Grátis
+                  <ArrowRight className="w-6 h-6 ml-3" />
+                </EnhancedButton>
+              </Link>
+              <Link href="/login">
+                <EnhancedButton variant="outline" size="lg" className="min-w-[220px] h-16 text-lg">
+                  <Users className="w-6 h-6 mr-3" />
+                  Fazer Login
+                </EnhancedButton>
+              </Link>
             </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-16 px-8 border-t border-slate-800/50 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+            >
+              <Link href="/" className="flex items-center space-x-3 mb-8 md:mb-0">
+                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center">
+                  <Mic className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                  MeetingAI
+                </span>
+              </Link>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className="text-slate-400 text-sm"
+            >
+              © 2024 MeetingAI. Todos os direitos reservados.
+            </motion.div>
           </div>
-        </footer>
-      </PageTransition>
+        </div>
+      </footer>
     </div>
   );
 }
