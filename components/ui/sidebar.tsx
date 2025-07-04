@@ -35,7 +35,7 @@ export function Sidebar({ user, onLogout }: SidebarProps) {
     { id: "upload", label: "Upload", icon: Upload, href: "/upload" },
     { id: "chat", label: "Chat IA", icon: MessageSquare, href: "/chat" },
     { id: "analytics", label: "Analytics", icon: BarChart3, href: "/analytics" },
-    { id: "business", label: "Empresa", icon: Building2, href: "/business" },
+    { id: "empresa", label: "Empresa", icon: Building2, href: "/empresa" },
     { id: "settings", label: "Configurações", icon: Settings, href: "/settings" },
   ]
 
