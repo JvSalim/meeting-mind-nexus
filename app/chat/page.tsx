@@ -16,8 +16,6 @@ import {
   Calendar,
   FileText,
   Search,
-  Mic,
-  Paperclip,
   RotateCcw,
   Copy,
   ThumbsUp,
@@ -122,12 +120,17 @@ const Chat = () => {
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 flex items-center justify-center">
-        <div className="text-center">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-center"
+        >
           <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-pulse">
             <MessageSquare className="w-8 h-8 text-white" />
           </div>
           <p className="text-slate-300">Carregando...</p>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -138,7 +141,12 @@ const Chat = () => {
       
       <div className="flex-1 lg:ml-0 flex flex-col">
         {/* Header */}
-        <header className="bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-slate-800/50 p-6 flex-shrink-0">
+        <motion.header 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-slate-800/50 p-6 flex-shrink-0"
+        >
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-white mb-2 flex items-center">
@@ -162,7 +170,7 @@ const Chat = () => {
               </EnhancedButton>
             </div>
           </div>
-        </header>
+        </motion.header>
 
         <div className="flex-1 flex overflow-hidden">
           {/* Chat Area */}
@@ -175,34 +183,44 @@ const Chat = () => {
                     key={message.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
                     className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
                     <div className={`flex items-start space-x-3 max-w-4xl ${message.type === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
                       {/* Avatar */}
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        message.type === 'user' 
-                          ? 'bg-gradient-to-br from-purple-500 to-blue-500' 
-                          : 'bg-gradient-to-br from-emerald-500 to-teal-500'
-                      }`}>
+                      <motion.div 
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.1, duration: 0.2 }}
+                        className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                          message.type === 'user' 
+                            ? 'bg-gradient-to-br from-purple-500 to-blue-500' 
+                            : 'bg-gradient-to-br from-emerald-500 to-teal-500'
+                        }`}
+                      >
                         {message.type === 'user' ? (
                           <User className="w-5 h-5 text-white" />
                         ) : (
                           <Bot className="w-5 h-5 text-white" />
                         )}
-                      </div>
+                      </motion.div>
                       
                       {/* Message Content */}
                       <div className={`flex flex-col ${message.type === 'user' ? 'items-end' : 'items-start'}`}>
-                        <div className={`p-4 rounded-2xl shadow-lg max-w-full ${
-                          message.type === 'user' 
-                            ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
-                            : 'bg-slate-800/70 backdrop-blur-sm border border-slate-700/50 text-slate-100'
-                        }`}>
+                        <motion.div 
+                          initial={{ scale: 0.9, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 0.1, duration: 0.3 }}
+                          className={`p-4 rounded-2xl shadow-lg max-w-full ${
+                            message.type === 'user' 
+                              ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
+                              : 'bg-slate-800/70 backdrop-blur-sm border border-slate-700/50 text-slate-100'
+                          }`}
+                        >
                           <p className="text-sm leading-relaxed whitespace-pre-wrap">
                             {message.content}
                           </p>
-                        </div>
+                        </motion.div>
                         
                         <div className="flex items-center space-x-2 mt-2">
                           <span className="text-xs text-slate-400">
@@ -237,6 +255,7 @@ const Chat = () => {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
                   className="flex justify-start"
                 >
                   <div className="flex items-start space-x-3">
@@ -258,28 +277,23 @@ const Chat = () => {
             </div>
 
             {/* Input Area */}
-            <div className="border-t border-slate-800/50 bg-slate-900/50 backdrop-blur-sm p-6">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="border-t border-slate-800/50 bg-slate-900/50 backdrop-blur-sm p-6"
+            >
               <div className="max-w-4xl mx-auto">
                 <div className="flex items-end space-x-4">
                   <div className="flex-1">
-                    <div className="relative">
-                      <Input
-                        value={inputMessage}
-                        onChange={(e) => setInputMessage(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
-                        placeholder="Digite sua pergunta sobre reuniões..."
-                        className="w-full bg-slate-800/50 border-slate-700/50 text-white placeholder-slate-400 focus:border-purple-500 focus:ring-purple-500/20 pr-24 py-3 text-base"
-                        disabled={isTyping}
-                      />
-                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
-                        <button className="p-2 hover:bg-slate-700/50 rounded text-slate-400 hover:text-white transition-colors">
-                          <Paperclip className="w-4 h-4" />
-                        </button>
-                        <button className="p-2 hover:bg-slate-700/50 rounded text-slate-400 hover:text-white transition-colors">
-                          <Mic className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
+                    <Input
+                      value={inputMessage}
+                      onChange={(e) => setInputMessage(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
+                      placeholder="Digite sua pergunta sobre reuniões..."
+                      className="w-full bg-slate-800/50 border-slate-700/50 text-white placeholder-slate-400 focus:border-purple-500 focus:ring-purple-500/20 py-3 text-base"
+                      disabled={isTyping}
+                    />
                   </div>
                   <EnhancedButton
                     onClick={handleSendMessage}
@@ -290,11 +304,16 @@ const Chat = () => {
                   </EnhancedButton>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
 
           {/* Suggestions Sidebar */}
-          <div className="w-80 border-l border-slate-800/50 bg-slate-900/30 backdrop-blur-sm p-6 hidden xl:block">
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="w-80 border-l border-slate-800/50 bg-slate-900/30 backdrop-blur-sm p-6 hidden xl:block"
+          >
             <div className="space-y-6">
               <div>
                 <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
@@ -305,6 +324,9 @@ const Chat = () => {
                   {suggestedQuestions.map((question, index) => (
                     <motion.button
                       key={index}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 + index * 0.1, duration: 0.3 }}
                       whileHover={{ scale: 1.02, x: 4 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => handleSuggestedQuestion(question)}
@@ -322,7 +344,12 @@ const Chat = () => {
                   Funcionalidades IA
                 </h3>
                 <div className="space-y-3">
-                  <div className="p-3 bg-slate-800/30 rounded-lg border border-slate-700/30">
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8, duration: 0.3 }}
+                    className="p-3 bg-slate-800/30 rounded-lg border border-slate-700/30"
+                  >
                     <div className="flex items-center mb-2">
                       <Search className="w-4 h-4 mr-2 text-green-400" />
                       <span className="text-sm font-medium text-white">Busca Inteligente</span>
@@ -330,9 +357,14 @@ const Chat = () => {
                     <p className="text-xs text-slate-400">
                       Encontre informações específicas em suas reuniões
                     </p>
-                  </div>
+                  </motion.div>
                   
-                  <div className="p-3 bg-slate-800/30 rounded-lg border border-slate-700/30">
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.9, duration: 0.3 }}
+                    className="p-3 bg-slate-800/30 rounded-lg border border-slate-700/30"
+                  >
                     <div className="flex items-center mb-2">
                       <FileText className="w-4 h-4 mr-2 text-blue-400" />
                       <span className="text-sm font-medium text-white">Resumos Automáticos</span>
@@ -340,9 +372,14 @@ const Chat = () => {
                     <p className="text-xs text-slate-400">
                       Gere resumos executivos das suas reuniões
                     </p>
-                  </div>
+                  </motion.div>
                   
-                  <div className="p-3 bg-slate-800/30 rounded-lg border border-slate-700/30">
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.0, duration: 0.3 }}
+                    className="p-3 bg-slate-800/30 rounded-lg border border-slate-700/30"
+                  >
                     <div className="flex items-center mb-2">
                       <Calendar className="w-4 h-4 mr-2 text-purple-400" />
                       <span className="text-sm font-medium text-white">Análise Temporal</span>
@@ -350,11 +387,11 @@ const Chat = () => {
                     <p className="text-xs text-slate-400">
                       Analise padrões e tendências ao longo do tempo
                     </p>
-                  </div>
+                  </motion.div>
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>
