@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -36,6 +37,11 @@ export default function UploadPage() {
       const selectedFile = event.target.files[0];
       setFile(selectedFile);
     }
+  };
+
+  const handleFileSelect = () => {
+    const input = document.getElementById('upload') as HTMLInputElement;
+    input?.click();
   };
 
   const handleUpload = async () => {
@@ -85,7 +91,12 @@ export default function UploadPage() {
       
       <div className="flex-1 lg:ml-0 overflow-hidden">
         {/* Header */}
-        <header className="bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-slate-800/50 p-6 sticky top-0 z-30">
+        <motion.header 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-slate-800/50 p-6 sticky top-0 z-30"
+        >
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-white mb-2 flex items-center">
@@ -97,13 +108,13 @@ export default function UploadPage() {
               </p>
             </div>
           </div>
-        </header>
+        </motion.header>
 
         <main className="p-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.3 }}
           >
             <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
               <CardHeader>
@@ -123,27 +134,25 @@ export default function UploadPage() {
                   className="hidden"
                   onChange={handleFileChange}
                 />
-                <label htmlFor="upload">
-                  <EnhancedButton
-                    variant="secondary"
-                    className="w-full justify-center bg-slate-700/50 border-slate-600/50 text-slate-300 hover:bg-slate-600/50 hover:text-white"
-                    asChild
-                  >
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="flex items-center justify-center space-x-2"
-                    >
-                      <FileText className="w-4 h-4" />
-                      <span>Selecionar Arquivo</span>
-                    </motion.div>
-                  </EnhancedButton>
-                </label>
+                
+                <EnhancedButton
+                  variant="secondary"
+                  onClick={handleFileSelect}
+                  className="w-full justify-center bg-slate-700/50 border-slate-600/50 text-slate-300 hover:bg-slate-600/50 hover:text-white"
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  Selecionar Arquivo
+                </EnhancedButton>
 
                 {file && (
-                  <div className="p-4 rounded-md bg-slate-700/20 border border-slate-600/50 text-slate-300">
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="p-4 rounded-md bg-slate-700/20 border border-slate-600/50 text-slate-300"
+                  >
                     Arquivo selecionado: {file.name}
-                  </div>
+                  </motion.div>
                 )}
 
                 <EnhancedButton
@@ -164,11 +173,15 @@ export default function UploadPage() {
                 </EnhancedButton>
 
                 {isUploading && (
-                  <div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
                     <p className="text-slate-400 text-sm mb-2">Progresso do envio:</p>
                     <Progress value={uploadProgress} className="bg-slate-700/50 border-slate-600/50" />
                     <p className="text-slate-400 text-sm mt-1">{uploadProgress}%</p>
-                  </div>
+                  </motion.div>
                 )}
               </CardContent>
             </Card>

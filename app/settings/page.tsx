@@ -2,7 +2,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ArrowLeft, User, Bell, Shield, Palette, Globe, Save } from 'lucide-react'
+import { ArrowLeft, User, Bell, Shield, Palette, Globe, Save, Settings } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
@@ -79,7 +79,12 @@ export default function SettingsPage() {
       
       <div className="flex-1 lg:ml-0 overflow-hidden">
         {/* Header */}
-        <header className="bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-slate-800/50 p-6 sticky top-0 z-30">
+        <motion.header 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-slate-800/50 p-6 sticky top-0 z-30"
+        >
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-white mb-2 flex items-center">
@@ -91,7 +96,7 @@ export default function SettingsPage() {
               </p>
             </div>
           </div>
-        </header>
+        </motion.header>
 
         <main className="p-6 space-y-8">
           {/* Profile Settings */}
