@@ -71,7 +71,7 @@ export function Sidebar({ user, onLogout }: SidebarProps) {
         initial={{ x: -300 }}
         animate={{ x: isOpen || typeof window !== 'undefined' && window.innerWidth >= 1024 ? 0 : -300 }}
         transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-        className="fixed left-0 top-0 bottom-0 w-72 bg-white/5 backdrop-blur-2xl border-r border-white/10 z-50 lg:relative lg:translate-x-0 shadow-2xl flex flex-col"
+        className="fixed left-0 top-0 bottom-0 w-72 bg-white/5 backdrop-blur-2xl border-r border-white/10 z-50 lg:relative lg:translate-x-0 shadow-2xl flex flex-col h-screen"
       >
         {/* Header */}
         <div className="flex items-center justify-center p-8 border-b border-white/10 flex-shrink-0">
