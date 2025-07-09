@@ -2,7 +2,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Upload, FileText, CheckCircle, AlertCircle, Brain, Sparkles, Zap, Clock, Activity, ArrowRight, FileAudio, Waveform } from 'lucide-react'
+import { Upload, FileText, CheckCircle, AlertCircle, Brain, Sparkles, Zap, Clock, Activity, ArrowRight, FileAudio, AudioWaveform } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card } from '../../components/ui/card'
