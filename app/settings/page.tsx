@@ -11,21 +11,12 @@ import { Sidebar } from "../../components/ui/sidebar";
 import { 
   Settings, 
   User, 
-  Bell, 
   Shield, 
-  Palette, 
   Save,
   Eye,
   EyeOff,
-  Smartphone,
-  Mail,
-  Lock,
   Key,
-  Monitor,
-  Moon,
-  Sun,
-  Volume2,
-  Globe
+  Mail
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -48,24 +39,7 @@ const SettingsPage = () => {
       currentPassword: '',
       newPassword: '',
       confirmPassword: '',
-      twoFactor: false,
-      loginAlerts: true
-    },
-    notifications: {
-      emailNotifications: true,
-      pushNotifications: true,
-      meetingReminders: true,
-      soundEnabled: true
-    },
-    appearance: {
-      theme: 'dark',
-      language: 'pt-BR',
-      timezone: 'America/Sao_Paulo'
-    },
-    privacy: {
-      dataSharing: false,
-      analyticsOptOut: false,
-      autoBackup: true
+      twoFactor: false
     }
   });
 
@@ -78,7 +52,6 @@ const SettingsPage = () => {
     const parsedUser = JSON.parse(userData);
     setUser(parsedUser);
     
-    // Initialize settings with user data
     setSettings(prev => ({
       ...prev,
       profile: {
@@ -112,14 +85,12 @@ const SettingsPage = () => {
 
   const settingsTabs = [
     { id: 'profile', label: 'Perfil', icon: User },
-    { id: 'security', label: 'Segurança', icon: Shield },
-    { id: 'notifications', label: 'Notificações', icon: Bell },
-    { id: 'appearance', label: 'Aparência', icon: Palette }
+    { id: 'security', label: 'Segurança', icon: Shield }
   ];
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-violet-950/20 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 flex items-center justify-center">
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -135,45 +106,50 @@ const SettingsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-violet-950/20 to-slate-900 flex">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 flex">
       <Sidebar user={user} onLogout={handleLogout} />
       
-      <div className="flex-1 ml-64">
-        {/* Header */}
-        <motion.header 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="bg-slate-900/80 backdrop-blur-sm border-b border-slate-700 p-8"
-        >
-          <div className="max-w-6xl mx-auto">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-6">
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <Settings className="w-8 h-8 text-white" />
+      <div className="flex-1">
+        {/* Hero Section */}
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/5 to-emerald-500/10"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(59,130,246,0.1),transparent_50%)]"></div>
+          
+          <div className="relative px-8 py-16">
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="max-w-6xl mx-auto"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 via-purple-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-2xl">
+                    <Settings className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-5xl font-bold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent">
+                      Configurações
+                    </h1>
+                    <p className="text-xl text-slate-300 mt-2">
+                      Personalize sua experiência e gerencie suas preferências
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h1 className="text-4xl font-bold text-white mb-2">
-                    Configurações
-                  </h1>
-                  <p className="text-xl text-slate-400">
-                    Personalize sua experiência e gerencie suas preferências
-                  </p>
-                </div>
+                
+                <EnhancedButton
+                  onClick={handleSaveSettings}
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Salvar Alterações
+                </EnhancedButton>
               </div>
-              
-              <EnhancedButton
-                onClick={handleSaveSettings}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Salvar Alterações
-              </EnhancedButton>
-            </div>
+            </motion.div>
           </div>
-        </motion.header>
+        </div>
 
-        <div className="px-8 pb-16">
+        <div className="px-8 pb-16 -mt-8">
           <div className="max-w-6xl mx-auto">
             <div className="flex gap-8">
               {/* Sidebar Navigation */}
@@ -183,7 +159,7 @@ const SettingsPage = () => {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="w-64 flex-shrink-0"
               >
-                <Card className="bg-slate-800/50 border-slate-700 shadow-xl">
+                <Card className="bg-white/5 backdrop-blur-xl border-white/10 shadow-2xl">
                   <div className="p-6">
                     <h3 className="text-lg font-semibold text-white mb-6">Configurações</h3>
                     <nav className="space-y-2">
@@ -194,7 +170,7 @@ const SettingsPage = () => {
                           className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                             activeTab === tab.id
                               ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-sm'
-                              : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                              : 'text-slate-300 hover:bg-white/10 hover:text-white'
                           }`}
                         >
                           <tab.icon className="w-5 h-5" />
@@ -213,7 +189,7 @@ const SettingsPage = () => {
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="flex-1"
               >
-                <Card className="bg-slate-800/50 border-slate-700 shadow-xl">
+                <Card className="bg-white/5 backdrop-blur-xl border-white/10 shadow-2xl">
                   <div className="p-8">
                     {activeTab === 'profile' && (
                       <div className="space-y-8">
@@ -232,7 +208,7 @@ const SettingsPage = () => {
                                 ...prev,
                                 profile: { ...prev.profile, name: e.target.value }
                               }))}
-                              className="bg-slate-700 border-slate-600 text-white focus:border-purple-500 focus:ring-purple-500/20"
+                              className="bg-white/10 border-white/20 text-white placeholder:text-slate-400 focus:border-purple-500 focus:ring-purple-500/20 backdrop-blur-sm"
                             />
                           </div>
                           
@@ -246,7 +222,7 @@ const SettingsPage = () => {
                                 ...prev,
                                 profile: { ...prev.profile, email: e.target.value }
                               }))}
-                              className="bg-slate-700 border-slate-600 text-white focus:border-purple-500 focus:ring-purple-500/20"
+                              className="bg-white/10 border-white/20 text-white placeholder:text-slate-400 focus:border-purple-500 focus:ring-purple-500/20 backdrop-blur-sm"
                             />
                           </div>
                           
@@ -259,7 +235,7 @@ const SettingsPage = () => {
                                 ...prev,
                                 profile: { ...prev.profile, phone: e.target.value }
                               }))}
-                              className="bg-slate-700 border-slate-600 text-white focus:border-purple-500 focus:ring-purple-500/20"
+                              className="bg-white/10 border-white/20 text-white placeholder:text-slate-400 focus:border-purple-500 focus:ring-purple-500/20 backdrop-blur-sm"
                             />
                           </div>
                           
@@ -272,7 +248,7 @@ const SettingsPage = () => {
                                 ...prev,
                                 profile: { ...prev.profile, company: e.target.value }
                               }))}
-                              className="bg-slate-700 border-slate-600 text-white focus:border-purple-500 focus:ring-purple-500/20"
+                              className="bg-white/10 border-white/20 text-white placeholder:text-slate-400 focus:border-purple-500 focus:ring-purple-500/20 backdrop-blur-sm"
                             />
                           </div>
                         </div>
@@ -299,7 +275,7 @@ const SettingsPage = () => {
                                     ...prev,
                                     security: { ...prev.security, currentPassword: e.target.value }
                                   }))}
-                                  className="bg-slate-700 border-slate-600 text-white focus:border-purple-500 focus:ring-purple-500/20 pr-10"
+                                  className="bg-white/10 border-white/20 text-white placeholder:text-slate-400 focus:border-purple-500 focus:ring-purple-500/20 pr-10 backdrop-blur-sm"
                                 />
                                 <button
                                   type="button"
@@ -321,12 +297,12 @@ const SettingsPage = () => {
                                   ...prev,
                                   security: { ...prev.security, newPassword: e.target.value }
                                 }))}
-                                className="bg-slate-700 border-slate-600 text-white focus:border-purple-500 focus:ring-purple-500/20"
+                                className="bg-white/10 border-white/20 text-white placeholder:text-slate-400 focus:border-purple-500 focus:ring-purple-500/20 backdrop-blur-sm"
                               />
                             </div>
                           </div>
                           
-                          <div className="p-6 bg-slate-700/30 rounded-lg border border-slate-600">
+                          <div className="p-6 bg-white/5 rounded-lg border border-white/10 backdrop-blur-sm">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3">
                                 <Key className="w-5 h-5 text-purple-400" />
@@ -344,121 +320,16 @@ const SettingsPage = () => {
                               />
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    )}
 
-                    {activeTab === 'notifications' && (
-                      <div className="space-y-8">
-                        <div>
-                          <h2 className="text-2xl font-bold text-white mb-2">Notificações</h2>
-                          <p className="text-slate-400">Configure como e quando você quer ser notificado</p>
-                        </div>
-                        
-                        <div className="space-y-6">
-                          {[
-                            { key: 'emailNotifications', title: 'Notificações por Email', desc: 'Receba atualizações importantes por email', icon: Mail },
-                            { key: 'pushNotifications', title: 'Notificações Push', desc: 'Notificações instantâneas no navegador', icon: Smartphone },
-                            { key: 'meetingReminders', title: 'Lembretes de Reunião', desc: 'Seja lembrado antes das reuniões', icon: Bell },
-                            { key: 'soundEnabled', title: 'Sons de Notificação', desc: 'Reproduzir sons para alertas', icon: Volume2 }
-                          ].map((notification) => (
-                            <div key={notification.key} className="p-6 bg-slate-700/30 rounded-lg border border-slate-600">
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                  <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                                    <notification.icon className="w-5 h-5 text-white" />
-                                  </div>
-                                  <div>
-                                    <h3 className="font-semibold text-white">{notification.title}</h3>
-                                    <p className="text-sm text-slate-400">{notification.desc}</p>
-                                  </div>
-                                </div>
-                                <Switch
-                                  checked={settings.notifications[notification.key as keyof typeof settings.notifications] as boolean}
-                                  onCheckedChange={(checked) => setSettings(prev => ({
-                                    ...prev,
-                                    notifications: { ...prev.notifications, [notification.key]: checked }
-                                  }))}
-                                />
+                          <div className="p-6 bg-white/5 rounded-lg border border-white/10 backdrop-blur-sm">
+                            <div className="flex items-center gap-4">
+                              <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+                                <Mail className="w-5 h-5 text-white" />
                               </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {activeTab === 'appearance' && (
-                      <div className="space-y-8">
-                        <div>
-                          <h2 className="text-2xl font-bold text-white mb-2">Aparência</h2>
-                          <p className="text-slate-400">Personalize a interface de acordo com suas preferências</p>
-                        </div>
-                        
-                        <div className="space-y-6">
-                          <div className="p-6 bg-slate-700/30 rounded-lg border border-slate-600">
-                            <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-                              <Sun className="w-5 h-5 text-purple-400" />
-                              Tema da Interface
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                              {[
-                                { key: 'light', title: 'Claro', icon: Sun },
-                                { key: 'dark', title: 'Escuro', icon: Moon },
-                                { key: 'system', title: 'Sistema', icon: Monitor }
-                              ].map((theme) => (
-                                <button
-                                  key={theme.key}
-                                  onClick={() => setSettings(prev => ({
-                                    ...prev,
-                                    appearance: { ...prev.appearance, theme: theme.key }
-                                  }))}
-                                  className={`p-4 rounded-lg border transition-all duration-200 ${
-                                    settings.appearance.theme === theme.key
-                                      ? 'border-purple-500 bg-purple-500/10 text-purple-400'
-                                      : 'border-slate-600 bg-slate-700/50 text-slate-300 hover:bg-slate-700'
-                                  }`}
-                                >
-                                  <theme.icon className="w-6 h-6 mx-auto mb-2" />
-                                  <span className="text-sm font-medium">{theme.title}</span>
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                          
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                              <Label className="text-slate-300 font-medium flex items-center gap-2">
-                                <Globe className="w-4 h-4" />
-                                Idioma
-                              </Label>
-                              <select
-                                value={settings.appearance.language}
-                                onChange={(e) => setSettings(prev => ({
-                                  ...prev,
-                                  appearance: { ...prev.appearance, language: e.target.value }
-                                }))}
-                                className="w-full p-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-purple-500 focus:ring-purple-500/20"
-                              >
-                                <option value="pt-BR">Português (Brasil)</option>
-                                <option value="en-US">English (US)</option>
-                                <option value="es-ES">Español</option>
-                              </select>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label className="text-slate-300 font-medium">Fuso Horário</Label>
-                              <select
-                                value={settings.appearance.timezone}
-                                onChange={(e) => setSettings(prev => ({
-                                  ...prev,
-                                  appearance: { ...prev.appearance, timezone: e.target.value }
-                                }))}
-                                className="w-full p-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-purple-500 focus:ring-purple-500/20"
-                              >
-                                <option value="America/Sao_Paulo">São Paulo (GMT-3)</option>
-                                <option value="America/New_York">New York (GMT-5)</option>
-                                <option value="Europe/London">London (GMT+0)</option>
-                              </select>
+                              <div>
+                                <h3 className="font-semibold text-white">Notificações por Email</h3>
+                                <p className="text-sm text-slate-400">Receba atualizações importantes sobre suas reuniões</p>
+                              </div>
                             </div>
                           </div>
                         </div>

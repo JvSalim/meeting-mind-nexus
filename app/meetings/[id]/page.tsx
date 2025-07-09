@@ -78,177 +78,196 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-violet-950/20 to-slate-900 p-6">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
-        >
-          <Link href="/meetings" className="flex items-center gap-2 text-purple-400 hover:text-purple-300 mb-4 transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Voltar para reuniões
-          </Link>
-          <h1 className="text-3xl font-bold text-white mb-2">{mockMeetingDetail.title}</h1>
-          <div className="flex flex-wrap items-center gap-4 text-slate-400">
-            <div className="flex items-center gap-1">
-              <Calendar className="w-4 h-4" />
-              {mockMeetingDetail.date} às {mockMeetingDetail.time}
-            </div>
-            <div className="flex items-center gap-1">
-              <Clock className="w-4 h-4" />
-              {mockMeetingDetail.duration}
-            </div>
-            <div className="flex items-center gap-1">
-              <Users className="w-4 h-4" />
-              {mockMeetingDetail.participants.length} participantes
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Summary Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <Card className="mb-6 bg-slate-800/50 border-slate-700 shadow-xl">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-white">
-                <FileText className="w-5 h-5 text-purple-400" />
-                Resumo Inteligente
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="prose prose-slate max-w-none">
-                <div className="whitespace-pre-line text-slate-300 leading-relaxed">
-                  {mockMeetingDetail.summary}
-                </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/5 to-emerald-500/10"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(59,130,246,0.1),transparent_50%)]"></div>
+        
+        <div className="relative px-8 py-16">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-6xl mx-auto"
+          >
+            <Link href="/meetings" className="flex items-center gap-2 text-purple-400 hover:text-purple-300 mb-6 transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              Voltar para reuniões
+            </Link>
+            <div className="flex items-center gap-6 mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 via-purple-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-2xl">
+                <FileText className="w-8 h-8 text-white" />
               </div>
-              <div className="mt-4 pt-4 border-t border-slate-700">
-                <p className="text-sm font-medium text-slate-300 mb-2">Palavras-chave principais:</p>
-                <div className="flex flex-wrap gap-2">
-                  {mockMeetingDetail.keywords.map((keyword, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 bg-purple-600/20 text-purple-300 text-sm rounded-full border border-purple-500/30"
-                    >
-                      {keyword}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Participants */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <Card className="mb-6 bg-slate-800/50 border-slate-700 shadow-xl">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-white">
-                <Users className="w-5 h-5 text-purple-400" />
-                Participantes
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {mockMeetingDetail.participants.map((participant, index) => (
-                  <div key={index} className="flex items-center gap-2 p-3 bg-slate-700/50 rounded-lg">
-                    <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                      {participant.split(' ').map(n => n[0]).join('')}
-                    </div>
-                    <span className="text-sm font-medium text-slate-300">{participant}</span>
+              <div>
+                <h1 className="text-5xl font-bold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-2">
+                  {mockMeetingDetail.title}
+                </h1>
+                <div className="flex flex-wrap items-center gap-4 text-slate-300">
+                  <div className="flex items-center gap-1">
+                    <Calendar className="w-4 h-4" />
+                    {mockMeetingDetail.date} às {mockMeetingDetail.time}
                   </div>
-                ))}
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
+                    {mockMeetingDetail.duration}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Users className="w-4 h-4" />
+                    {mockMeetingDetail.participants.length} participantes
+                  </div>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
 
-        {/* Transcript */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <Card className="mb-6 bg-slate-800/50 border-slate-700 shadow-xl">
-            <CardHeader>
-              <div className="flex items-center justify-between">
+      <div className="px-8 pb-16 -mt-8">
+        <div className="max-w-6xl mx-auto space-y-8">
+          {/* Summary Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <Card className="bg-white/5 backdrop-blur-xl border-white/10 shadow-2xl">
+              <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-white">
                   <FileText className="w-5 h-5 text-purple-400" />
-                  Transcrição Completa
+                  Resumo Inteligente
                 </CardTitle>
-                <div className="flex items-center gap-2">
+              </CardHeader>
+              <CardContent>
+                <div className="prose prose-slate max-w-none">
+                  <div className="whitespace-pre-line text-slate-300 leading-relaxed">
+                    {mockMeetingDetail.summary}
+                  </div>
+                </div>
+                <div className="mt-4 pt-4 border-t border-white/10">
+                  <p className="text-sm font-medium text-slate-300 mb-2">Palavras-chave principais:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {mockMeetingDetail.keywords.map((keyword, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-purple-600/20 text-purple-300 text-sm rounded-full border border-purple-500/30"
+                      >
+                        {keyword}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Participants */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <Card className="bg-white/5 backdrop-blur-xl border-white/10 shadow-2xl">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-white">
+                  <Users className="w-5 h-5 text-purple-400" />
+                  Participantes
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {mockMeetingDetail.participants.map((participant, index) => (
+                    <div key={index} className="flex items-center gap-2 p-3 bg-white/10 rounded-lg backdrop-blur-sm">
+                      <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                        {participant.split(' ').map(n => n[0]).join('')}
+                      </div>
+                      <span className="text-sm font-medium text-slate-300">{participant}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Transcript */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <Card className="bg-white/5 backdrop-blur-xl border-white/10 shadow-2xl">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 text-white">
+                    <FileText className="w-5 h-5 text-purple-400" />
+                    Transcrição Completa
+                  </CardTitle>
+                  <div className="flex items-center gap-2">
+                    <EnhancedButton
+                      onClick={() => setIsPlaying(!isPlaying)}
+                      variant="outline"
+                      size="sm"
+                      className="border-white/20 text-slate-300 hover:bg-white/10"
+                    >
+                      {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                      {isPlaying ? 'Pausar' : 'Reproduzir'}
+                    </EnhancedButton>
+                    <EnhancedButton
+                      onClick={() => handleCopy(mockMeetingDetail.transcript)}
+                      variant="outline"
+                      size="sm"
+                      className="border-white/20 text-slate-300 hover:bg-white/10"
+                    >
+                      {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      {copied ? 'Copiado!' : 'Copiar'}
+                    </EnhancedButton>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-white/5 rounded-lg p-4 max-h-96 overflow-y-auto backdrop-blur-sm">
+                  <pre className="whitespace-pre-wrap text-sm text-slate-300 font-mono leading-relaxed">
+                    {mockMeetingDetail.transcript}
+                  </pre>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Export Options */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <Card className="bg-white/5 backdrop-blur-xl border-white/10 shadow-2xl">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-white">
+                  <Download className="w-5 h-5 text-purple-400" />
+                  Exportar Reunião
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col sm:flex-row gap-3">
                   <EnhancedButton
-                    onClick={() => setIsPlaying(!isPlaying)}
-                    variant="outline"
-                    size="sm"
-                    className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                    onClick={() => handleExport('pdf')}
+                    className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white"
                   >
-                    {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                    {isPlaying ? 'Pausar' : 'Reproduzir'}
+                    <FileText className="w-4 h-4 mr-2" />
+                    Exportar como PDF
                   </EnhancedButton>
                   <EnhancedButton
-                    onClick={() => handleCopy(mockMeetingDetail.transcript)}
-                    variant="outline"
-                    size="sm"
-                    className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                    onClick={() => handleExport('word')}
+                    className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white"
                   >
-                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    {copied ? 'Copiado!' : 'Copiar'}
+                    <FileText className="w-4 h-4 mr-2" />
+                    Exportar como Word
                   </EnhancedButton>
                 </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="bg-slate-900/50 rounded-lg p-4 max-h-96 overflow-y-auto">
-                <pre className="whitespace-pre-wrap text-sm text-slate-300 font-mono leading-relaxed">
-                  {mockMeetingDetail.transcript}
-                </pre>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Export Options */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-        >
-          <Card className="bg-slate-800/50 border-slate-700 shadow-xl">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-white">
-                <Download className="w-5 h-5 text-purple-400" />
-                Exportar Reunião
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <EnhancedButton
-                  onClick={() => handleExport('pdf')}
-                  className="bg-red-600 hover:bg-red-700 text-white"
-                >
-                  <FileText className="w-4 h-4 mr-2" />
-                  Exportar como PDF
-                </EnhancedButton>
-                <EnhancedButton
-                  onClick={() => handleExport('word')}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  <FileText className="w-4 h-4 mr-2" />
-                  Exportar como Word
-                </EnhancedButton>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
       </div>
     </div>
   )
