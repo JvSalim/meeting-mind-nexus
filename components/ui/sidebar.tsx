@@ -29,15 +29,23 @@ export function Sidebar({ user, onLogout }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
 
-  const menuItems = [
+  const baseMenuItems = [
     { id: "dashboard", label: "Dashboard", icon: Home, href: "/dashboard" },
     { id: "meetings", label: "Reuniões", icon: Calendar, href: "/meetings" },
     { id: "upload", label: "Upload", icon: Upload, href: "/upload" },
     { id: "chat", label: "Chat IA", icon: MessageSquare, href: "/chat" },
     { id: "analytics", label: "Analytics", icon: BarChart3, href: "/analytics" },
-    { id: "empresa", label: "Empresa", icon: Building2, href: "/empresa" },
     { id: "settings", label: "Configurações", icon: Settings, href: "/settings" },
   ]
+
+  // Add "Empresa" menu item only for company accounts
+  const menuItems = user?.accountType === 'company' 
+    ? [
+        ...baseMenuItems.slice(0, 5), // Insert before settings
+        { id: "empresa", label: "Empresa", icon: Building2, href: "/empresa" },
+        baseMenuItems[5] // settings
+      ]
+    : baseMenuItems
 
   const isActive = (href: string) => pathname === href
 
