@@ -25,7 +25,11 @@ import {
   Crown,
   ChevronRight,
   Filter,
-  Download
+  Download,
+  Activity,
+  TrendingUp,
+  Zap,
+  Database
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -166,48 +170,48 @@ const Empresa = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="text-center"
         >
-          <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
             <Building2 className="w-8 h-8 text-white" />
           </div>
-          <p className="text-slate-300 text-lg">Carregando...</p>
+          <p className="text-slate-600 text-lg">Carregando...</p>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 flex">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex">
       <Sidebar user={user} onLogout={handleLogout} />
       
       <div className="flex-1 lg:ml-0">
-        {/* Hero Section */}
-        <div className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-blue-500/5 to-emerald-500/10"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(147,51,234,0.1),transparent_50%)]"></div>
+        {/* Hero Header */}
+        <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-700">
+          <div className="absolute inset-0 bg-black/5"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-indigo-500/10"></div>
           
-          <div className="relative px-8 py-16">
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="max-w-6xl mx-auto"
-            >
+          <motion.header 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="relative p-8"
+          >
+            <div className="max-w-6xl mx-auto">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-purple-500 via-blue-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-2xl">
-                    <Building2 className="w-7 h-7 text-white" />
+                <div className="flex items-center gap-6">
+                  <div className="w-16 h-16 bg-white/20 backdrop-blur-xl rounded-3xl flex items-center justify-center border border-white/30 shadow-2xl">
+                    <Building2 className="w-8 h-8 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-5xl font-bold bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent">
+                    <h1 className="text-5xl font-bold text-white mb-2 tracking-tight">
                       Gestão Empresarial
                     </h1>
-                    <p className="text-xl text-slate-300 mt-2">
+                    <p className="text-xl text-blue-100 font-medium">
                       Administre sua equipe e controle acessos com facilidade
                     </p>
                   </div>
@@ -215,65 +219,67 @@ const Empresa = () => {
                 
                 <div className="flex items-center gap-4">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60 w-5 h-5" />
                     <Input
                       placeholder="Buscar usuários..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 w-80 bg-white/5 border-white/10 text-white placeholder-slate-400 focus:border-purple-500 focus:ring-purple-500/20 backdrop-blur-xl"
+                      className="pl-12 w-80 bg-white/20 border-white/30 text-white placeholder-white/60 focus:border-white focus:ring-white/20 backdrop-blur-xl h-12 rounded-2xl"
                     />
                   </div>
-                  <EnhancedButton variant="outline" className="bg-white/5 border-white/10 text-slate-300 backdrop-blur-xl">
+                  <EnhancedButton 
+                    variant="outline" 
+                    className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-xl h-12 px-6"
+                  >
                     <Download className="w-4 h-4 mr-2" />
                     Exportar
                   </EnhancedButton>
                 </div>
               </div>
-            </motion.div>
-          </div>
+
+              {/* Stats Cards */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12"
+              >
+                {companyStats.map((stat, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
+                    whileHover={{ scale: 1.02, y: -2 }}
+                  >
+                    <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300">
+                      <div className="p-6">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="text-3xl font-bold text-white mb-1">{stat.value}</h3>
+                            <p className="text-blue-100 text-sm font-medium">{stat.title}</p>
+                          </div>
+                          <div className={`w-12 h-12 bg-gradient-to-br ${stat.color} rounded-2xl flex items-center justify-center shadow-lg`}>
+                            <stat.icon className="w-6 h-6 text-white" />
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          </motion.header>
         </div>
 
         <div className="px-8 pb-16 -mt-8">
           <div className="max-w-6xl mx-auto space-y-8">
-            {/* Stats Cards */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-            >
-              {companyStats.map((stat, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.02, y: -4 }}
-                >
-                  <Card className="relative overflow-hidden bg-white/5 backdrop-blur-xl border-white/10 shadow-xl hover:shadow-2xl transition-all duration-300">
-                    <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-5`}></div>
-                    <div className="relative p-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="text-3xl font-bold text-white mb-1">{stat.value}</h3>
-                          <p className="text-slate-400 text-sm">{stat.title}</p>
-                        </div>
-                        <div className={`w-12 h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center shadow-lg`}>
-                          <stat.icon className="w-6 h-6 text-white" />
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </motion.div>
-
             {/* Tabs */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex space-x-2 bg-white/5 backdrop-blur-xl rounded-2xl p-2 w-fit border border-white/10"
+              className="flex space-x-2 bg-white/50 backdrop-blur-xl rounded-2xl p-2 w-fit border border-white/30 shadow-lg"
             >
               {[
                 { key: 'requests', label: 'Solicitações', icon: UserPlus, count: pendingRequests.length },
@@ -285,8 +291,8 @@ const Empresa = () => {
                   onClick={() => setActiveTab(tab.key as any)}
                   className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-3 ${
                     activeTab === tab.key
-                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/25'
-                      : 'text-slate-300 hover:text-white hover:bg-white/5'
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/25'
+                      : 'text-slate-600 hover:text-slate-800 hover:bg-white/30'
                   }`}
                 >
                   <tab.icon className="w-4 h-4" />
@@ -296,9 +302,9 @@ const Empresa = () => {
                       activeTab === tab.key 
                         ? 'bg-white/20 text-white border-white/30' 
                         : tab.key === 'requests' && tab.count > 0
-                        ? 'bg-red-600/20 text-red-300 border-red-500/30'
-                        : 'bg-green-600/20 text-green-300 border-green-500/30'
-                    }`}>
+                        ? 'bg-red-100 text-red-700 border-red-200'
+                        : 'bg-green-100 text-green-700 border-green-200'
+                    } text-xs px-2 py-1 rounded-full`}>
                       {tab.count}
                     </Badge>
                   )}
@@ -317,13 +323,13 @@ const Empresa = () => {
                   transition={{ duration: 0.3 }}
                 >
                   {filteredRequests.length === 0 ? (
-                    <Card className="bg-white/5 backdrop-blur-xl border-white/10 shadow-xl">
+                    <Card className="bg-white/50 backdrop-blur-xl border-white/30 shadow-xl">
                       <div className="text-center py-16">
-                        <div className="w-20 h-20 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                          <UserPlus className="w-10 h-10 text-slate-400" />
+                        <div className="w-20 h-20 bg-gradient-to-br from-slate-300 to-slate-400 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                          <UserPlus className="w-10 h-10 text-white" />
                         </div>
-                        <h3 className="text-2xl font-semibold text-white mb-3">Nenhuma solicitação pendente</h3>
-                        <p className="text-slate-300 max-w-md mx-auto">Todas as solicitações de acesso foram processadas. Novas solicitações aparecerão aqui.</p>
+                        <h3 className="text-2xl font-semibold text-slate-800 mb-3">Nenhuma solicitação pendente</h3>
+                        <p className="text-slate-600 max-w-md mx-auto">Todas as solicitações de acesso foram processadas. Novas solicitações aparecerão aqui.</p>
                       </div>
                     </Card>
                   ) : (
@@ -336,31 +342,31 @@ const Empresa = () => {
                           transition={{ delay: index * 0.1 }}
                           whileHover={{ scale: 1.02, y: -4 }}
                         >
-                          <Card className="bg-white/5 backdrop-blur-xl border-white/10 shadow-xl hover:shadow-2xl transition-all duration-300 h-full">
+                          <Card className="bg-white/70 backdrop-blur-xl border-white/30 shadow-xl hover:shadow-2xl transition-all duration-300 h-full">
                             <div className="p-6">
                               <div className="flex items-start justify-between mb-6">
                                 <div className="flex items-center space-x-3">
-                                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
+                                  <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center text-white font-semibold shadow-lg">
                                     {request.name.charAt(0)}
                                   </div>
                                   <div>
-                                    <h3 className="text-lg font-semibold text-white">{request.name}</h3>
-                                    <p className="text-slate-300 text-sm">{request.role} • {request.department}</p>
+                                    <h3 className="text-lg font-semibold text-slate-800">{request.name}</h3>
+                                    <p className="text-slate-600 text-sm">{request.role} • {request.department}</p>
                                   </div>
                                 </div>
                                 
-                                <Badge variant="outline" className="bg-orange-600/20 text-orange-300 border-orange-500/30">
+                                <Badge variant="outline" className="bg-orange-100 text-orange-700 border-orange-200 text-xs px-3 py-1 rounded-full">
                                   <Clock className="w-3 h-3 mr-1" />
                                   Pendente
                                 </Badge>
                               </div>
                               
                               <div className="space-y-3 mb-6">
-                                <div className="flex items-center text-slate-300 text-sm">
+                                <div className="flex items-center text-slate-600 text-sm">
                                   <Mail className="w-4 h-4 mr-3 text-slate-400" />
                                   {request.email}
                                 </div>
-                                <div className="flex items-center text-slate-300 text-sm">
+                                <div className="flex items-center text-slate-600 text-sm">
                                   <Calendar className="w-4 h-4 mr-3 text-slate-400" />
                                   {new Date(request.requestDate).toLocaleDateString('pt-BR')}
                                 </div>
@@ -370,7 +376,7 @@ const Empresa = () => {
                                 <EnhancedButton
                                   onClick={() => handleApproveRequest(request.id)}
                                   size="sm"
-                                  className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg"
+                                  className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg text-white"
                                 >
                                   <Check className="w-4 h-4 mr-2" />
                                   Aprovar
@@ -380,7 +386,7 @@ const Empresa = () => {
                                   onClick={() => handleRejectRequest(request.id)}
                                   variant="outline"
                                   size="sm"
-                                  className="flex-1 bg-red-600/10 border-red-500/30 text-red-300 hover:bg-red-600/20"
+                                  className="flex-1 bg-red-50 hover:bg-red-100 border-red-200 text-red-700 hover:text-red-800"
                                 >
                                   <X className="w-4 h-4 mr-2" />
                                   Rejeitar
@@ -410,41 +416,41 @@ const Empresa = () => {
                         transition={{ delay: index * 0.1 }}
                         whileHover={{ scale: 1.02, y: -4 }}
                       >
-                        <Card className="bg-white/5 backdrop-blur-xl border-white/10 shadow-xl hover:shadow-2xl transition-all duration-300 h-full">
+                        <Card className="bg-white/70 backdrop-blur-xl border-white/30 shadow-xl hover:shadow-2xl transition-all duration-300 h-full">
                           <div className="p-6">
                             <div className="flex items-start justify-between mb-6">
                               <div className="flex items-center space-x-3">
-                                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
+                                <div className="w-12 h-12 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-2xl flex items-center justify-center text-white font-semibold shadow-lg">
                                   {user.name.charAt(0)}
                                 </div>
                                 <div>
-                                  <h3 className="text-lg font-semibold text-white">{user.name}</h3>
-                                  <p className="text-slate-300 text-sm">{user.role} • {user.department}</p>
+                                  <h3 className="text-lg font-semibold text-slate-800">{user.name}</h3>
+                                  <p className="text-slate-600 text-sm">{user.role} • {user.department}</p>
                                 </div>
                               </div>
                               
-                              <Badge variant="outline" className="bg-green-600/20 text-green-300 border-green-500/30">
+                              <Badge variant="outline" className="bg-green-100 text-green-700 border-green-200 text-xs px-3 py-1 rounded-full">
                                 <UserCheck className="w-3 h-3 mr-1" />
                                 Ativo
                               </Badge>
                             </div>
                             
                             <div className="space-y-3 mb-6">
-                              <div className="flex items-center text-slate-300 text-sm">
+                              <div className="flex items-center text-slate-600 text-sm">
                                 <Mail className="w-4 h-4 mr-3 text-slate-400" />
                                 {user.email}
                               </div>
-                              <div className="flex items-center text-slate-300 text-sm">
+                              <div className="flex items-center text-slate-600 text-sm">
                                 <Calendar className="w-4 h-4 mr-3 text-slate-400" />
                                 Desde {new Date(user.joinDate).toLocaleDateString('pt-BR')}
                               </div>
-                              <div className="flex items-center text-slate-300 text-sm">
-                                <Users className="w-4 h-4 mr-3 text-slate-400" />
+                              <div className="flex items-center text-slate-600 text-sm">
+                                <Activity className="w-4 h-4 mr-3 text-slate-400" />
                                 {user.meetingsCount} reuniões
                               </div>
                             </div>
                             
-                            <div className="text-xs text-slate-400 mb-4">
+                            <div className="text-xs text-slate-500 mb-4 bg-slate-50 p-3 rounded-xl">
                               Último acesso: {new Date(user.lastAccess).toLocaleDateString('pt-BR')}
                             </div>
                             
@@ -452,7 +458,7 @@ const Empresa = () => {
                               <EnhancedButton
                                 variant="outline"
                                 size="sm"
-                                className="flex-1 bg-white/5 border-white/10 text-slate-300 hover:bg-white/10"
+                                className="flex-1 bg-white/50 hover:bg-white/70 border-white/50 text-slate-700 hover:text-slate-800"
                               >
                                 <Edit className="w-4 h-4 mr-2" />
                                 Editar
@@ -462,7 +468,7 @@ const Empresa = () => {
                                 onClick={() => handleRemoveUser(user.id)}
                                 variant="outline"
                                 size="sm"
-                                className="bg-red-600/10 border-red-500/30 text-red-300 hover:bg-red-600/20"
+                                className="bg-red-50 hover:bg-red-100 border-red-200 text-red-700 hover:text-red-800"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </EnhancedButton>
@@ -481,45 +487,48 @@ const Empresa = () => {
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Card className="bg-white/5 backdrop-blur-xl border-white/10 shadow-2xl">
+                  <Card className="bg-white/70 backdrop-blur-xl border-white/30 shadow-2xl">
                     <div className="p-8">
-                      <div className="flex items-center gap-3 mb-8">
-                        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center">
-                          <Settings className="w-5 h-5 text-white" />
+                      <div className="flex items-center gap-4 mb-8">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                          <Settings className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                          <h3 className="text-2xl font-semibold text-white">Configurações da Empresa</h3>
-                          <p className="text-slate-300">Gerencie as configurações e informações da sua empresa</p>
+                          <h3 className="text-2xl font-semibold text-slate-800 mb-1">Configurações da Empresa</h3>
+                          <p className="text-slate-600">Gerencie as configurações e informações da sua empresa</p>
                         </div>
                       </div>
                       
                       <div className="space-y-8">
                         {/* Company Info */}
-                        <div className="p-6 border border-white/10 rounded-2xl bg-white/5">
-                          <h4 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-                            <Building2 className="w-5 h-5 text-purple-400" />
+                        <div className="p-6 border border-white/30 rounded-2xl bg-white/30 backdrop-blur-sm">
+                          <h4 className="text-lg font-semibold text-slate-800 mb-6 flex items-center gap-3">
+                            <Building2 className="w-5 h-5 text-blue-600" />
                             Informações da Empresa
                           </h4>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                              <label className="block text-sm font-medium text-slate-300 mb-2">Nome da Empresa</label>
-                              <Input value={user.companyName} className="bg-white/5 border-white/10 text-white" readOnly />
+                              <label className="block text-sm font-medium text-slate-700 mb-2">Nome da Empresa</label>
+                              <Input value={user.companyName} className="bg-white/50 border-white/50 text-slate-800" readOnly />
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-slate-300 mb-2">CNPJ</label>
-                              <Input value={user.cnpj} className="bg-white/5 border-white/10 text-white" readOnly />
+                              <label className="block text-sm font-medium text-slate-700 mb-2">CNPJ</label>
+                              <Input value={user.cnpj} className="bg-white/50 border-white/50 text-slate-800" readOnly />
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-slate-300 mb-2">Email Corporativo</label>
-                              <Input value={user.email} className="bg-white/5 border-white/10 text-white" readOnly />
+                              <label className="block text-sm font-medium text-slate-700 mb-2">Email Corporativo</label>
+                              <Input value={user.email} className="bg-white/50 border-white/50 text-slate-800" readOnly />
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-slate-300 mb-2">Telefone</label>
-                              <Input value={user.phone} className="bg-white/5 border-white/10 text-white" readOnly />
+                              <label className="block text-sm font-medium text-slate-700 mb-2">Telefone</label>
+                              <Input value={user.phone} className="bg-white/50 border-white/50 text-slate-800" readOnly />
                             </div>
                           </div>
                           <div className="mt-6">
-                            <EnhancedButton variant="outline" className="bg-white/5 border-white/10 text-slate-300">
+                            <EnhancedButton 
+                              variant="outline" 
+                              className="bg-white/50 hover:bg-white/70 border-white/50 text-slate-700 hover:text-slate-800"
+                            >
                               <Edit className="w-4 h-4 mr-2" />
                               Editar Informações
                             </EnhancedButton>
@@ -527,9 +536,9 @@ const Empresa = () => {
                         </div>
 
                         {/* Security Settings */}
-                        <div className="p-6 border border-white/10 rounded-2xl bg-white/5">
-                          <h4 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-                            <Shield className="w-5 h-5 text-emerald-400" />
+                        <div className="p-6 border border-white/30 rounded-2xl bg-white/30 backdrop-blur-sm">
+                          <h4 className="text-lg font-semibold text-slate-800 mb-6 flex items-center gap-3">
+                            <Shield className="w-5 h-5 text-emerald-600" />
                             Permissões e Segurança
                           </h4>
                           <div className="space-y-6">
@@ -538,15 +547,15 @@ const Empresa = () => {
                               { title: "Notificações por Email", desc: "Receber notificações sobre novas solicitações", checked: true },
                               { title: "Backup Automático", desc: "Fazer backup automático dos dados da empresa", checked: true }
                             ].map((setting, index) => (
-                              <div key={index} className="flex items-center justify-between p-4 bg-white/5 rounded-xl">
+                              <div key={index} className="flex items-center justify-between p-4 bg-white/40 rounded-xl border border-white/20">
                                 <div>
-                                  <h5 className="text-white font-medium">{setting.title}</h5>
-                                  <p className="text-sm text-slate-400">{setting.desc}</p>
+                                  <h5 className="text-slate-800 font-medium">{setting.title}</h5>
+                                  <p className="text-sm text-slate-600">{setting.desc}</p>
                                 </div>
                                 <input 
                                   type="checkbox" 
                                   defaultChecked={setting.checked}
-                                  className="w-5 h-5 rounded border-white/20 bg-white/10 text-purple-600 focus:ring-purple-500"
+                                  className="w-5 h-5 rounded border-slate-300 bg-white text-blue-600 focus:ring-blue-500"
                                 />
                               </div>
                             ))}

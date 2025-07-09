@@ -1,212 +1,467 @@
+
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Calendar, Clock, Users, FileText, Search, Filter, Plus } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
-import { EnhancedButton } from '../../components/ui/enhanced-button'
-import { Input } from '../../components/ui/input'
-import { Badge } from '../../components/ui/badge'
-import { Sidebar } from '../../components/ui/sidebar'
+import { useState, useEffect } from "react";
+import { Card } from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
+import { Badge } from "../../components/ui/badge";
+import { EnhancedButton } from "../../components/ui/enhanced-button";
+import { Sidebar } from "../../components/ui/sidebar";
+import { MeetingFilters } from "../../components/filters/MeetingFilters";
+import { 
+  Calendar, 
+  Clock, 
+  Users, 
+  Search,
+  Filter,
+  Plus,
+  Eye,
+  Download,
+  MoreVertical,
+  Play,
+  FileText,
+  Brain,
+  Zap,
+  Activity,
+  TrendingUp,
+  CheckCircle,
+  AlertCircle
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
-export default function MeetingsPage() {
-  const [user, setUser] = useState<any>(null)
-  const [searchQuery, setSearchQuery] = useState('')
-  const router = useRouter()
+interface Meeting {
+  id: number;
+  title: string;
+  date: string;
+  time: string;
+  duration: string;
+  participants: number;
+  status: 'completed' | 'scheduled' | 'in-progress' | 'cancelled';
+  recording?: boolean;
+  transcript?: boolean;
+  summary?: boolean;
+  tags?: string[];
+}
 
-  useEffect(() => {
-    const userData = localStorage.getItem("user")
-    if (!userData) {
-      router.push("/login")
-      return
-    }
-    setUser(JSON.parse(userData))
-  }, [router])
+const Meetings = () => {
+  const [user, setUser] = useState<any>(null);
+  const [meetings, setMeetings] = useState<Meeting[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedFilters, setSelectedFilters] = useState<any>({});
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
-  const handleLogout = () => {
-    localStorage.removeItem("user")
-    router.push("/")
-  }
-
-  const meetings = [
+  // Mock meetings data
+  const mockMeetings: Meeting[] = [
     {
       id: 1,
-      title: "Reunião de Planejamento Estratégico",
-      date: "2024-03-15",
-      time: "10:00",
-      participants: 5,
-      status: "concluída"
+      title: "Reunião de Planejamento Estratégico Q1 2024",
+      date: "2024-01-15",
+      time: "09:00",
+      duration: "2h 30min",
+      participants: 8,
+      status: 'completed',
+      recording: true,
+      transcript: true,
+      summary: true,
+      tags: ['Estratégia', 'Planejamento', 'Q1']
     },
     {
       id: 2,
-      title: "Discussão sobre o Novo Produto",
-      date: "2024-03-20",
+      title: "Sprint Review - Desenvolvimento Produto",
+      date: "2024-01-14",
       time: "14:00",
-      participants: 3,
-      status: "agendada"
+      duration: "1h 15min",
+      participants: 12,
+      status: 'completed',
+      recording: true,
+      transcript: true,
+      summary: false,
+      tags: ['Sprint', 'Desenvolvimento', 'Review']
     },
     {
       id: 3,
-      title: "Alinhamento da Equipe de Marketing",
-      date: "2024-03-22",
-      time: "11:00",
-      participants: 7,
-      status: "cancelada"
+      title: "Apresentação para Investidores",
+      date: "2024-01-16",
+      time: "15:30",
+      duration: "45min",
+      participants: 6,
+      status: 'scheduled',
+      recording: false,
+      transcript: false,
+      summary: false,
+      tags: ['Investidores', 'Apresentação']
+    },
+    {
+      id: 4,
+      title: "Daily Standup - Equipe Engineering",
+      date: "2024-01-13",
+      time: "10:00",
+      duration: "30min",
+      participants: 15,
+      status: 'completed',
+      recording: true,
+      transcript: true,
+      summary: true,
+      tags: ['Daily', 'Engineering', 'Standup']
     }
   ];
 
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (!userData) {
+      router.push("/login");
+      return;
+    }
+    setUser(JSON.parse(userData));
+    
+    // Simulate loading
+    setTimeout(() => {
+      setMeetings(mockMeetings);
+      setLoading(false);
+    }, 1000);
+  }, [router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    router.push("/");
+  };
+
+  const getStatusColor = (status: Meeting['status']) => {
+    switch (status) {
+      case 'completed':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'scheduled':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'in-progress':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800 border-red-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const getStatusIcon = (status: Meeting['status']) => {
+    switch (status) {
+      case 'completed':
+        return <CheckCircle className="w-4 h-4" />;
+      case 'scheduled':
+        return <Calendar className="w-4 h-4" />;
+      case 'in-progress':
+        return <Play className="w-4 h-4" />;
+      case 'cancelled':
+        return <AlertCircle className="w-4 h-4" />;
+      default:
+        return <Calendar className="w-4 h-4" />;
+    }
+  };
+
   const filteredMeetings = meetings.filter(meeting =>
-    meeting.title.toLowerCase().includes(searchQuery.toLowerCase())
+    meeting.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    meeting.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center"
+        >
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-2xl">
             <Calendar className="w-8 h-8 text-white" />
           </div>
-          <p className="text-slate-300">Carregando...</p>
-        </div>
+          <p className="text-slate-600 text-lg">Carregando...</p>
+        </motion.div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 flex">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex">
       <Sidebar user={user} onLogout={handleLogout} />
       
-      <div className="flex-1 lg:ml-0 overflow-hidden">
-        {/* Header */}
-        <header className="bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-slate-800/50 p-6 sticky top-0 z-30">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-white mb-2 flex items-center">
-                <Calendar className="w-8 h-8 mr-3 text-blue-400" />
-                Reuniões
-              </h1>
-              <p className="text-slate-300">
-                Gerencie e acompanhe todas as suas reuniões
-              </p>
-            </div>
+      <div className="flex-1 lg:ml-0">
+        {/* Hero Header */}
+        <div className="relative overflow-hidden bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-700">
+          <div className="absolute inset-0 bg-black/5"></div>
+          
+          <motion.header 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="relative p-8"
+          >
+            <div className="max-w-6xl mx-auto">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                  <div className="w-16 h-16 bg-white/20 backdrop-blur-xl rounded-3xl flex items-center justify-center border border-white/30 shadow-2xl">
+                    <Calendar className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-5xl font-bold text-white mb-2 tracking-tight">
+                      Minhas Reuniões
+                    </h1>
+                    <p className="text-xl text-blue-100 font-medium">
+                      Gerencie e analise suas reuniões com inteligência artificial
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-4">
+                  <EnhancedButton
+                    className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-xl"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Nova Reunião
+                  </EnhancedButton>
+                </div>
+              </div>
 
-            <div className="flex items-center space-x-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+              {/* Quick Stats */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-12"
+              >
+                {[
+                  { title: "Total de Reuniões", value: "47", icon: Calendar, color: "from-blue-500 to-cyan-600" },
+                  { title: "Horas Gravadas", value: "24.5h", icon: Clock, color: "from-emerald-500 to-teal-600" },
+                  { title: "Participantes Únicos", value: "89", icon: Users, color: "from-purple-500 to-pink-600" },
+                  { title: "Insights Gerados", value: "156", icon: Brain, color: "from-orange-500 to-red-600" }
+                ].map((stat, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
+                    whileHover={{ scale: 1.02, y: -2 }}
+                  >
+                    <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300">
+                      <div className="p-6">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="text-2xl font-bold text-white mb-1">{stat.value}</h3>
+                            <p className="text-blue-100 text-sm font-medium">{stat.title}</p>
+                          </div>
+                          <div className={`w-12 h-12 bg-gradient-to-br ${stat.color} rounded-2xl flex items-center justify-center shadow-lg`}>
+                            <stat.icon className="w-6 h-6 text-white" />
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          </motion.header>
+        </div>
+
+        <div className="px-8 pb-16 -mt-8">
+          <div className="max-w-6xl mx-auto space-y-8">
+            {/* Search and Filters */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="flex flex-col lg:flex-row gap-6"
+            >
+              <div className="flex-1 relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
                 <Input
-                  placeholder="Buscar reuniões..."
+                  placeholder="Buscar reuniões por título ou tags..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 w-80 bg-slate-800/50 border-slate-700/50 text-white placeholder-slate-400 focus:border-purple-500 focus:ring-purple-500/20"
+                  className="pl-12 bg-white/70 backdrop-blur-xl border-white/30 text-slate-800 placeholder-slate-500 focus:border-blue-500 focus:ring-blue-500/20 h-12 rounded-2xl shadow-lg"
                 />
               </div>
-              <EnhancedButton className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                <Plus className="w-4 h-4 mr-2" />
-                Nova Reunião
-              </EnhancedButton>
-            </div>
-          </div>
-        </header>
-
-        <main className="p-6">
-          <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-white flex items-center">
-                  <Calendar className="w-5 h-5 mr-2 text-blue-400" />
-                  Lista de Reuniões
-                </CardTitle>
-                <EnhancedButton variant="outline" size="sm" className="bg-slate-700/50 border-slate-600/50 text-slate-300">
+              
+              <div className="flex gap-4">
+                <EnhancedButton
+                  variant="outline"
+                  className="bg-white/50 border-white/30 text-slate-700 hover:bg-white/70 backdrop-blur-xl"
+                >
                   <Filter className="w-4 h-4 mr-2" />
-                  Filtrar
+                  Filtros
+                </EnhancedButton>
+                
+                <EnhancedButton
+                  variant="outline" 
+                  className="bg-white/50 border-white/30 text-slate-700 hover:bg-white/70 backdrop-blur-xl"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Exportar
                 </EnhancedButton>
               </div>
-              <CardDescription className="text-slate-300">
-                Visualize e gerencie suas reuniões agendadas
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left text-slate-400">
-                  <thead className="text-xs text-slate-300 uppercase bg-slate-700/50">
-                    <tr>
-                      <th scope="col" className="px-6 py-3">
-                        Título
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Data
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Horário
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Participantes
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Status
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Ações
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredMeetings.map(meeting => (
-                      <tr key={meeting.id} className="bg-slate-800/30 border-b border-slate-700/50 hover:bg-slate-700/20 transition-colors">
-                        <th scope="row" className="px-6 py-4 font-medium text-white whitespace-nowrap">
-                          {meeting.title}
-                        </th>
-                        <td className="px-6 py-4">
-                          {new Date(meeting.date).toLocaleDateString('pt-BR')}
-                        </td>
-                        <td className="px-6 py-4">
-                          {meeting.time}
-                        </td>
-                        <td className="px-6 py-4">
-                          {meeting.participants}
-                        </td>
-                        <td className="px-6 py-4">
-                          <Badge 
-                            variant="outline" 
-                            className={`${
-                              meeting.status === 'concluída' 
-                                ? 'bg-green-600/20 text-green-300 border-green-500/30'
-                                : meeting.status === 'agendada'
-                                  ? 'bg-blue-600/20 text-blue-300 border-blue-500/30'
-                                  : 'bg-red-600/20 text-red-300 border-red-500/30'
-                            }`}
-                          >
-                            {meeting.status}
-                          </Badge>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex space-x-2">
-                            <EnhancedButton
-                              variant="ghost"
-                              size="sm"
-                              className="text-blue-400 hover:text-blue-300 hover:bg-blue-600/10"
-                            >
-                              <FileText className="w-4 h-4" />
-                            </EnhancedButton>
-                            <EnhancedButton
-                              variant="ghost"
-                              size="sm"
-                              className="text-red-400 hover:text-red-300 hover:bg-red-600/10"
-                            >
-                              <Clock className="w-4 h-4" />
-                            </EnhancedButton>
+            </motion.div>
+
+            {/* Meetings Grid */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              {loading ? (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {[...Array(4)].map((_, index) => (
+                    <Card key={index} className="bg-white/50 backdrop-blur-xl border-white/30 shadow-lg">
+                      <div className="p-6 animate-pulse">
+                        <div className="h-6 bg-slate-200 rounded mb-4"></div>
+                        <div className="h-4 bg-slate-200 rounded mb-2"></div>
+                        <div className="h-4 bg-slate-200 rounded w-3/4"></div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <AnimatePresence>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {filteredMeetings.map((meeting, index) => (
+                      <motion.div
+                        key={meeting.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.1 }}
+                        whileHover={{ scale: 1.02, y: -4 }}
+                      >
+                        <Card className="bg-white/70 backdrop-blur-xl border-white/30 shadow-xl hover:shadow-2xl transition-all duration-300 h-full">
+                          <div className="p-6">
+                            {/* Header */}
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="flex-1">
+                                <h3 className="text-lg font-bold text-slate-800 mb-2 line-clamp-2">
+                                  {meeting.title}
+                                </h3>
+                                <div className="flex items-center gap-2 mb-3">
+                                  <Badge className={`${getStatusColor(meeting.status)} text-xs font-medium px-3 py-1 rounded-full border flex items-center gap-1`}>
+                                    {getStatusIcon(meeting.status)}
+                                    {meeting.status === 'completed' ? 'Concluída' :
+                                     meeting.status === 'scheduled' ? 'Agendada' :
+                                     meeting.status === 'in-progress' ? 'Em Andamento' : 'Cancelada'}
+                                  </Badge>
+                                </div>
+                              </div>
+                              
+                              <button className="p-2 hover:bg-slate-100 rounded-xl transition-colors">
+                                <MoreVertical className="w-4 h-4 text-slate-500" />
+                              </button>
+                            </div>
+
+                            {/* Meeting Details */}
+                            <div className="space-y-3 mb-6">
+                              <div className="flex items-center gap-3 text-slate-600 text-sm">
+                                <Calendar className="w-4 h-4 text-slate-400" />
+                                <span>{new Date(meeting.date).toLocaleDateString('pt-BR')} às {meeting.time}</span>
+                              </div>
+                              
+                              <div className="flex items-center gap-3 text-slate-600 text-sm">
+                                <Clock className="w-4 h-4 text-slate-400" />
+                                <span>{meeting.duration}</span>
+                              </div>
+                              
+                              <div className="flex items-center gap-3 text-slate-600 text-sm">
+                                <Users className="w-4 h-4 text-slate-400" />
+                                <span>{meeting.participants} participantes</span>
+                              </div>
+                            </div>
+
+                            {/* Tags */}
+                            {meeting.tags && meeting.tags.length > 0 && (
+                              <div className="flex flex-wrap gap-2 mb-6">
+                                {meeting.tags.map((tag, tagIndex) => (
+                                  <Badge key={tagIndex} variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs px-2 py-1">
+                                    {tag}
+                                  </Badge>
+                                ))}
+                              </div>
+                            )}
+
+                            {/* Available Resources */}
+                            <div className="flex items-center gap-4 mb-6">
+                              {meeting.recording && (
+                                <div className="flex items-center gap-1 text-green-600 text-xs">
+                                  <Play className="w-3 h-3" />
+                                  <span>Gravação</span>
+                                </div>
+                              )}
+                              {meeting.transcript && (
+                                <div className="flex items-center gap-1 text-blue-600 text-xs">
+                                  <FileText className="w-3 h-3" />
+                                  <span>Transcrição</span>
+                                </div>
+                              )}
+                              {meeting.summary && (
+                                <div className="flex items-center gap-1 text-purple-600 text-xs">
+                                  <Brain className="w-3 h-3" />
+                                  <span>Resumo IA</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex gap-3">
+                              <EnhancedButton
+                                size="sm"
+                                onClick={() => router.push(`/meetings/${meeting.id}`)}
+                                className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                              >
+                                <Eye className="w-4 h-4 mr-2" />
+                                Ver Detalhes
+                              </EnhancedButton>
+                              
+                              {meeting.status === 'completed' && (
+                                <EnhancedButton
+                                  size="sm"
+                                  variant="outline"
+                                  className="bg-white/30 border-white/50 text-slate-700 hover:bg-white/50"
+                                >
+                                  <Brain className="w-4 h-4 mr-2" />
+                                  Insights
+                                </EnhancedButton>
+                              )}
+                            </div>
                           </div>
-                        </td>
-                      </tr>
+                        </Card>
+                      </motion.div>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
-        </main>
+                  </div>
+                </AnimatePresence>
+              )}
+            </motion.div>
+
+            {/* Empty State */}
+            {!loading && filteredMeetings.length === 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-center py-16"
+              >
+                <Card className="bg-white/50 backdrop-blur-xl border-white/30 shadow-xl max-w-md mx-auto">
+                  <div className="p-8">
+                    <div className="w-16 h-16 bg-gradient-to-br from-slate-400 to-slate-500 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                      <Calendar className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-slate-800 mb-3">Nenhuma reunião encontrada</h3>
+                    <p className="text-slate-600 mb-6">
+                      {searchQuery ? 'Tente ajustar os filtros de busca.' : 'Comece criando sua primeira reunião.'}
+                    </p>
+                    <EnhancedButton className="bg-gradient-to-r from-blue-600 to-purple-600">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Nova Reunião
+                    </EnhancedButton>
+                  </div>
+                </Card>
+              </motion.div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
+
+export default Meetings;
