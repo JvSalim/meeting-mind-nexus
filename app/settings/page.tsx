@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState, useEffect } from "react";
@@ -24,9 +25,7 @@ import {
   Moon,
   Sun,
   Volume2,
-  Globe,
-  Database,
-  FileText
+  Globe
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -56,17 +55,14 @@ const SettingsPage = () => {
       emailNotifications: true,
       pushNotifications: true,
       meetingReminders: true,
-      weeklyReports: false,
       soundEnabled: true
     },
     appearance: {
-      theme: 'light',
+      theme: 'dark',
       language: 'pt-BR',
-      timezone: 'America/Sao_Paulo',
-      dateFormat: 'DD/MM/YYYY'
+      timezone: 'America/Sao_Paulo'
     },
     privacy: {
-      profileVisibility: 'team',
       dataSharing: false,
       analyticsOptOut: false,
       autoBackup: true
@@ -118,67 +114,64 @@ const SettingsPage = () => {
     { id: 'profile', label: 'Perfil', icon: User },
     { id: 'security', label: 'Segurança', icon: Shield },
     { id: 'notifications', label: 'Notificações', icon: Bell },
-    { id: 'appearance', label: 'Aparência', icon: Palette },
-    { id: 'privacy', label: 'Privacidade', icon: Lock }
+    { id: 'appearance', label: 'Aparência', icon: Palette }
   ];
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-violet-950/20 to-slate-900 flex items-center justify-center">
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="text-center"
         >
-          <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+          <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Settings className="w-8 h-8 text-white" />
           </div>
-          <p className="text-muted-foreground text-lg">Carregando...</p>
+          <p className="text-slate-300 text-lg">Carregando...</p>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-violet-950/20 to-slate-900 flex">
       <Sidebar user={user} onLogout={handleLogout} />
       
       <div className="flex-1 ml-64">
         {/* Header */}
-        <div className="bg-card/50 backdrop-blur-sm">          
-          <motion.header 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="p-8"
-          >
-            <div className="max-w-6xl mx-auto">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-6">
-                  <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-lg">
-                    <Settings className="w-8 h-8 text-white" />
-                  </div>
-                  <div>
-                    <h1 className="text-4xl font-bold text-foreground mb-2">
-                      Configurações
-                    </h1>
-                    <p className="text-xl text-muted-foreground">
-                      Personalize sua experiência e gerencie suas preferências
-                    </p>
-                  </div>
+        <motion.header 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="bg-slate-900/80 backdrop-blur-sm border-b border-slate-700 p-8"
+        >
+          <div className="max-w-6xl mx-auto">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-6">
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Settings className="w-8 h-8 text-white" />
                 </div>
-                
-                <EnhancedButton
-                  onClick={handleSaveSettings}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  Salvar Alterações
-                </EnhancedButton>
+                <div>
+                  <h1 className="text-4xl font-bold text-white mb-2">
+                    Configurações
+                  </h1>
+                  <p className="text-xl text-slate-400">
+                    Personalize sua experiência e gerencie suas preferências
+                  </p>
+                </div>
               </div>
+              
+              <EnhancedButton
+                onClick={handleSaveSettings}
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                Salvar Alterações
+              </EnhancedButton>
             </div>
-          </motion.header>
-        </div>
+          </div>
+        </motion.header>
 
         <div className="px-8 pb-16">
           <div className="max-w-6xl mx-auto">
@@ -190,9 +183,9 @@ const SettingsPage = () => {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="w-64 flex-shrink-0"
               >
-                <Card className="bg-card border shadow-sm">
+                <Card className="bg-slate-800/50 border-slate-700 shadow-xl">
                   <div className="p-6">
-                    <h3 className="text-lg font-semibold text-foreground mb-6">Configurações</h3>
+                    <h3 className="text-lg font-semibold text-white mb-6">Configurações</h3>
                     <nav className="space-y-2">
                       {settingsTabs.map((tab) => (
                         <button
@@ -200,8 +193,8 @@ const SettingsPage = () => {
                           onClick={() => setActiveTab(tab.id)}
                           className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                             activeTab === tab.id
-                              ? 'bg-primary text-primary-foreground shadow-sm'
-                              : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                              ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-sm'
+                              : 'text-slate-300 hover:bg-slate-700 hover:text-white'
                           }`}
                         >
                           <tab.icon className="w-5 h-5" />
@@ -220,18 +213,18 @@ const SettingsPage = () => {
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="flex-1"
               >
-                <Card className="bg-card border shadow-sm">
+                <Card className="bg-slate-800/50 border-slate-700 shadow-xl">
                   <div className="p-8">
                     {activeTab === 'profile' && (
                       <div className="space-y-8">
                         <div>
-                          <h2 className="text-2xl font-bold text-foreground mb-2">Informações do Perfil</h2>
-                          <p className="text-muted-foreground">Gerencie suas informações pessoais e profissionais</p>
+                          <h2 className="text-2xl font-bold text-white mb-2">Informações do Perfil</h2>
+                          <p className="text-slate-400">Gerencie suas informações pessoais e profissionais</p>
                         </div>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div className="space-y-2">
-                            <Label htmlFor="name" className="text-foreground font-medium">Nome Completo</Label>
+                            <Label htmlFor="name" className="text-slate-300 font-medium">Nome Completo</Label>
                             <Input
                               id="name"
                               value={settings.profile.name}
@@ -239,12 +232,12 @@ const SettingsPage = () => {
                                 ...prev,
                                 profile: { ...prev.profile, name: e.target.value }
                               }))}
-                              className="bg-background border-border text-foreground focus:border-primary focus:ring-primary/20"
+                              className="bg-slate-700 border-slate-600 text-white focus:border-purple-500 focus:ring-purple-500/20"
                             />
                           </div>
                           
                           <div className="space-y-2">
-                            <Label htmlFor="email" className="text-foreground font-medium">Email</Label>
+                            <Label htmlFor="email" className="text-slate-300 font-medium">Email</Label>
                             <Input
                               id="email"
                               type="email"
@@ -253,12 +246,12 @@ const SettingsPage = () => {
                                 ...prev,
                                 profile: { ...prev.profile, email: e.target.value }
                               }))}
-                              className="bg-background border-border text-foreground focus:border-primary focus:ring-primary/20"
+                              className="bg-slate-700 border-slate-600 text-white focus:border-purple-500 focus:ring-purple-500/20"
                             />
                           </div>
                           
                           <div className="space-y-2">
-                            <Label htmlFor="phone" className="text-foreground font-medium">Telefone</Label>
+                            <Label htmlFor="phone" className="text-slate-300 font-medium">Telefone</Label>
                             <Input
                               id="phone"
                               value={settings.profile.phone}
@@ -266,12 +259,12 @@ const SettingsPage = () => {
                                 ...prev,
                                 profile: { ...prev.profile, phone: e.target.value }
                               }))}
-                              className="bg-background border-border text-foreground focus:border-primary focus:ring-primary/20"
+                              className="bg-slate-700 border-slate-600 text-white focus:border-purple-500 focus:ring-purple-500/20"
                             />
                           </div>
                           
                           <div className="space-y-2">
-                            <Label htmlFor="company" className="text-foreground font-medium">Empresa</Label>
+                            <Label htmlFor="company" className="text-slate-300 font-medium">Empresa</Label>
                             <Input
                               id="company"
                               value={settings.profile.company}
@@ -279,7 +272,7 @@ const SettingsPage = () => {
                                 ...prev,
                                 profile: { ...prev.profile, company: e.target.value }
                               }))}
-                              className="bg-background border-border text-foreground focus:border-primary focus:ring-primary/20"
+                              className="bg-slate-700 border-slate-600 text-white focus:border-purple-500 focus:ring-purple-500/20"
                             />
                           </div>
                         </div>
@@ -289,14 +282,14 @@ const SettingsPage = () => {
                     {activeTab === 'security' && (
                       <div className="space-y-8">
                         <div>
-                          <h2 className="text-2xl font-bold text-foreground mb-2">Segurança da Conta</h2>
-                          <p className="text-muted-foreground">Mantenha sua conta protegida com configurações de segurança avançadas</p>
+                          <h2 className="text-2xl font-bold text-white mb-2">Segurança da Conta</h2>
+                          <p className="text-slate-400">Mantenha sua conta protegida com configurações de segurança avançadas</p>
                         </div>
                         
                         <div className="space-y-6">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                              <Label htmlFor="currentPassword" className="text-foreground font-medium">Senha Atual</Label>
+                              <Label htmlFor="currentPassword" className="text-slate-300 font-medium">Senha Atual</Label>
                               <div className="relative">
                                 <Input
                                   id="currentPassword"
@@ -306,12 +299,12 @@ const SettingsPage = () => {
                                     ...prev,
                                     security: { ...prev.security, currentPassword: e.target.value }
                                   }))}
-                                  className="bg-background border-border text-foreground focus:border-primary focus:ring-primary/20 pr-10"
+                                  className="bg-slate-700 border-slate-600 text-white focus:border-purple-500 focus:ring-purple-500/20 pr-10"
                                 />
                                 <button
                                   type="button"
                                   onClick={() => setShowPassword(!showPassword)}
-                                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white"
                                 >
                                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                 </button>
@@ -319,7 +312,7 @@ const SettingsPage = () => {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="newPassword" className="text-foreground font-medium">Nova Senha</Label>
+                              <Label htmlFor="newPassword" className="text-slate-300 font-medium">Nova Senha</Label>
                               <Input
                                 id="newPassword"
                                 type="password"
@@ -328,18 +321,18 @@ const SettingsPage = () => {
                                   ...prev,
                                   security: { ...prev.security, newPassword: e.target.value }
                                 }))}
-                                className="bg-background border-border text-foreground focus:border-primary focus:ring-primary/20"
+                                className="bg-slate-700 border-slate-600 text-white focus:border-purple-500 focus:ring-purple-500/20"
                               />
                             </div>
                           </div>
                           
-                          <div className="p-6 bg-accent/20 rounded-lg border border-border">
+                          <div className="p-6 bg-slate-700/30 rounded-lg border border-slate-600">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3">
-                                <Key className="w-5 h-5 text-primary" />
+                                <Key className="w-5 h-5 text-purple-400" />
                                 <div>
-                                  <h3 className="font-semibold text-foreground">Autenticação de Dois Fatores</h3>
-                                  <p className="text-sm text-muted-foreground">Adicione uma camada extra de segurança</p>
+                                  <h3 className="font-semibold text-white">Autenticação de Dois Fatores</h3>
+                                  <p className="text-sm text-slate-400">Adicione uma camada extra de segurança</p>
                                 </div>
                               </div>
                               <Switch
@@ -358,8 +351,8 @@ const SettingsPage = () => {
                     {activeTab === 'notifications' && (
                       <div className="space-y-8">
                         <div>
-                          <h2 className="text-2xl font-bold text-foreground mb-2">Notificações</h2>
-                          <p className="text-muted-foreground">Configure como e quando você quer ser notificado</p>
+                          <h2 className="text-2xl font-bold text-white mb-2">Notificações</h2>
+                          <p className="text-slate-400">Configure como e quando você quer ser notificado</p>
                         </div>
                         
                         <div className="space-y-6">
@@ -369,15 +362,15 @@ const SettingsPage = () => {
                             { key: 'meetingReminders', title: 'Lembretes de Reunião', desc: 'Seja lembrado antes das reuniões', icon: Bell },
                             { key: 'soundEnabled', title: 'Sons de Notificação', desc: 'Reproduzir sons para alertas', icon: Volume2 }
                           ].map((notification) => (
-                            <div key={notification.key} className="p-6 bg-accent/20 rounded-lg border border-border">
+                            <div key={notification.key} className="p-6 bg-slate-700/30 rounded-lg border border-slate-600">
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                  <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                                  <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
                                     <notification.icon className="w-5 h-5 text-white" />
                                   </div>
                                   <div>
-                                    <h3 className="font-semibold text-foreground">{notification.title}</h3>
-                                    <p className="text-sm text-muted-foreground">{notification.desc}</p>
+                                    <h3 className="font-semibold text-white">{notification.title}</h3>
+                                    <p className="text-sm text-slate-400">{notification.desc}</p>
                                   </div>
                                 </div>
                                 <Switch
@@ -397,14 +390,14 @@ const SettingsPage = () => {
                     {activeTab === 'appearance' && (
                       <div className="space-y-8">
                         <div>
-                          <h2 className="text-2xl font-bold text-foreground mb-2">Aparência</h2>
-                          <p className="text-muted-foreground">Personalize a interface de acordo com suas preferências</p>
+                          <h2 className="text-2xl font-bold text-white mb-2">Aparência</h2>
+                          <p className="text-slate-400">Personalize a interface de acordo com suas preferências</p>
                         </div>
                         
                         <div className="space-y-6">
-                          <div className="p-6 bg-accent/20 rounded-lg border border-border">
-                            <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
-                              <Sun className="w-5 h-5 text-primary" />
+                          <div className="p-6 bg-slate-700/30 rounded-lg border border-slate-600">
+                            <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
+                              <Sun className="w-5 h-5 text-purple-400" />
                               Tema da Interface
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -421,8 +414,8 @@ const SettingsPage = () => {
                                   }))}
                                   className={`p-4 rounded-lg border transition-all duration-200 ${
                                     settings.appearance.theme === theme.key
-                                      ? 'border-primary bg-primary/10 text-primary'
-                                      : 'border-border bg-background text-muted-foreground hover:bg-accent'
+                                      ? 'border-purple-500 bg-purple-500/10 text-purple-400'
+                                      : 'border-slate-600 bg-slate-700/50 text-slate-300 hover:bg-slate-700'
                                   }`}
                                 >
                                   <theme.icon className="w-6 h-6 mx-auto mb-2" />
@@ -434,7 +427,7 @@ const SettingsPage = () => {
                           
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                              <Label className="text-foreground font-medium flex items-center gap-2">
+                              <Label className="text-slate-300 font-medium flex items-center gap-2">
                                 <Globe className="w-4 h-4" />
                                 Idioma
                               </Label>
@@ -444,7 +437,7 @@ const SettingsPage = () => {
                                   ...prev,
                                   appearance: { ...prev.appearance, language: e.target.value }
                                 }))}
-                                className="w-full p-3 bg-background border border-border rounded-lg text-foreground focus:border-primary focus:ring-primary/20"
+                                className="w-full p-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-purple-500 focus:ring-purple-500/20"
                               >
                                 <option value="pt-BR">Português (Brasil)</option>
                                 <option value="en-US">English (US)</option>
@@ -453,14 +446,14 @@ const SettingsPage = () => {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label className="text-foreground font-medium">Fuso Horário</Label>
+                              <Label className="text-slate-300 font-medium">Fuso Horário</Label>
                               <select
                                 value={settings.appearance.timezone}
                                 onChange={(e) => setSettings(prev => ({
                                   ...prev,
                                   appearance: { ...prev.appearance, timezone: e.target.value }
                                 }))}
-                                className="w-full p-3 bg-background border border-border rounded-lg text-foreground focus:border-primary focus:ring-primary/20"
+                                className="w-full p-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-purple-500 focus:ring-purple-500/20"
                               >
                                 <option value="America/Sao_Paulo">São Paulo (GMT-3)</option>
                                 <option value="America/New_York">New York (GMT-5)</option>
@@ -468,44 +461,6 @@ const SettingsPage = () => {
                               </select>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {activeTab === 'privacy' && (
-                      <div className="space-y-8">
-                        <div>
-                          <h2 className="text-2xl font-bold text-foreground mb-2">Privacidade</h2>
-                          <p className="text-muted-foreground">Controle como seus dados são utilizados e compartilhados</p>
-                        </div>
-                        
-                        <div className="space-y-6">
-                          {[
-                            { key: 'dataSharing', title: 'Compartilhamento de Dados', desc: 'Permitir compartilhamento para melhorar o serviço', icon: Database },
-                            { key: 'analyticsOptOut', title: 'Análise de Uso', desc: 'Coletar dados de uso para melhorias', icon: FileText },
-                            { key: 'autoBackup', title: 'Backup Automático', desc: 'Fazer backup automático dos seus dados', icon: Shield }
-                          ].map((privacy) => (
-                            <div key={privacy.key} className="p-6 bg-accent/20 rounded-lg border border-border">
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                  <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center">
-                                    <privacy.icon className="w-5 h-5 text-muted-foreground" />
-                                  </div>
-                                  <div>
-                                    <h3 className="font-semibold text-foreground">{privacy.title}</h3>
-                                    <p className="text-sm text-muted-foreground">{privacy.desc}</p>
-                                  </div>
-                                </div>
-                                <Switch
-                                  checked={settings.privacy[privacy.key as keyof typeof settings.privacy] as boolean}
-                                  onCheckedChange={(checked) => setSettings(prev => ({
-                                    ...prev,
-                                    privacy: { ...prev.privacy, [privacy.key]: checked }
-                                  }))}
-                                />
-                              </div>
-                            </div>
-                          ))}
                         </div>
                       </div>
                     )}
