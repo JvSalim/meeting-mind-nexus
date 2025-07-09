@@ -106,41 +106,41 @@ const ChatPage = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="text-center"
         >
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-2xl">
+          <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
             <MessageSquare className="w-8 h-8 text-white" />
           </div>
-          <p className="text-slate-600 text-lg">Carregando...</p>
+          <p className="text-muted-foreground text-lg">Carregando...</p>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex">
+    <div className="min-h-screen bg-background flex">
       <Sidebar user={user} onLogout={handleLogout} />
       
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col ml-64">
         {/* Header */}
         <motion.header 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white/50 backdrop-blur-xl border-b border-white/20 p-6"
+          className="bg-card/50 backdrop-blur-sm border-b p-6"
         >
           <div className="max-w-6xl mx-auto">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-md">
                   <MessageSquare className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-slate-800">Chat com IA</h1>
-                  <p className="text-slate-600">Assistente inteligente para suas reuniões</p>
+                  <h1 className="text-2xl font-bold text-foreground">Chat com IA</h1>
+                  <p className="text-muted-foreground">Assistente inteligente para suas reuniões</p>
                 </div>
               </div>
               
@@ -148,7 +148,7 @@ const ChatPage = () => {
                 <EnhancedButton
                   variant="outline"
                   size="sm"
-                  className="bg-white/50 border-white/30 text-slate-700 hover:bg-white/70"
+                  className="bg-card border-border text-foreground hover:bg-accent"
                 >
                   <History className="w-4 h-4 mr-2" />
                   Histórico
@@ -156,7 +156,7 @@ const ChatPage = () => {
                 <EnhancedButton
                   variant="outline"
                   size="sm"
-                  className="bg-white/50 border-white/30 text-slate-700 hover:bg-white/70"
+                  className="bg-card border-border text-foreground hover:bg-accent"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Nova Conversa
@@ -169,7 +169,7 @@ const ChatPage = () => {
         {/* Chat Container */}
         <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full p-6">
           {/* Messages Area */}
-          <Card className="flex-1 bg-white/70 backdrop-blur-xl border-white/30 shadow-xl mb-4 overflow-hidden">
+          <Card className="flex-1 bg-card border shadow-sm mb-4 overflow-hidden">
             <div className="h-full flex flex-col">
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 <AnimatePresence>
@@ -182,14 +182,14 @@ const ChatPage = () => {
                     >
                       <div className={`max-w-xs lg:max-w-md xl:max-w-lg ${
                         message.sender === 'user' 
-                          ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white' 
-                          : 'bg-white/50 text-slate-800 border border-white/30'
-                      } rounded-2xl p-4 shadow-lg backdrop-blur-xl`}>
+                          ? 'bg-primary text-primary-foreground' 
+                          : 'bg-card text-card-foreground border'
+                      } rounded-xl p-4 shadow-sm`}>
                         <div className="flex items-start gap-3">
                           <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                             message.sender === 'user' 
                               ? 'bg-white/20' 
-                              : 'bg-gradient-to-br from-blue-600 to-purple-600'
+                              : 'bg-primary'
                           }`}>
                             {message.sender === 'user' ? 
                               <User className="w-4 h-4" /> : 
@@ -199,7 +199,7 @@ const ChatPage = () => {
                           <div className="flex-1">
                             <p className="text-sm leading-relaxed">{message.content}</p>
                             <p className={`text-xs mt-2 ${
-                              message.sender === 'user' ? 'text-white/70' : 'text-slate-500'
+                              message.sender === 'user' ? 'text-white/70' : 'text-muted-foreground'
                             }`}>
                               {message.timestamp.toLocaleTimeString()}
                             </p>
@@ -216,15 +216,15 @@ const ChatPage = () => {
                     animate={{ opacity: 1, y: 0 }}
                     className="flex justify-start"
                   >
-                    <div className="bg-white/50 border border-white/30 rounded-2xl p-4 shadow-lg backdrop-blur-xl">
+                    <div className="bg-card border rounded-xl p-4 shadow-sm">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
+                        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                           <Bot className="w-4 h-4 text-white" />
                         </div>
                         <div className="flex items-center gap-1">
-                          <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                          <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                          <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                          <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                         </div>
                       </div>
                     </div>
@@ -236,7 +236,7 @@ const ChatPage = () => {
           </Card>
 
           {/* Input Area */}
-          <Card className="bg-white/70 backdrop-blur-xl border-white/30 shadow-xl">
+          <Card className="bg-card border shadow-sm">
             <div className="p-4">
               <div className="flex items-end gap-4">
                 <div className="flex-1">
@@ -245,8 +245,7 @@ const ChatPage = () => {
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="bg-white/50 border-white/50 text-slate-800 placeholder-slate-500 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl resize-none"
-                    rows={1}
+                    className="bg-background border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20 rounded-lg"
                   />
                 </div>
                 
@@ -254,7 +253,7 @@ const ChatPage = () => {
                   <EnhancedButton
                     variant="outline"
                     size="sm"
-                    className="bg-white/30 border-white/50 text-slate-700 hover:bg-white/50"
+                    className="bg-card border-border text-foreground hover:bg-accent"
                   >
                     <Mic className="w-4 h-4" />
                   </EnhancedButton>
@@ -262,7 +261,7 @@ const ChatPage = () => {
                   <EnhancedButton
                     onClick={handleSendMessage}
                     disabled={!inputMessage.trim()}
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground"
                   >
                     <Send className="w-4 h-4" />
                   </EnhancedButton>
