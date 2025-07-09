@@ -74,15 +74,15 @@ export function Sidebar({ user, onLogout }: SidebarProps) {
         />
       )}
 
-      {/* Sidebar - Full height */}
+      {/* Sidebar - Full height and fixed positioning */}
       <motion.div
         initial={{ x: -300 }}
         animate={{ x: isOpen || typeof window !== 'undefined' && window.innerWidth >= 1024 ? 0 : -300 }}
         transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-        className="fixed left-0 top-0 h-screen w-72 bg-gradient-to-b from-slate-900/95 via-slate-900/90 to-slate-800/95 backdrop-blur-2xl border-r border-slate-700/20 z-50 lg:relative lg:translate-x-0 shadow-2xl"
+        className="fixed left-0 top-0 h-screen w-72 bg-gradient-to-b from-slate-900/95 via-slate-900/90 to-slate-800/95 backdrop-blur-2xl border-r border-slate-700/20 z-50 lg:relative lg:translate-x-0 shadow-2xl flex flex-col"
       >
         {/* Header */}
-        <div className="flex items-center justify-center p-8 border-b border-slate-700/20">
+        <div className="flex items-center justify-center p-8 border-b border-slate-700/20 flex-shrink-0">
           <Link href="/" className="flex items-center space-x-3 group">
             <div className="w-10 h-10 bg-gradient-to-br from-violet-500 via-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-violet-500/25 transition-all duration-300">
               <Brain className="w-6 h-6 text-white" />
@@ -93,7 +93,7 @@ export function Sidebar({ user, onLogout }: SidebarProps) {
           </Link>
         </div>
 
-        {/* Navigation */}
+        {/* Navigation - Flex grow to take available space */}
         <nav className="flex-1 p-6 overflow-y-auto">
           <div className="space-y-3">
             {menuItems.map((item, index) => {
@@ -132,8 +132,8 @@ export function Sidebar({ user, onLogout }: SidebarProps) {
           </div>
         </nav>
 
-        {/* User Profile */}
-        <div className="p-6 border-t border-slate-700/20 mt-auto">
+        {/* User Profile - Fixed at bottom */}
+        <div className="p-6 border-t border-slate-700/20 flex-shrink-0">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

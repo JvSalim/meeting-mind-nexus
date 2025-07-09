@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useState, useEffect } from "react";
@@ -14,7 +13,6 @@ import {
   Bell, 
   Shield, 
   Palette, 
-  Globe,
   Save,
   Eye,
   EyeOff,
@@ -26,9 +24,7 @@ import {
   Moon,
   Sun,
   Volume2,
-  Zap,
-  Database,
-  FileText
+  Globe
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -103,9 +99,7 @@ const SettingsPage = () => {
   };
 
   const handleSaveSettings = () => {
-    // Here you would typically save to backend
     console.log('Settings saved:', settings);
-    // Update local storage
     const updatedUser = {
       ...user,
       name: settings.profile.name,
@@ -147,9 +141,9 @@ const SettingsPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex">
       <Sidebar user={user} onLogout={handleLogout} />
       
-      <div className="flex-1 lg:ml-0">
+      <div className="flex-1">
         {/* Hero Header */}
-        <div className="relative overflow-hidden bg-gradient-to-r from-slate-600 via-blue-600 to-purple-700">
+        <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700">
           <div className="absolute inset-0 bg-black/5"></div>
           
           <motion.header 
@@ -182,43 +176,6 @@ const SettingsPage = () => {
                   Salvar Alterações
                 </EnhancedButton>
               </div>
-
-              {/* Quick Stats */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-12"
-              >
-                {[
-                  { title: "Conta Ativa", value: "Premium", icon: Zap, color: "from-yellow-500 to-orange-600" },
-                  { title: "Último Login", value: "Hoje", icon: Monitor, color: "from-green-500 to-emerald-600" },
-                  { title: "Dados Seguros", value: "100%", icon: Database, color: "from-blue-500 to-cyan-600" },
-                  { title: "Backup", value: "Ativo", icon: FileText, color: "from-purple-500 to-pink-600" }
-                ].map((stat, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-                    whileHover={{ scale: 1.02, y: -2 }}
-                  >
-                    <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300">
-                      <div className="p-6">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h3 className="text-xl font-bold text-white mb-1">{stat.value}</h3>
-                            <p className="text-blue-100 text-sm font-medium">{stat.title}</p>
-                          </div>
-                          <div className={`w-10 h-10 bg-gradient-to-br ${stat.color} rounded-2xl flex items-center justify-center shadow-lg`}>
-                            <stat.icon className="w-5 h-5 text-white" />
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
-                  </motion.div>
-                ))}
-              </motion.div>
             </div>
           </motion.header>
         </div>
