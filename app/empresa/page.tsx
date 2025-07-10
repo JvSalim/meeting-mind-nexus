@@ -238,7 +238,7 @@ const Empresa = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12"
+                className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-12"
               >
                 {companyStats.map((stat, index) => (
                   <motion.div
@@ -268,7 +268,7 @@ const Empresa = () => {
           </motion.header>
         </div>
 
-        <div className="px-8 pb-16 -mt-8">
+        <div className="px-8 pb-16 mt-8">
           <div className="max-w-6xl mx-auto space-y-8">
             {/* Tabs */}
             <motion.div

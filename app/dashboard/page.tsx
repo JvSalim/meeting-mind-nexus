@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useState, useEffect } from "react";
@@ -21,7 +20,6 @@ import {
   PlayCircle,
   Plus,
   ArrowRight,
-  Bell,
   Target,
   Zap,
   Edit3,
@@ -36,7 +34,6 @@ import Link from "next/link";
 
 const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
-  const [notifications, setNotifications] = useState(3);
   const router = useRouter();
 
   // Métricas principais do dashboard com design inovador
@@ -220,21 +217,6 @@ const Dashboard = () => {
             </div>
             
             <div className="flex items-center space-x-4">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.6, duration: 0.3 }}
-                className="relative"
-              >
-                <EnhancedButton variant="outline" size="sm" className="bg-slate-800/50 border-purple-500/30 text-slate-300 hover:bg-purple-600/20 hover:border-purple-400/50">
-                  <Bell className="w-4 h-4" />
-                  {notifications > 0 && (
-                    <span className="absolute -top-2 -right-2 w-5 h-5 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full flex items-center justify-center animate-pulse">
-                      {notifications}
-                    </span>
-                  )}
-                </EnhancedButton>
-              </motion.div>
             </div>
           </div>
         </motion.header>
